@@ -1,0 +1,44 @@
+% METODOLOGIA------------------------------------------------------------------
+
+\chapter{METODOLOGIA}
+\label{chap:metodologia}
+Com a utilização do kit de desenvolvimento STM32F7 \textit{Discovery}, irão ser programadas as tarefas e o \textit{bootloader} que serão os principais componentes deste sistema. As tarefas serão produzidas a partir de bibliotecas já conhecidas e vastamente utilizadas por desenvolvedores de sistemas embarcados, para que assim projetos que necessitem fazer comunicação segura via rede e leitura e escrita de cartões SD, possam utilizar este sistema de modo a poupar espaço na memória, visando a reutilização destas bibliotecas, portanto o sistema pode ser amplamente utilizado.
+%sistema possa conter intersecções com trechos de codigos utilizados em varios projetos que necessitam
+
+%Adicionar diagrama de blocos!!!!
+
+A partir de um arquivo de \textit{linker}, a memória da plataforma será customizada afim de abrigar os arquivos necessários para o sistema e protege-los de eventuais sobre-escritas que podem vir a ocorrer. Este arquivo de \textit{linker}, assim como o \textit{bootloader}, será escrito somente para a plataforma STM32F7, visto que cada plataforma tem suas próprias características como, tamanho de memória e endereços diferentes para cada fabricante e/ou arquitetura. Abaixo será explicado parcialmente como funcionará as função das tarefas, do \textit{bootloader}, e do servidor web.
+%Cada capítulo deve conter uma pequena introdução (tipicamente, um ou dois parágrafos) que deve deixar claro o objetivo e o que será discutido no capítulo, bem como a organização do capítulo.
+
+\section{O \textit{BOOTLOADER}}
+\label{sec:Bootloader}
+
+O \textit{bootloader} será responsável em fazer a validação e troca de cada versão de \textit{firmware} instalado no sistema embarcado. Sempre que o sistema for iniciado, o \textit{bootloader} fará a procura de um novo firmware na memória interna do sistema. Neste processo, irá verificar o \textit{hash} da nova versão, verificando a integridade e origem do software, para então poder ocorrer a atualização. Caso haja alguma falha durante este processo, o \textit{bootloader} terá a habilidade de verificar este erro e corrigi-lo, revertendo a atualização, e instalando o \textit{firmware} anterior.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.43]{dados/figuras/DiagramaBootloader.png}
+     \caption{Diagrama de funcionamento do \textit{bootloader}. Fonte: autoria própria.}
+     \label{Diagrama Bootloader}
+\end{figure}
+%Inserir seu texto aqui...
+
+\section{SERVIDOR HTTP}
+\label{sec:ServidorHTTP}
+
+A partir de um computador conectado a mesma rede que o sistema embarcado, haverá um servidor HTTP que ficará responsável por esperar requisições do dispositivo, para consultar a disponibilidade de uma versão atualizada do software, e após a confirmação desta nova versão, este servidor irá enviar o \textit{firmware} para a plataforma embarcada.
+%Inserir seu texto aqui...
+
+\section{TAREFAS DO SISTEMA}
+\label{sec:Tarefassistema}
+
+\subsection{COMUNICAÇÃO}
+
+Com o uso da biblioteca LwIP e mbedTLS esta tarefa estará responsável por criar uma comunicação segura entre o hardware e o servidor HTTP, a partir desta comunicação será feito a verificação do sinal de disponibilidade de novo software e download do mesmo quando o sistema estiver ocioso. 
+
+\subsection{ARMAZENAMENTO}
+
+A partir da utilização da biblioteca FatFs, esta tarefa fará a leitura e escrita sobre um cartão SD instalado no hardware. Quando houver o download de uma nova versão, tanto a versão anterior quanto a nova, serão colocadas nesta memória, para futuras instalações que serão realizadas pelo \textit{bootloader}. A escolha da mídia de armazenamento de versões do software estará a cargo do projetista, sendo escolhido para este trabalho um cartão SD.
+
+

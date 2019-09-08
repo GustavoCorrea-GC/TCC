@@ -1,0 +1,78 @@
+% INTRODUÇÃO-------------------------------------------------------------------
+
+\chapter{INTRODUÇÃO}
+\label{chap:introducao}
+Com a evolução da microeletrônica e, por consequência, a redução de custo de periféricos e o crescimento do poder computacional de processadores, os sistemas computacionais se tornaram cada vez mais pequenos e baratos. Devido a isso, processadores e microcontroladores passaram a ser embutidos em produtos, o que deu origem ao conceito de sistema embarcado, que são sistemas de processamento de informação embutidos em produtos \cite{Marwedel2006}.
+A utilização destes sistemas foi disseminada em várias áreas como, a automobilística, aeronáutica, ferroviária, industrial, médica entre outras, automatizando as mais diversas funções. Em algumas destas funções era fundamental a presença de agentes humanos para serem realizadas, ou não existiam, pois uma pessoa não a exerceria em tempo hábil.
+
+%O \textit{Apollo Guidance Computer} (AGC) foi conhecido como o primeiro sistema embarcado da história, instalado no \textit{Apollo command module} e no \textit{Apollo Lunar Module}, tinha como proposito principal fornecer interfaces eletrônicas e de computação para orientação, navegação e controle da espaçonave.
+
+Os sistemas computacionais embarcados consistem dos mesmos componentes utilizados para a constituição de computadores pessoais, porém com tamanhos, capacidades e custos reduzidos. Tais dispositivos operam de forma independente e geralmente são projetados para realizar tarefas específicas e repetitivas. 
+Sistemas embarcados estão presentes no dia a dia da maioria das pessoas, em micro-ondas, geladeiras, TVs, aparelhos de som, video-games e outros produtos eletrônicos\cite{Marwedel2006}, logo, estes dispositivos se distanciam dos computadores de propósito geral, como vemos em \textit{desktops} e \textit{notebooks} atuais. 
+%CORRIGIR automatizando diversas funções, estas que anteriormente eram fundamental a presença de agentes humanos para serem realizadas. 
+
+%a manutenção desses sistemas não é algo banal, e por vezes esquecida durante a faze de projeto destes produtos,
+
+
+
+Com a necessidade cada vez maior da implementação destes sistemas no nosso dia a dia, é imprescindível se obter hardwares e softwares, cada vez mais robustos e que atendem todas as necessidades dos seus usuários.
+Assim, o projeto desses produtos devem ser muito bem planejado, e executado de forma a serem entregues produtos de qualidade, à  prova de falhas e que possam reagir a erros de forma a não causar danos a seus utilizadores. 
+%Os softwares desenvolvidos para sistemas embarcados muitas vezes são chamados de \textit{firmware}.
+%e como um desenvolvimento completamente sem falhas, \textit{bugs} e com máxima eficiência é quase inconcebível
+
+%Alguns softwares produzidos para projetos de larga e pequena escala acabam por chegar em seus consumidores finais pouco otimizados e até mesmo com erros, fazendo com que isto gere desconforto, perda de valor, e em casos extremos a morte de usuários. Como mostrado pelo relatório do Barr Group 
+
+
+%Pensando na durabilidade e qualidade destes produtos,
+Durante a fase de projeto de um sistema embarcado, deve-se avaliar diversos âmbitos, como desempenho, confiabilidade, consumo de energia e manufaturabilidade e etc. É também necessário validar estas avaliações, com o intuito de verificar se atenderão os requisitos de projeto, e pela necessidade destes produtos serem eficientes, é indispensável que estes sistemas passem por uma fase de otimização, em que mudanças no projeto podem melhorar a eficiência energética do produto ou até mesmo gerar novas funcionalidades a estes equipamentos.Portanto o projeto como um todo precisa ser testado para evitar que erros e \textit{bugs} possam vir a permanecer no produto final\cite{Marwedel2006}, criando um ciclo de desenvolvimento que deve ser repetido até se obter um produto eficiente, de qualidade e completo.
+%Por vezes as manutenções futuras do \textit{firmware} é esquecida, ou então ignorada, durante a fase de projeto, até por que esta é cara e não é algo banal, principalmente em projetos já implantados.
+
+Após a instalação final deste projeto para seu cliente, eventualmente pode ser necessária uma nova funcionalidade, uma otimização ou então, podem ser exigidos testes neste sistema. Logo, é preciso que haja uma forma de se alterar este produto mesmo após seu lançamento, para assim gerarmos um maior valor e confiabilidade ao sistema.
+A possibilidade de serem feitas manutenções futuras no software, que no contexto de sistemas embarcados é chamado de \textit{firmware}, conhecida como atualização OTA (\textit{Over-The-Air}). Esse recurso não é obrigatório no projeto de um sistema embarcado, mas é muitas vezes necessário, podendo ser uma funcionalidade muito útil dependendo da aplicação do sistema em concepção. A decisão de utilizar ou não a atualização OTA pode influenciar na escolha do hardware utilizado no projeto\cite{Ball2002}, 
+%também não é tão banal de ser criada, 
+podendo aumentar o custo do produto final.
+Uma das principais soluções adotadas para a manutenção destes programas é criar métodos de atualização em que, é necessária a presença de um agente humano fisicamente próximo do sistema para fazer a manutenção do software, o que acaba aumentando o custo de manutenção do produto e o tornando menos atrativo para os seus compradores.
+
+%Geralmente os sistemas de atualização remotos presentes em sistemas embarcados atuais utilizam ferramentas proprietarias e 
+
+Este trabalho de conclusão de curso propõem um método de manutenção destes \textit{firmwares} de forma remota, que possa ser o mais portável possível.
+Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o download do novo software para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como LwIP \cite{LWIP}, mbedtls \cite{mbedtls} e FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de software que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória flash do dispositivo, por ser dependente do hardware utilizado.
+
+%Citar Bibliotecas!!!!
+ 
+%para a plataforma STM32F746, onde, através de um servidor na internet, um novo código pode ser enviado ao hardware, por uma requisição do próprio sistema embarcado. Existirão tarefas que farão a verificação da disponibilidade da atualização, e o download de forma segura, utilizando as bibliotecas já bem estabelecidas LwIP e MbedTSL, a gravação deste arquivo e do software anteriormente instalado no produto, em um cartão SD, para caso haja a necessidade de se reverter a atualização, será feita por meio da biblioteca FatFs, e então a troca do antigo software pelo novo é feito a partir de um \textit{bootloader}.
+
+Os \textit{bootloaders} estão atualmente presentes em todos os computadores pessoais e em alguns sistemas embarcados. Esse software prepara a maioria dos hardwares presentes na máquina para um sistema operacional ou outro software entrar em ação.
+Como é o primeiro programa a ser inicializado após um sistema ser iniciado ou após um \textit{reset}, ele pode ter várias funções, como, realizar checagem de periféricos, verificar se o \textit{firmware} presente na memória não está corrompido, além de poder fazer a troca do software presente na memória \cite{DavesDurlin2013}, que será sua principal utilização neste trabalho.
+
+Um dos seus principais usos é em \textit{smartphones}, em que são utilizados para a atualização de sistemas operacionais como \textit{Android} e iOS, e como garantia de restauração em caso de erros irreversíveis no sistema operacional. É desenvolvido pelo próprio fabricante do dispositivo, e por padrão é bloqueado para os usuários, evitando a substituição do software original do aparelho por uma versão customizada, mas ainda assim existem opções de desbloqueio do \textit{bootloader}, dependendo do modelo do aparelho e do fabricante \cite{Salute2018}.% mas pode destravada o \textit{bootloader}.
+
+%Falar sobre a utilização de bootloaders em sistemas android em celulares... e citar sites falando sobre bootloaders
+
+
+%Edite e coloque aqui o seu texto de introdução.
+
+%A Introdução é a parte inicial do texto, na qual devem constar o tema e a delimitação do assunto tratado, objetivos da pesquisa e outros elementos necessários para situar o tema do trabalho, tais como: justificativa, procedimentos metodológicos (classificação inicial), embasamento teórico (principais bases sintetizadas) e estrutura do trabalho, tratados de forma sucinta. Recursos utilizados e cronograma são incluídos quando necessário. Salienta-se que os procedimentos metodológicos e o embasamento teórico são tratados, posteriormente, em capítulos próprios e com a profundidade necessária ao trabalho de pesquisa.
+
+\section{OBJETIVO GERAL}
+\label{sec:Objetivo Geral}
+
+Este trabalho de conclusão de curso tem como objetivo geral o desenvolvimento de um sistema \textit{open-source} para a atualização  de \textit{firmwares} OTA\textit{(Over-The-Air)} de sistemas embarcados baseado nas bibliotecas FatFs, LwIP e mbedTLS. 
+
+\section{OBJETIVOS ESPECÍFICOS}
+\label{sec:Objetivos Específicos}
+
+ \begin{itemize}
+   \item Desenvolver o \textit{bootloader} que identifica versões e atualiza o \textit{firmware}.
+   
+   \item Criar um servidor HTTP para a comunicação cliente servidor.
+   
+   \item Implementar a tarefa que fará a comunicação segura entre servidor HTTP e a plataforma embarcada STM32F7, a verificação de disponibilidade de atualização e download da nova versão, se existente, será baseando nas bibliotecas LwIP e mbedTLS. 
+   %terminar essa
+   
+   \item  Produzir a tarefa de leitura de um cartão micro SD que guarda uma nova versão do \textit{firmware} e uma cópia do anterior, utilizando a biblioteca FatFs.
+   
+   \item Comprovar a técnica de atualização automática utilizando a plataforma embarcada STM32F7.
+   
+ \end{itemize}
+ 
