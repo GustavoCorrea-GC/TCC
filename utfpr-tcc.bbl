@@ -1,0 +1,53 @@
+\providecommand{\abntreprintinfo}[1]{%
+ \citeonline{#1}}
+\setlength{\labelsep}{0pt}\begin{thebibliography}{}
+\providecommand{\abntrefinfo}[3]{}
+\providecommand{\abntbstabout}[1]{}
+\abntbstabout{v-1.9.6 }
+
+\bibitem[Ball 2002]{Ball2002}
+\abntrefinfo{Ball}{BALL}{2002}
+{BALL, S. \textbf{Embedded Microprocessor Systems: Real World Design}. 3rd. ed.
+  Newton, MA, USA: Butterworth-Heinemann, 2002.
+ISBN 0750675349.}
+
+\bibitem[Chan 2016]{FATFS}
+\abntrefinfo{Chan}{CHAN}{2016}
+{CHAN. \textbf{FatFs - Generic FAT File System Module}. 2016.
+Dispon{\'\i}vel em: \url{(http://elm-chan. org/fsw/ff/00index\_e.html)}. Acesso
+  em: 06 de setembro de 2019.}
+
+\bibitem[Davis e Durlin 2013]{DavesDurlin2013}
+\abntrefinfo{Davis e Durlin}{DAVIS; DURLIN}{2013}
+{DAVIS, T.; DURLIN, D. \textbf{Bootloaders 101: making your embedded design
+  future proof}. 2013.
+Dispon{\'\i}vel em:
+  \url{(https://www.embedded.com/design/prototyping-and-development/4410233/Bootloaders-101--making-your-embedded-design-future-proof)}.
+  Acesso em: 06 de setembro de 2019.}
+
+\bibitem[Devine 2006]{mbedtls}
+\abntrefinfo{Devine}{DEVINE}{2006}
+{DEVINE, C. \textbf{SSL Library mbed TLS / PolarSSL}. 2006.
+Dispon{\'\i}vel em: \url{(https://tls.mbed.org)}. Acesso em: 06 de setembro de
+  2019.}
+
+\bibitem[Dunkels 2002]{LWIP}
+\abntrefinfo{Dunkels}{DUNKELS}{2002}
+{DUNKELS, A. \textbf{lwIP - A Lightweight TCP/IP stack}. 2002.
+Dispon{\'\i}vel em: \url{(https://savannah.nongnu.org/projects/lwip/)}. Acesso
+  em: 06 de setembro de 2019.}
+
+\bibitem[Marwedel 2006]{Marwedel2006}
+\abntrefinfo{Marwedel}{MARWEDEL}{2006}
+{MARWEDEL, P. \textbf{Embedded System Design}. Berlin, Heidelberg:
+  Springer-Verlag, 2006.
+ISBN 1402076908.}
+
+\bibitem[Salutes 2018]{Salute2018}
+\abntrefinfo{Salutes}{SALUTES}{2018}
+{SALUTES, B. \textbf{Bootloader: o que é e para que serve?} 2018.
+Dispon{\'\i}vel em:
+  \url{(https://www.androidpit.com.br/bootloader-o-que-e-para-que-serve)}.
+  Acesso em: 06 de setembro de 2019.}
+
+\end{thebibliography}
