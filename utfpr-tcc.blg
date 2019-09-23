@@ -3,6 +3,7 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: utfpr-tcc.aux
 A level-1 auxiliary file: estrutura/pre-textuais/sumario.aux
 A level-1 auxiliary file: estrutura/textuais/introducao.aux
+A level-1 auxiliary file: estrutura/textuais/desenvolvimento/revisao-de-literatura.aux
 A level-1 auxiliary file: estrutura/textuais/desenvolvimento/metodologia.aux
 A level-1 auxiliary file: estrutura/textuais/desenvolvimento/resultados.aux
 A level-1 auxiliary file: estrutura/pos-textuais/referencias.aux
@@ -29,7 +30,7 @@ Reallocated glb_str_end (elt_size=4) to 20 items from 10.
 +---------------------------------------------------------+
 You've used 13 entries,
             6714 wiz_defined-function locations,
-            1253 strings with 10562 characters,
+            1254 strings with 10622 characters,
 and the built_in function-call counts, 12451 in all, are:
 = -- 1536
 > -- 126
