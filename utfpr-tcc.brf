@@ -1,3 +1,8 @@
+\backcite {Beningo2015}{{}{(document)}{Doc-Start}}
+\backcite {Qing2003}{{}{(document)}{Doc-Start}}
+\backcite {Qing2003}{{}{(document)}{Doc-Start}}
+\backcite {mbedtls}{{}{(document)}{Doc-Start}}
+\backcite {tanenbaumSO}{{}{(document)}{Doc-Start}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
@@ -7,3 +12,17 @@
 \backcite {FATFS}{{2}{1}{chapter.1}}
 \backcite {DavesDurlin2013}{{2}{1}{chapter.1}}
 \backcite {Salute2018}{{2}{1}{chapter.1}}
+\backcite {Noviello2018}{{4}{2.1}{section.2.1}}
+\backcite {Beningo2015}{{4}{2.1}{section.2.1}}
+\backcite {Beningo2015}{{5}{1}{figure.2.1}}
+\backcite {DavesDurlin2013}{{6}{2.1.1}{subsection.2.1.1}}
+\backcite {Noviello2018}{{8}{2.1.1}{figure.2.4}}
+\backcite {Qing2003}{{8}{2.1.2}{subsection.2.1.2}}
+\backcite {Qing2003}{{9}{5}{figure.2.5}}
+\backcite {Qing2003}{{10}{6}{figure.2.6}}
+\backcite {tanenbaumRedes}{{10}{2.2}{section.2.2}}
+\backcite {LWIP}{{11}{2.2.1}{subsection.2.2.1}}
+\backcite {mbedtls}{{11}{2.2.2}{subsection.2.2.2}}
+\backcite {mbedtls}{{11}{7}{figure.2.7}}
+\backcite {tanenbaumSO}{{11}{2.3}{section.2.3}}
+\backcite {tanenbaumSO}{{12}{8}{figure.2.8}}

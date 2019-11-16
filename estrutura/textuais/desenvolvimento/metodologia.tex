@@ -1,19 +1,32 @@
 % METODOLOGIA------------------------------------------------------------------
 
-\chapter{SISTEMA OPEN-SOURCE PARA A ATUALIZAÇÃO DE FIRMWARE OVER-THE-AIR BASEADO NAS BIBLIOTECAS LWIP, MBEDTSL E FATFS}
+\chapter{SISTEMA OPEN-SOURCE PARA A ATUALIZAÇÃO DE FIRMWARE OVER-THE-AIR BASEADO NAS BIBLIOTECAS LWIP, MBED TLS E FATFS}
 \label{chap:metodologia}
-Com a utilização do \textit{kit} de desenvolvimento STM32F7 \textit{Discovery}, irão ser programadas as tarefas e o \textit{bootloader} que serão os principais componentes desse sistema. As tarefas serão produzidas a partir de bibliotecas já conhecidas e vastamente utilizadas por desenvolvedores de sistemas embarcados, para que assim projetos que necessitem fazer comunicação segura via rede, leitura e escrita de cartões SD, possam utilizar esse sistema de modo a poupar espaço na memória, visando a reutilização dessas bibliotecas, portanto, o sistema pode ser amplamente utilizado.
+Neste capitulo é retratado como será o funcionamento do sistema que será desenvolvido, mostrada uma visão geral do software, listada as funcionalidades de cada uma das partes do software, explicada sua atividade e sua implementação, os problemas enfrentados durante o processo de desenvolvimento e as ferramentas utilizadas para o seu teste, Possiveis trabalhos futuros?. 
+
+\section{VISÃO GERAL}
+O software que será desenvolvido neste trabalho é dividido em duas partes, uma contendo o bootloader, que com o auxilio da biblioteca FatFs, que é um modulo generico do sistema de arquivo FAT, realizará a comunicação com o cartão SD, que conterá o novo firmware previamente recebido, e assim poderá substituir o software anterior da aplicação por um novo. Essa parte do software ficará armazenada em uma região da memoria que não poderá ser reescrita, então é uma peça do programa que não poderá ser substitúida. Será uma parte que não é portavel para todas as plataformas, ficando a cargo do projetista fazer o port para outras placas.
+
+A outra parte deste trabalho será uma API contendo as demais funções necessárias para a comunicação com o servidor que enviará para o sistema o novo firmware, por meio do uso da biblioteca LwIP, garantirá a segurança dessa comunicação com a utilização de uma camada extra de segurança com biblioteca Mbed TLS. Essa API irá conectar-se a um servidor em um intervalo de tempo determinado pelo projetista, para consulta irá verificar a disponibilidade de uma nova versão de software. 
+
+Após a confirmação de um novo firmware ser confirmada, em um tempo determinado pelo projetista a api irá se comunicar novamente com o servido com o intuito de fazer o download desta nova versão, e a armazenar em um endereço de memória predeterminado no cartão SD do sistema, para que então o bootloader entre em ação após uma reinicialização.
+A API será uma peça de software que poderá ser substituida e atualizada em conjunto com as demais aplicações do sistema, como, as bibliotecas LwIP, Mbed TSL, o sistema operacional, entre outras peças de software utilizadas pelo sistema. 
+
+Por conter biliotecas já conhecidas e vastamente utilizadas por desenvolvedores de sistemas embarcados, para que assim projetos que necessitem fazer comunicação segura via rede, leitura e escrita de cartões SD, possam utilizar esse sistema de modo a poupar espaço na memória, visando a reutilização dessas bibliotecas, portanto, o sistema pode ser amplamente utilizado. Será utilizada o \textit{kit} de desenvolvimento STM32F7 \textit{Discovery}, onde será inicialmente desenvolvida a API e suas tarefas e o \textit{bootloader} que serão os principais componentes desse sistema.
+
+
+%Com a  As tarefas serão produzidas a partir de b
 %sistema possa conter intersecções com trechos de codigos utilizados em varios projetos que necessitam
 
 %Adicionar diagrama de blocos!!!!
 
-A partir de um arquivo de \textit{linker}, a memória da plataforma será customizada a fim de abrigar os arquivos necessários para o sistema e protege-los de eventuais sobre-escritas que podem vir a ocorrer. Esse arquivo de \textit{linker}, assim como o \textit{bootloader}, será escrito somente para a plataforma STM32F7, visto que cada plataforma tem suas próprias características como, tamanho de memória e endereços diferentes para cada fabricante e/ou arquitetura. A seguir será explicado parcialmente como funcionarão as funções das tarefas, do \textit{bootloader}, e do servidor HTTP.
+%A partir de um arquivo de \textit{linker}, a memória da plataforma será customizada a fim de abrigar os arquivos necessários para o sistema e protege-los de eventuais sobre-escritas que podem vir a ocorrer. Esse arquivo de \textit{linker}, assim como o \textit{bootloader}, será escrito somente para a plataforma STM32F7, visto que cada plataforma tem suas próprias características como, tamanho de memória e endereços diferentes para cada fabricante e/ou arquitetura. A seguir será explicado parcialmente como funcionarão as funções das tarefas, do \textit{bootloader}, e do servidor HTTP.
 %Cada capítulo deve conter uma pequena introdução (tipicamente, um ou dois parágrafos) que deve deixar claro o objetivo e o que será discutido no capítulo, bem como a organização do capítulo.
 
 \section{O \textit{BOOTLOADER}}
 \label{sec:Bootloader}
 
-O \textit{bootloader} será responsável em fazer a validação e troca de cada versão de \textit{firmware} instalado no sistema embarcado. Sempre que o sistema for iniciado, o \textit{bootloader} fará a procura de um novo \textit{firmware} na memória interna do sistema. Esse processo, irá verificar o \textit{hash} da nova versão, verificando a integridade e origem do \textit{software}, para então poder ocorrer a atualização. Caso haja alguma falha durante esse processo, o \textit{bootloader} terá a habilidade de verificar esse erro e corrigi-lo, revertendo a atualização, e instalando o \textit{firmware} anterior. O funcionamento do \textit{bootloader} pode ser observado na figura 1.
+O \textit{bootloader} será responsável em fazer a validação e troca de cada versão de \textit{firmware} instalado no sistema embarcado. Sempre que o sistema for iniciado, o \textit{bootloader} fará a procura de um novo \textit{firmware} na memória interna do sistema. Esse processo, irá verificar o \textit{hash} da nova versão, verificando a integridade e origem do \textit{software}, para então poder ocorrer a atualização. Caso haja alguma falha durante esse processo, o \textit{bootloader} terá a habilidade de verificar esse erro e corrigi-lo, revertendo a atualização, e instalando o \textit{firmware} anterior. O funcionamento do \textit{bootloader} pode ser observado na figura \ref{Diagrama Bootloader}.
 
 \begin{figure}[H]
     \scriptsize

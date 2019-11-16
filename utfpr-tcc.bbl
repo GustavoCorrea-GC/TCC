@@ -11,6 +11,14 @@
   Newton, MA, USA: Butterworth-Heinemann, 2002.
 ISBN 0750675349.}
 
+\bibitem[Beningo 2015]{Beningo2015}
+\abntrefinfo{Beningo}{BENINGO}{2015}
+{BENINGO, J. \textbf{Embedded Basics – Understanding the Microcontroller Boot
+  Process}. 2015.
+Dispon{\'\i}vel em:
+  \url{(https://www.beningo.com/understanding-the-microcontroller-boot-process/)}.
+  Acesso em: 25 de outubro de 2019.}
+
 \bibitem[Chan 2016]{FATFS}
 \abntrefinfo{Chan}{CHAN}{2016}
 {CHAN. \textbf{FatFs - Generic FAT File System Module}. 2016.
@@ -43,11 +51,32 @@ Dispon{\'\i}vel em: \url{(https://savannah.nongnu.org/projects/lwip/)}. Acesso
   Springer-Verlag, 2006.
 ISBN 1402076908.}
 
+\bibitem[Noviello 2018]{Noviello2018}
+\abntrefinfo{Noviello}{NOVIELLO}{2018}
+{NOVIELLO, C. \textbf{Mastering STM32}. 2018.
+Dispon{\'\i}vel em: \url{(https://leanpub.com/mastering-stm32)}. Acesso em: 06
+  de setembro de 2019.}
+
+\bibitem[Qing 2003]{Qing2003}
+\abntrefinfo{Qing}{QING}{2003}
+{QING, Y.~C. L. \textbf{Real-time concepts for embedded systems}. [S.l.]: CRC
+  Press, 2003.}
+
 \bibitem[Salutes 2018]{Salute2018}
 \abntrefinfo{Salutes}{SALUTES}{2018}
 {SALUTES, B. \textbf{Bootloader: o que é e para que serve?} 2018.
 Dispon{\'\i}vel em:
   \url{(https://www.androidpit.com.br/bootloader-o-que-e-para-que-serve)}.
   Acesso em: 06 de setembro de 2019.}
+
+\bibitem[Tanenbaum 2003]{tanenbaumRedes}
+\abntrefinfo{Tanenbaum}{TANENBAUM}{2003}
+{TANENBAUM, A.~S. \textbf{Computer Networks}. [S.l.]: Pearson Education, inc,
+  2003.}
+
+\bibitem[Tanenbaum 2007]{tanenbaumSO}
+\abntrefinfo{Tanenbaum}{TANENBAUM}{2007}
+{TANENBAUM, A.~S. \textbf{OPERATING SYSTEMS DESIGN AND IMPLEMENTATION}. [S.l.]:
+  Pearson Education, inc, 2007.}
 
 \end{thebibliography}

@@ -1,19 +1,205 @@
 % REVISÃO DE LITERATURA--------------------------------------------------------
 
-\chapter{REVISÃO DE LITERATURA}
+\chapter{REVISÃO DA LITERATURA}
 \label{chap:fundamentacaoTeorica}
+Neste capítulo será feita uma revisão da literatura necessaria para o entendimento deste trabalho de conclusão de curso, abordando os temas como, o processo de inicialisação de um sistema embarcado para ser compreendido como o sistema inicia e chama um bootloader e o papel do linker neste processo. Também será discutido sobre a comunicação do tipo cliente servidos que será utilizada neste trabalho, assim como uma breve resisão sobre pilhas TCP/IP e então a biblioteca LwIP, utilizada neste trabalho que ficará responsavel pela implementação desta pilha, assim como a biblioteca mbedTSL que ficara com o cargo de tornar essa comunicação segura.
+
+Será exposto sobre o Cartão Secure digital, que ficará responsavel pelo armazenamento das versões de software que serão substituidas, assim como o Sistema de arquivos FAT que será utilizado neste trabalho e a biblioteca FatFs, que implementará o sistema de arquivos necessário para que sejam armazenadas as diferentes versões do firmware que substituirá o atual. Com o conhecimento passado sobre todos esses temas o leitor será capaz de compreender o método de atualização de firmware.
+
 
 %\section{PLATAFORMA EMBARCADA — STM32F7 DISCOVERY}%materiais
-\section{SISTEMAS EMBARCADOS}
-\subsection{ARM M7 E SUA FAMÍLIA.}
-\section{LWIP}
-\section{MBEDTLS}
-\section{FATFS}
-\section{BOOTLOADER}
+%\section{SISTEMAS EMBARCADOS}
+%\subsection{ARM M7 E SUA FAMÍLIA.}
+%\section{FIRMWARE OVER THE AIR}
+%O conceito de \textit{firmware over the air} (FOTA),  consiste em um mecanismo de atualização remoto de firmware, já é muito utilizado em firmware de smartfones por fornecer uma forma segura, eficiente e conveniente de atualização.geralmente utilizado em smartfones.  
+\section{\textbf{Processo de Inicialização do Sistema}}
+
+Conhecer o processo de inicialização dos sistemas embarcados, também chamado de boot, é muito importante para nos dar noção sobre quando e como será entrará em execução tanto a função main, quanto um bootloader. Dependendo do fabricante do chip o boot pode ser diferente, porem em geral ele segue a mesma linha de execução, podendo ou não ter interfaces fisicas para mudar a origem do boot, como no caso de algumas placas da ST, que contem um mecanismo chamado de \textit{physic remap}, para que o boot ocorra a partir de outras memórias e não da FLASH, que é a padrão \cite{Noviello2018}.
+
+Como dito por \citeonline{Beningo2015}, o fluxo padrão de boot de um sistema consiste em após a tensão de referência de um MCU se estabilizar, o processador procura pelo vetor de reset, para a obter a localização na FLASH da instrução de iniciação. O vetor de reset esta localizado em um endereço especial da memoria FLASH, geralmente no inicio. Como pode ser visto na imagem \ref{MAP_PIC24F16KLXXX} que contém o mapa de memoria do MCU PIC24F16KLXXX, o vetor de reset se encontra no endereço 0x0002.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=1]{dados/figuras/ResetVector.jpg}
+     \caption{Mapa de memória do MCU PIC24F16KLXXX.\newline Fonte: \cite{Beningo2015}}
+     \label{MAP_PIC24F16KLXXX}
+\end{figure}
+
+Então o endereço contido no vetor de reset é carregado pelo microcontrolador, e a instrução contida neste endereço é carregada e executada pelo processador. Essa instrução ainda não é a main que foi desenvolvida pelo projetista, ela é somente uma instrução de como o MCU irá iniciar. Esta instrução geralmente tem como função copiar o \textit{Vector Table} que esta na memória FLASH para a RAM, copiando e escrevendo em um endereço determinado pelo arquivo de linker.
+
+A variavéis que são inicializadas durante o tempo de compilação que estão armazenadas na seção .data do arquivo de linker são então gravadas na memória RAM, e as variavéis não inicializadas explicitamente ou iniciadas com zero que estão na seção .bss do arquivo de linker, são armazenadas na memória RAM. O MCU então copia funções que estão na FLASH para a RAM, estas etapa é opcional, o projetista deve determinas se alguma função é necessaria ser executada a partir da memória RAM. 
+
+Todo esse processo é chamado de \textit{"C Copy Down"}, que faz a preparação do ambiente para iniciar uma aplicação, após essa etapa ser concluída o MCU pode então chamar a função main, que é a firmware principal do sistema desenvolvido pelo projetista. Toda a sequência padrão de boot pode ser observada na imagem \ref{Seq_Boot}.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=1]{dados/figuras/ToDo.jpg}
+     \caption{Sequencia de Boot.}
+     \label{Seq_Boot}
+\end{figure}
+
+É possivel alterar a função da tarefa contida no vetor de reset no arquivo de linker, fazendo com que o MCU passe pelo processo de \textit{C Copy Down}, preparando o sistema para outra função diferente da aplicação principal do sistema embarcado, como é utilizado na criação de bootloaders para a atualização de firmware.
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Bootloader}
+O bootloader é um \textit{software} que, tem como responsabilidade a atualização do firmware do sistema, operação também conhecida como \textit{in-aplicattion programing} (IAP),  reside em uma área protegida da memória, geralmente colocado no início da memória FLASH ou na ROM, e é o primeiro \textit{software} a ser executado após o reset ou iniciação do sistema.
+É desenvolvido para receber comandos via periféricos de comunicação como: UART, I2C, SPI, CAN e Ethernet, e entender o mapa de memória do microcontrolador \cite{DavesDurlin2013}. A figura \ref{Diag_Bootloader} mostra como geralmente fica alocado um bootloader e o firmware nas memorias.
+% que são usados para trocar do firmware do MCU e recebimento do novo código de aplicação. Frequentemente é necessário um programa externo para dar esses comandos ao bootloader \cite{Noviello2018}.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.7]{dados/figuras/DiagBootloaderOriginal.png}
+     \caption{Alocação do bootloader e firmware nas memórias flash e ram.}
+     \label{Diag_Bootloader}
+\end{figure}
+
+Sua função se resume a: comunicar-se com outro servidor, ler os arquivos enviados pelo host, atualizar o firmware de seu microcontrolador, e iniciar este novo firmware. 
+Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando o uso do mesmo código em outras placas.
+%Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
+Portanto, é uma peça de \textit{software} que não é portável para várias plataformas. A imagem \ref{FluxoBootloader} mostra o funciomento de um bootloader padrão. 
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=1]{dados/figuras/ToDo.jpg}
+     \caption{Fluxograma de operações de um bootloader.}
+     \label{FluxoBootloader}
+\end{figure}
+
+
+
+Os sistemas microcontrolados STM32 vem de fábrica com um bootloader pré programado na memória ROM, este bootloader pode ser utilizado por meio de diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem varias operações, como: obter o ID do chip, escrever e ler bytes na memória RAM e FLASH, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
+
+É possivel ser criado um bootloader customizado com o diversas funções adicionais, uma frequentemente usada é o uso do bootloader para descriptografar firmwares que podem chegar de via internet, para se garantir a segurança e origem de um firmware, assim após esse processo o sistema pode substituir o software anterior pelo recebido. 
+
+
+
+\subsection{Linker}
+
+Segundo \citeonline{Qing2003}, os arquivos fonte são processados pelo compilador e assembler, criando assim os arquivos objetos, que contem os códigos de máquina binários(\textit{machine binary code}) e dados de programa (\textit{program data}). O archive utility concatena uma coleção de arquivos objetos para formar uma biblioteca. O linker obtem esses arquivos objetos como entrada e produz ou um arquivo executável, ou um arquivo objeto que pode ser utilizado em outro linker com outros arquivos objetos. O arquivo de comandos de linker (linker command file) orienta o linker em como combinar esses diferentes arquivos objetos e aonde colocar o código binário e os dados no sistema embarcado alvo. Assim podemos concluir que, a função principal de um linker é combinar multiplos arquivos objetos em um maior arquivo objeto reloacável, um arquivo objeto compartilhado ou uma imagem executavel final. Esse processo pode ser observado na imagem \ref{linker}.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=1]{dados/figuras/Linker.png}
+     \caption{Criando um arquivo de imagem para um sistema operacional alvo.\newline Fonte:\cite{Qing2003}}
+     \label{linker}
+\end{figure}
+
+%Durante a compilação de um arquivo fonte, o compilador cria uma tabela de simbolos contendo os simbolos globais e também as referencias para simbolos externos. O processo de \textit{linking}é feito pelo linker envolvendo a resolução de simbolos e relocação de simbolos.
+%melhorar esse paragrafo, pagina 22 Qing
+
+%A resolução de simbolos é o processo em que o linker análisa cada arquivo objeto e determina para cada um, em qual outro arquivo ou arquivos objetos, o simbolo esta definido. Quando um simbolo externo esta definido em uma biblioteca estática, o linker copia o arquivo objeto da biblioteca e o escreve na imagem final.
+
+%A relocação de símbolos é o processo em que o linker mapeia a referência desses símbolos para o local de sua definição. O linker modifica o codigo de máquina do arquivo objeto com o intuito de que o código referenciado pelo simbolo reflita o verdadeiro endereço designado a esse símbolo. A tabela de relocação diz ao linker aonde no código do programa aplica a ação de relocação. Cada entrada na tabela de relocação contem a referência para a tabela de símbolos. Utilizando esta referência, o linker pode recuperar o verdadeiro endereço do símbolo e aplicar em determinada parte do programa, como especificado na tabela de relocação. é possivel que a tabela de relocação contenha tanto o endereço do símbolo, quanto a informação da localização em que ele precisa ser realocado. Neste caso, não existe referencia entre as tabelas de relocação e de símbolo.
+
+%A figura \ref{} mostra esses dois processos de forma simplificada.
+
+%\begin{figure}[H]
+%    \scriptsize
+%     \centering
+%     \includegraphics[scale=1]{dados/figuras/Linker.png}
+%     \caption{Criando um arquivo de imagem para um sistema operacional alvo.\newline Fonte:\cite{Qing2003}}
+%     \label{linker}
+%\end{figure}
+
+O linker precisa combinar esses arquivos objetos e fundir as seções de diferentes arquivos em um segmento de programa. Esse processo cria uma única imagem executável para o sistema embarcado alvo. O desenvolvedor utiliza comandos de linker (chamados de \textit{linker directives}) para controlar como o linker combina essas seções e aloca seus segmentos no sistema alvo. As diretivas de linker ficam contidas no arquivo de comando de linker. O objetivo de criar esse arquivo de comando de linker é para que o desenvolvedor de sistemas embarcados possa mapear a imagem executável para o hardware alvo de forma precisa e eficiente. 
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.7]{dados/figuras/Linker4.png}
+     \caption{Mapeando uma imagem executável em um sistema alvo.\newline Fonte:\cite{Qing2003}}
+     \label{linker}
+\end{figure}
+
+
+
+
+
+
+
+%\section {COMUNICAÇÃO CLIENTE-SERVIDOR}
+
+%Segundo \citeonline{Kurose2010}, um programa cliente é um programa que funciona em um sistema final, que solicita e recebe um serviço de um programa servidor, que funciona em outro sistema final. Uma vez que o programa cliente é executado em um computador e o programa servidor, é executado em outro, aplicações cliente-servidor são, por definição, aplicações distribuidas. O programa cliente e o servidor interagem enviando mensagens um para o outro pela internet. Neste nivel de abstração, os roteadores, enlaces e outros componentes da internet funcionam como uma caixa-preta que transferem mensagens entre os componentes distribuidos, comunicantes, de uma aplicação.
+
+\section{\textbf{TCP}}
+
+Segundo \citeonline{tanenbaumRedes}, O TCP (\textit{Transmission Control Protocol}) foi projetado especificamente para oferecer um fluxo de bytes fim a fim confiável em uma inter-rede não-confiável. Uma inter-rede é diferente de uma única rede porque suas diversas partes podem ter topologias, larguras de banda, retardos, tamanhos de pacotes e outros paramêtros totalmente diferentes. O TCP foi projetado para se adaptar dinamicamente às propriedades da inter-rede e ser robusto diante de muitos categorias de falhas que podem ocorrer.
+
+Cada maquina compatível com TCP tem uma entidade de transporte TCP, que pode ser um procedimento de biblioteca, um processo do usuário ou parte do núcleo. Em todos os casos, ele gerencia fluxos e interfaces TCP para a camada IP. Uma entidade TCP aceita fluxos de dados de usuários provenientes de processos locais, divide-os em partes de no máximo 64 KB e envia cada parte em um datagrama IP distinto. Quando os datagramas IP que contem dados TCP chegam a uma maquina, eles são enviados à entidade TCP, que restaura o fluxo de bytes originais.
+
+A camada IP não oferece garantia que os datagramas serão entregues de forma apropriada, portanto, cabe ao TCP administrar os timers e retransmiti-los sempre que necessário. Os datagramas também podem chegar fora de ordem, o TCP também terá que os reorganizar em mensagens na sequência correta. Neste trabalho será utilizada a biblioteca LwIP para o implementação da entidade de transporte TCP.
+
+\subsection{Lwip}
+%Com a necessidade de se obter os binários dos códigos do novo firmware o sistema irá se utilizar da biblioteca amplamente conhecida e utilizada LWIP.
+A Biblioteca LwIP é uma implementação do protocolo TCP/IP, focada em ser pequena e portável, reduzindo a utilização de recursos como memória RAM e ainda tendo um TCP completo, se tornando adequada para sistemas embarcados. Foi originalmente desenvolvida por Adam Dunkels nos laboratórios da \textit{Computer and Networks Architectures} (CNA), no Instituto Sueco de Ciência da Computação (SICS) e agora é desenvolvida e mantido por uma rede mundial de desenvolvedores \cite{LWIP}.
+
+Possui três \textit{Aplication Programing interfaces} (APIs):
+\begin{itemize}
+\item RAW API (API Crua): É a API nativa do LwIP, possui a melhor desempenho e o menor tamanho de código, porém torna o desenvolvimento de aplicações mais complexo.
+\item Netconn API: É uma API sequêncial de alto nivel que requer um sistema operacional de tempo real (RTOS). Habilita operações com multiplas threads.
+\item BSD Sockets API: API de sockets de Berkeley, desenvolvida em cima da API Netconn.
+\end{itemize}
+
+
+
+
+
+\subsection{Mbed TLS}
+A biblioteca mbed TLS foi desenvolvida para se integrar facilmente a aplicações embarcados existentes, e fornecer os blocos de contrução para uma comunicação segura, criptografia e gerenciamento de chaves. Como o seu intuito é ser o mais flexivel possivel, permite que sejam integrados ao sistema somente as funcionalidades necessárias, diminuindo assim o tamanho total que a biblioteca ocuparia no sistema \cite{mbedtls}.
+
+A figura \ref{mbedtlsFig} ilustra como a biblioteca faz a comunicação intermediaria entre a aplicação final e a camada TCP/IP.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=1]{dados/figuras/mbedtls.png}
+     \caption{Pilha de comunicação.\newline Fonte:\cite{mbedtls}}
+     \label{mbedtlsFig}
+\end{figure}
+
+
+
+%\section{CARTÃO SD}
+\section{\textbf{Sistema de Arquivo FAT}}
+
+Segundo \citeonline{tanenbaumSO}, o sistema de arquivo FAT (\textit{File Allocation Table}) é implementado por meio de uma alocação de memória encadeada usando uma tabela na memória. Nesta organização, o bloco de memória inteiro esta disponivel para dados. Além disso, o acesso aleatório é muito mais fácil. Mesmo que o encadeamento ainda tenha que ser seguido para encontrar determino deslocamento dentro do arquivo, ele esta inteiramente na memória. De modo que pode ser seguido sem necessidade nenhhuma referencia de disco.
+
+A figura \ref{FAT} ilustra como é a tabela, mostrando que o arquivo A inicia-se no bloco 4 e segue o encadeamento até o seu fim, assim como o arquivo B. Ambos terminam com um marcador especial que no caso é o número -1.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.7]{dados/figuras/FAT.png}
+     \caption{Alocação encadeada usando tabela de alocação de arquivo.\newline  Fonte:\cite{tanenbaumSO}}
+     \label{FAT}
+\end{figure}
+
+A principal desvantagem deste método é que a tabela inteira precisa estar na memória o tempo todo. Com um disco de 20GB e um tamanho de bloco de 1KB, a tabela precisa de 20 milhôes de entradas, uma para cada um do 20 milhões de blocos do disco. Cada entrada tem de ter no mínimo 3 bytes para manter o endereço dos blocos. Para facilitar sua pesquisa, as entradas acabam ocupando 4 bytes. Assim, a tabela ocupará 60 MB ou 80MB de memória principal o tempo todo, dependendo do sistema para ser otimizado para espaço ou para tempo.
+
+\subsection{FatFs}
+
+FatFs é um modulo generico de um sistema de arquivo FAT/exFAT, para pequenos sistemas embarcados. É escrito em conformidade com a ANSI C (C89) e é completamente separado da camada de entrada e saida do sistema, portanto é independente da plataforma utilizada.
+
+
+
+
 %\section{SERVIDORES HTTP}
-
-\subsection{LINKER}
-
 
 %É uma boa prática iniciar cada novo capítulo com um breve texto introdutório (tipicamente, dois ou três parágrafos) que deve deixar claro o quê será discutido no capítulo, bem como a organização do capítulo.
 %Também servirá ao propósito de "amarrar"{} o conteúdo deste capítulo com o conteúdo do capítulo imediatamente anterior.
