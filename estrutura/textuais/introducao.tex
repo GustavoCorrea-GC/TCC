@@ -37,7 +37,7 @@ Uma das principais soluções adotadas para a manutenção desses programas é c
 %Geralmente os sistemas de atualização remotos presentes em sistemas embarcados atuais utilizam ferramentas proprietarias e ...
 
 Este trabalho de conclusão de curso propõem um método de manutenção desses \textit{firmwares} de forma remota, que possa ser o mais portável possível.
-Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o \textit{download} do novo \textit{software} para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como LwIP \cite{LWIP}, Mbedtls \cite{mbedtls} e FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de \textit{software} que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória \textit{flash} do dispositivo, por ser dependente do \textit{hardware} utilizado.
+Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o \textit{download} do novo \textit{software} para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como a LwIP \cite{LWIP}, Mbedtls \cite{mbedtls} e a FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de \textit{software} que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória \textit{flash} do dispositivo, por ser dependente do \textit{hardware} utilizado.
 
 %O Geovanni marcou o nome das bibliotecas, mas não sei se é para deixar elas em italico.
 %Citar Bibliotecas!!!!
@@ -65,14 +65,14 @@ Este trabalho de conclusão de curso tem como objetivo geral o desenvolvimento d
 \label{sec:Objetivos Específicos}
 
  \begin{itemize}
-   \item Desenvolver o \textit{bootloader} que identifica versões e atualiza o \textit{firmware}.
+   \item Desenvolver o \textit{bootloader} que contém um sistema de arquivo FAT e atualiza o \textit{firmware}.
    
-   \item Criar um servidor HTTP para a comunicação cliente-servidor.
+   %\item Criar um servidor HTTP para a comunicação cliente-servidor.
    
-   \item Implementar a tarefa que fará a comunicação segura entre o servidor HTTP e a plataforma embarcada, verificará de disponibilidade de atualização e fará o \textit{download} da nova versão, se existente, será baseando nas bibliotecas LwIP e mbedTLS. 
+   \item Implementar uma API que fará a comunicação segura entre o servidor e a plataforma embarcada, verificará de disponibilidade de atualização e fará o \textit{download} da nova versão, se existente. Armazenará o \textit{firmware} recebido em um cartão SD. 
    %terminar essa
    
-   \item Produzir a tarefa de leitura de um cartão micro SD que guarda uma nova versão do \textit{firmware} e uma cópia do anterior, utilizando a biblioteca FatFs.
+   %\item Produzir a tarefa de leitura de um cartão micro SD que guarda uma nova versão do \textit{firmware} e uma cópia do anterior, utilizando a biblioteca FatFs.
    %modificar a palavra produzir??
    \item Comprovar o funcionamento da técnica de atualização remota de \textit{firmware}, utilizando a plataforma embarcada STM32F7.
    
