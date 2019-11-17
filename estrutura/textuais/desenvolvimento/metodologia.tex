@@ -2,7 +2,7 @@
 
 \chapter{SISTEMA OPEN-SOURCE PARA A ATUALIZAÇÃO DE FIRMWARE OVER-THE-AIR BASEADO NAS BIBLIOTECAS LWIP, MBED TLS E FATFS}
 \label{chap:metodologia}
-Neste capitulo é retratado como será o funcionamento do sistema que será desenvolvido, mostrada uma visão geral do software, listada as funcionalidades de cada uma das partes do software, explicada sua atividade e sua implementação, os problemas enfrentados durante o processo de desenvolvimento e as ferramentas utilizadas para o seu teste, Possiveis trabalhos futuros?. 
+Neste capitulo é retratado como será o funcionamento do sistema que será desenvolvido, mostrada uma visão geral do software, os materiais utilizados, listada as funcionalidades de cada uma das partes do software, explicada sua atividade e sua implementação, os problemas enfrentados durante o processo de desenvolvimento e as ferramentas utilizadas para o seu teste, Possiveis trabalhos futuros?. 
 
 \section{VISÃO GERAL}
 O software que será desenvolvido neste trabalho é dividido em duas partes, uma contendo o bootloader, que com o auxilio da biblioteca FatFs, que é um modulo generico do sistema de arquivo FAT, realizará a comunicação com o cartão SD, que conterá o novo firmware previamente recebido, e assim poderá substituir o software anterior da aplicação por um novo. Essa parte do software ficará armazenada em uma região da memoria que não poderá ser reescrita, então é uma peça do programa que não poderá ser substitúida. Será uma parte que não é portavel para todas as plataformas, ficando a cargo do projetista fazer o port para outras placas.
@@ -14,19 +14,40 @@ A API será uma peça de software que poderá ser substituida e atualizada em co
 
 Por conter biliotecas já conhecidas e vastamente utilizadas por desenvolvedores de sistemas embarcados, para que assim projetos que necessitem fazer comunicação segura via rede, leitura e escrita de cartões SD, possam utilizar esse sistema de modo a poupar espaço na memória, visando a reutilização dessas bibliotecas, portanto, o sistema pode ser amplamente utilizado. Será utilizada o \textit{kit} de desenvolvimento STM32F7 \textit{Discovery}, onde será inicialmente desenvolvida a API e suas tarefas e o \textit{bootloader} que serão os principais componentes desse sistema.
 
+Em caso de uma falha durante o processo de atualização OTA e o sistema não responda após a atualização, o sistema tem a capacidade de se recuperar. Como haverá sobreescrita na area em que o \textit{firmware} esta posicionado no cartão SD, uma simples reinicialização do sistema pode fazer com que o bootloader seja ativado novamente e refaça o processo de cópia da memória, assim o sistema é muito mais robusto.
 
+O sistema de atualização irá funcionar da seguinte forma, após a iniciaização do sistema o bootloader entra em ação e verifica a existencia de um novo firmware, no caso negativo ele inicia normalmente a aplicação principal do sistema. No caso positivo, o bootloader inicia o sistema de substituição de \textit{firmware}, após a troca o bootloader inicia o novo software. Durante a execução da aplicação principal do sistema e em um tempo determinado pelo projetista a API entra em contato com o servidor para verificar a disponibilidade de um software novo, em caso positivo ela agenda um periodo para a atualização do sistema, no caso negativo ele continua a execução da aplicação. 
+
+Caso haja uma atualização, quando o horario do agendamento chegar, a API irá conectar-se ao servidor e iniciar o processo de download do firmware novo e armazena-lo em uma area já predefinida do cartão SD para que o bootloader possa o encontrar. Após o download o sistema irá ser reiniciado e o bootloader entrará em ação novamente. 
+De forma resumida o funcionamento do sistema pode ser visto na figura \ref{Funcionamento}, 
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.39]{dados/figuras/DiagramaBootloader.png}
+     \caption{Diagrama de funcionamento do \textit{bootloader}. Fonte: autoria própria.}
+     \label{Funcionamento}
+\end{figure}
 %Com a  As tarefas serão produzidas a partir de b
 %sistema possa conter intersecções com trechos de codigos utilizados em varios projetos que necessitam
 
 %Adicionar diagrama de blocos!!!!
 
-%A partir de um arquivo de \textit{linker}, a memória da plataforma será customizada a fim de abrigar os arquivos necessários para o sistema e protege-los de eventuais sobre-escritas que podem vir a ocorrer. Esse arquivo de \textit{linker}, assim como o \textit{bootloader}, será escrito somente para a plataforma STM32F7, visto que cada plataforma tem suas próprias características como, tamanho de memória e endereços diferentes para cada fabricante e/ou arquitetura. A seguir será explicado parcialmente como funcionarão as funções das tarefas, do \textit{bootloader}, e do servidor HTTP.
+% A seguir será explicado parcialmente como funcionarão as funções das tarefas, do \textit{bootloader}, e do servidor HTTP.
 %Cada capítulo deve conter uma pequena introdução (tipicamente, um ou dois parágrafos) que deve deixar claro o objetivo e o que será discutido no capítulo, bem como a organização do capítulo.
 
-\section{O \textit{BOOTLOADER}}
+\section{\textit{BOOTLOADER}}
 \label{sec:Bootloader}
 
-O \textit{bootloader} será responsável em fazer a validação e troca de cada versão de \textit{firmware} instalado no sistema embarcado. Sempre que o sistema for iniciado, o \textit{bootloader} fará a procura de um novo \textit{firmware} na memória interna do sistema. Esse processo, irá verificar o \textit{hash} da nova versão, verificando a integridade e origem do \textit{software}, para então poder ocorrer a atualização. Caso haja alguma falha durante esse processo, o \textit{bootloader} terá a habilidade de verificar esse erro e corrigi-lo, revertendo a atualização, e instalando o \textit{firmware} anterior. O funcionamento do \textit{bootloader} pode ser observado na figura \ref{Diagrama Bootloader}.
+A partir de um arquivo de \textit{linker}, a memória da plataforma será customizada com o intuito de abrigar os arquivos necessários para o bootloader e protege-lo de eventuais sobre-escritas que podem vir a ocorrer. Esse arquivo de \textit{linker}, assim como o próprio \textit{bootloader}, será escrito somente para a plataforma STM32F7, visto que cada plataforma tem suas próprias características como, tamanho de memória e endereços diferentes para cada fabricante e/ou arquitetura.
+
+No arquivo de linker sera especificada uma area especial na memória flash do sistema em que será abrigado o bootloader e a biblioteca FatFs que fará parte do bootloader. E também será responsável por fazer com que o bootloader seja chamado após o \textit{C copy Down} no lugar da função main. Assim podemos garantir que o bootloader sempre entre em ação após a reinicialização do sistema embarcado.
+
+%irá verificar o \textit{hash} da nova versão, verificando a integridade e origem do \textit{software},
+
+O \textit{bootloader} será responsável em fazer a troca de cada versão de \textit{firmware} instalado no sistema embarcado. Sempre que o sistema for iniciado, o \textit{bootloader} será inicializado e fará a procura de um novo \textit{firmware} em um endereço de memória já predeterminado. Essa busca será possivel pelo fato do middleware FatFs, que esta implementada junto ao bootloader, criar um sistema de arquivos no cartão SD do sistema alvo, assim o bootloader pode acessar a memória do cartão sem a necessidade da aplicação final ser inicializada.
+
+Se a procura retornar com um resultado positivo para a existencia de uma nova versão de software, o bootloader inicia o processo de atualização. No processo de atualização o bootloader substitui completamente o software e demais middlewares e API's em areas não protegidas na memória, pelo binário do \textit{firmware} presente na memória do cartão SD. Esse processo será implementado com o uso da  função memcpy, já conhecida e utilizada por diversos desenvolvedores, com o intuito de se deixar o código do bootloader mais reutilizavel. O funcionamento do \textit{bootloader} pode ser observado na figura \ref{Diagrama Bootloader}.
 
 \begin{figure}[H]
     \scriptsize
@@ -35,23 +56,67 @@ O \textit{bootloader} será responsável em fazer a validação e troca de cada 
      \caption{Diagrama de funcionamento do \textit{bootloader}. Fonte: autoria própria.}
      \label{Diagrama Bootloader}
 \end{figure}
+
 %Inserir seu texto aqui...
 
-\section{SERVIDOR HTTP}
-\label{sec:ServidorHTTP}
+%\section{SERVIDOR HTTP}
+%\label{sec:ServidorHTTP}
 
-A partir de um computador conectado à mesma rede que o sistema embarcado, haverá um servidor HTTP que ficará responsável por esperar requisições do dispositivo, para consultar a disponibilidade de uma versão atualizada do \textit{software}, e após a confirmação dessa nova versão, esse servidor irá enviar o \textit{firmware} para a plataforma embarcada.
+%A partir de um computador conectado à mesma rede que o sistema embarcado, haverá um servidor HTTP que ficará responsável por esperar requisições do dispositivo, para consultar a disponibilidade de uma versão atualizada do \textit{software}, e após a confirmação dessa nova versão, esse servidor irá enviar o \textit{firmware} para a plataforma embarcada.
 %Inserir seu texto aqui...
 
-\section{TAREFAS DO SISTEMA}
-\label{sec:Tarefassistema}
+\section{API DE ATUALIZAÇÃO OTA}
+\label{sec:API}
 
-\subsection{COMUNICAÇÃO}
+A API de atualização OTA que será desenvolvida neste trabalho tem o proposito de ser o mais portavel possivel, para assim ser reutilisada por diversos projetos que necessitem de uma atualização OTA. Com esse objetivo, serão utilizadas as bibliotecas já bem difundidas, a LwIP para a criação da pilha TCP/IP, a Mbed TLS para criar uma camada se segurança nesta pilha, e a FATFS para a criação de um sistema de arquivos FAT. Assim desenvolvedores podem se aproveitar do fato de que essas bibliotecas já estão em seus sistemas como padrão para utiliza-las em suas proprias funcionalidades. 
 
-Com o uso da biblioteca LwIP e MbedTLS essa tarefa estará responsável por criar uma comunicação segura entre o \textit{hardware} e o servidor HTTP, a partir dessa comunicação será feito a verificação do sinal de disponibilidade de novo \textit{software} e \textit{download} do mesmo quando o sistema estiver ocioso. 
+A seguir será retratado como serão cada uma das funcionalidades necessarias na API.
 
-\subsection{ARMAZENAMENTO}
+\subsection{COMUNICAÇÃO COM O SERVIDOR}
 
-A partir da utilização da biblioteca FatFs, essa tarefa fará a leitura e escrita sobre um cartão SD instalado no \textit{hardware}. Quando houver a transferência de uma nova versão, tanto o programa anterior quanto o novo, serão colocadas nesta memória, para futuras instalações que serão realizadas pelo \textit{bootloader}. A escolha da mídia de armazenamento de versões do \textit{software} estará a cargo do projetista, sendo escolhido para esse trabalho um cartão SD.
+Com o uso da biblioteca LwIP e MbedTLS será criada uma pilha de comunicação no sistema alvo, que ficará responsável pela comunicação segura com o servidor que fornecerá o novo firmware. Na implementação da pilha de comunicação a  biblioteca LwIP, nela será utilizada sua API Netconn, pois como o intuito é deixar o sistema de atualização portável, a Netconn fornece suporte a sistemas operacionais de tempo real.
 
+Como a biblioteca Mbed TLS já foi desenvolvida para ser integrada facilmente a varias aplicações enbarcadas, ela será utilizada para criar protocolos de segurança nessa comunicação com o servidor. Serão utilizados padrões SSL/TLS para ser criado um canal criptografado entre o servidor e o sistema alvo, para garantir que todos os dados transmitidos sejam sigilosos e seguros, e também algoritmos de criptografia para o firmware que será enviado por meio dessa conexão.
 
+%essa tarefa estará responsável por criar uma comunicação segura entre o \textit{hardware} e o servidor HTTP, a partir dessa comunicação será feito a verificação do sinal de disponibilidade de novo \textit{software} e \textit{download} do mesmo quando o sistema estiver ocioso. 
+
+\subsection{VERIFICAÇÃO E AGENDAMENTO DE ATUALIZAÇÃO}
+
+O desenvolvedor será responsável em decidir a frequencia e/ou horário em que a API irá consultar o servidor para a verificação de uma nova versão de \textit{firmware}, evitando assim que em aplicações onde existam atividades crititas, estas sejam interrompidas para que a API possa fazer a verificação, tendo em vista que a prioridade desta ação deve ser a menor possivel na aplicação.
+
+Após a consulta, caso exista uma nova atualização disponivel o desenvolvedor pode optar em fazer a atualização imediatamente, ou agendar para ser feita em um outro horário, em que a aplicação esteja menos ocupada. Esta escolha pode ser programada desde o ínicio do desenvolvimento do firmware, ou a partir de um sinal durante a consulta por uma nova atualização. Assim caso haja a necessidade da troca de \textit{firmware} imediatamente, esse sinal pode avisar o agendador e já executar todo o processo de troca de firmware. 
+
+\subsection{DOWNLOAD E ARMAZENAMENTO DO FIRMWARE}
+
+Quando chegar no tempo desejado pelo agendador, a API iniciará novamente a comunicação com o servidor que contem o \textit{firmware} novo, dessa vez com o propósito de fazer download da nova versão do \textit{software}. Com o proposito de aumentar a segurança da API o \textit{firmware} que se apresenta após o download ainda esta criptografado, assim ele deve passar por uma descriptografia para então ser armazenado no cartão SD. Após essa descriptografia a API ainda irá verificar se o \textit{firmware} recebido pelo servidor esta correto a partir da verificação de hash criptográfica. 
+
+A partir da utilização da biblioteca FatFs, será criado um sistema de arquivo FAT, que gerenciará a memória presente no cartão SD dentro da aplicação, e ele pode ser utilizado tanto pela aplicação final do sistema embarcado, quanto pela API. Esse sistema de arquivo será utilizado para que se possa identificar a posição na memoria em que o \textit{firmware} novo será colocado após o seu download, evitando que outros arquivos pertencentes a aplicação final sejam colocados nesta posição, e fazendo com que o bootloader interprete de forma errada os arquivos gerando erros.
+
+\section{MATERIAIS UTILIZADOS}
+
+A API será escrita na linguagem C, o bootloader em sua maioria na liguagem C também e alguns trechos em assembly, enquanto o linker será escrito em comandos de linker. O sistema de atualização OTA desenvolvido neste trabalho será inicialmente desenvolvido para a plataforma STM32F746G-Discovery.
+
+\subsection{PLATAFORMA STM32F746G-Discovery}
+
+O STM32F7 Discovery é um kit de desenvolvimento que permite ao usuário desenvolver e compartilhar aplicações com toda a série de microcontroladores STM32F7 baseados no processador ARM\textregistered  Cortex\textregistered-M7 core.
+O kit discovery permite uma ampla diversidade de aplicações que podem se beneficiar de suporte a multiplos sensores, audio, tela gráfica, segurança, videos e conexões de alta velocidade \cite{STM32F7}.
+A figura \ref{STM32F7} ilustra o kit STM32F746NGH6-Discovery.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.4]{dados/figuras/STM32F7.jpg}
+     \caption{Kiti de desenvolvimento STM32F746G-Discovery. \newline Fonte:\cite{STM32F7}.}
+     \label{STM32F7}
+\end{figure}
+
+Algumas de suas principais características são:
+\begin{itemize}
+    \item Microcontrolador STM32F746NGH6 com 1 Mbytes de memória flash e 340 Kbytes de RAM, em um pacote BGA216.
+    \item 128-Mbit de memória Quad-SPI Flash.
+    \item 128-Mbit SDRAM (Com 64 Mbits Acessível).
+    \item Conector para cartão microSD.
+    \item Conector Ethernet em conformidade com a IEEE-802.3-2002
+    \item Tela LCD de 4.3 polegadas, com resolução de 480x272 com \textit{touch-screen} capacitivo.
+    
+\end{itemize}

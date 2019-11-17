@@ -3,6 +3,7 @@
 \backcite {Qing2003}{{}{(document)}{Doc-Start}}
 \backcite {mbedtls}{{}{(document)}{Doc-Start}}
 \backcite {tanenbaumSO}{{}{(document)}{Doc-Start}}
+\backcite {STM32F7}{{}{(document)}{Doc-Start}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
@@ -26,3 +27,5 @@
 \backcite {mbedtls}{{11}{7}{figure.2.7}}
 \backcite {tanenbaumSO}{{11}{2.3}{section.2.3}}
 \backcite {tanenbaumSO}{{12}{8}{figure.2.8}}
+\backcite {STM32F7}{{17}{3.4.1}{subsection.3.4.1}}
+\backcite {STM32F7}{{18}{11}{figure.3.11}}

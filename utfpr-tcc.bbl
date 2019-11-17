@@ -69,6 +69,13 @@ Dispon{\'\i}vel em:
   \url{(https://www.androidpit.com.br/bootloader-o-que-e-para-que-serve)}.
   Acesso em: 06 de setembro de 2019.}
 
+\bibitem[STMicroelectronics 2019]{STM32F7}
+\abntrefinfo{STMicroelectronics}{STMICROELECTRONICS}{2019}
+{STMICROELECTRONICS. \textbf{Discovery kit with STM32F746NG MCU}. 2019.
+Dispon{\'\i}vel em:
+  \url{(https://www.st.com/en/evaluation-tools/32f746gdiscovery.html)}. Acesso
+  em: 15 de novembro de 2019.}
+
 \bibitem[Tanenbaum 2003]{tanenbaumRedes}
 \abntrefinfo{Tanenbaum}{TANENBAUM}{2003}
 {TANENBAUM, A.~S. \textbf{Computer Networks}. [S.l.]: Pearson Education, inc,
