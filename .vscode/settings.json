@@ -1,8 +1,0 @@
-{
-    "ltex.ignoreRuleInSentence": [
-        {
-            "rule": "PT_BARBARISMS_REPLACE",
-            "sentence": "^\\QSendo desenvolvidos exatamente para o hardware que serão empregados, é uma peça de software que não é portável para várias plataformas.\\E$"
-        }
-    ]
-}
