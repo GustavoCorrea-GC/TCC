@@ -18,7 +18,7 @@ Em caso de uma falha durante o processo de atualização OTA e o sistema não re
 
 O sistema de atualização irá funcionar da seguinte forma, após a inicialização do sistema o \bootloader entra em ação e verifica a existência de um novo \firmware, no caso negativo ele inicia normalmente o \software principal da aplicação. No caso positivo, o \bootloader inicia o processo de substituição de \textit{firmware}, após a troca, o novo \software é iniciado. Durante a execução da aplicação principal do sistema e em um tempo determinado pelo projetista a API entra em contato com o servidor para verificar a disponibilidade de um \software novo, em caso positivo ela agenda um período para a atualização do \firmware, no caso negativo ele continua a execução da aplicação. 
 
-Caso haja uma atualização, quando o horário do agendamento chegar, a API irá conectar-se ao servidor e iniciar o processo de \download do firmware novo e armazena-lo em uma área já predefinida do cartão SD para que o \bootloader possa o encontrar. Após o \download o sistema irá ser reiniciado e o \bootloader entrará em ação novamente. 
+Caso haja uma atualização, quando o horário do agendamento chegar, a API irá conectar-se ao servidor e iniciar o processo de \download do \firmware novo e armazena-lo em uma área já predefinida do cartão SD para que o \bootloader possa o encontrar. Após o \download o sistema irá ser reiniciado e o \bootloader entrará em ação novamente. 
 %De forma resumida o funcionamento do sistema pode ser visto na \autoref{Funcionamento}, 
 
 
@@ -61,7 +61,7 @@ Se a procura retornar com um resultado positivo para a existência de uma nova v
 \section{API DE ATUALIZAÇÃO OTA}
 \label{sec:API}
 
-A API de atualização OTA que será desenvolvida neste trabalho tem o proposito de ser o mais portável possível, para assim ser reutilizada por diversos projetos que necessitem da troca de seu \software. Com esse objetivo, serão utilizadas as bibliotecas já bem difundidas, a LwIP para a criação da pilha TCP/IP, a Mbed TLS para criar uma camada se segurança nesta pilha, e a FATFS para a criação de um sistema de arquivos FAT. Assim desenvolvedores podem se aproveitar do fato de que essas bibliotecas já estão em seus sistemas como padrão para utiliza-las em suas próprias funcionalidades. A \autoref{fig:DiagAPI} ilustra de forma resumida o funcionamento da API.
+A API de atualização OTA que será desenvolvida neste trabalho tem o propósito de ser o mais portável possível, para assim, ser reutilizada por diversos projetos que necessitem da troca de seu \software. Com esse objetivo, serão utilizadas as bibliotecas já bem difundidas, a LwIP para a criação da pilha TCP/IP, a Mbed TLS para criar uma camada se segurança nesta pilha, e a FATFS para a criação de um sistema de arquivos FAT. Assim desenvolvedores podem se aproveitar do fato de que essas bibliotecas já estão em seus sistemas como padrão para utiliza-las em suas próprias funcionalidades. A \autoref{fig:DiagAPI} ilustra de forma resumida o funcionamento da API.
 
 \begin{figure}[H]
     \scriptsize
@@ -83,7 +83,7 @@ Como a biblioteca Mbed TLS já foi desenvolvida para ser integrada facilmente a 
 
 \subsection{VERIFICAÇÃO E AGENDAMENTO DE ATUALIZAÇÃO}
 
-O desenvolvedor será responsável em decidir a frequência e/ou horário em que a API irá consultar o servidor para a verificação de uma nova versão de \textit{firmware}, evitando assim que em aplicações onde existam atividades críticas, sejam interrompidas para que a API possa fazer esta verificação, sabendo que a prioridade desta ação deve ser a menor possível na aplicação.
+O desenvolvedor será responsável em decidir a frequência e/ou horário em que a API irá consultar o servidor para a verificação de uma nova versão de \textit{firmware}. A API evitará que em aplicações onde existam atividades críticas, elas sejam interrompidas para que a API possa fazer esta constatação, sabendo que a prioridade desta ação deve ser a menor possível na aplicação.
 
 Após a consulta, caso exista uma nova atualização disponível o desenvolvedor pode optar em a executar imediatamente, ou agendar para ser feita em outro horário, em que a aplicação esteja menos ocupada. Esta escolha pode ser programada desde o início do desenvolvimento do \firmware, ou a partir de um sinal durante a consulta por uma nova atualização. Assim caso haja a necessidade da troca de \software imediatamente, esse sinal pode avisar o agendador e já executar todo o processo de substituição de \firmware. 
 
@@ -97,7 +97,7 @@ A partir da utilização da biblioteca FatFs, será criado um sistema de arquivo
 
 A API será escrita na linguagem C, o bootloader em sua maioria em C também, e alguns trechos em assembly, enquanto o \linker será escrito em comandos de \linker. O sistema de atualização OTA desenvolvido neste trabalho será inicialmente desenvolvido para a plataforma STM32F746G-Discovery.
 
-\subsection{PLATAFORMA STM32F746G-Discovery}
+\subsection{PLATAFORMA STM32F746G-DISCOVERY}
 
 O STM32F7 Discovery é um kit de desenvolvimento que permite ao usuário desenvolver e compartilhar aplicações com toda a série de microcontroladores STM32F7 baseados no processador ARM\textregistered  Cortex\textregistered-M7 core.
 O kit discovery permite uma ampla diversidade de aplicações que podem se beneficiar de suporte a múltiplos sensores, áudio, tela gráfica, segurança, vídeos e conexões de alta velocidade \cite{STM32F7}.

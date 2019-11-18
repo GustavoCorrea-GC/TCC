@@ -1,9 +1,3 @@
-\backcite {Beningo2015}{{}{(document)}{Doc-Start}}
-\backcite {Qing2003}{{}{(document)}{Doc-Start}}
-\backcite {Qing2003}{{}{(document)}{Doc-Start}}
-\backcite {mbedtls}{{}{(document)}{Doc-Start}}
-\backcite {tanenbaumSO}{{}{(document)}{Doc-Start}}
-\backcite {STM32F7}{{}{(document)}{Doc-Start}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
 \backcite {Marwedel2006}{{1}{1}{chapter.1}}
@@ -13,10 +7,12 @@
 \backcite {FATFS}{{2}{1}{chapter.1}}
 \backcite {DavesDurlin2013}{{2}{1}{chapter.1}}
 \backcite {Salute2018}{{2}{1}{chapter.1}}
+\backcite {ST2019}{{4}{2.1}{section.2.1}}
 \backcite {Noviello2018}{{4}{2.1}{section.2.1}}
 \backcite {Beningo2015}{{4}{2.1}{section.2.1}}
 \backcite {Beningo2015}{{5}{1}{figure.2.1}}
 \backcite {DavesDurlin2013}{{6}{2.1.1}{subsection.2.1.1}}
+\backcite {DavesDurlin2013}{{7}{3}{figure.2.3}}
 \backcite {Noviello2018}{{8}{2.1.1}{figure.2.4}}
 \backcite {Qing2003}{{8}{2.1.2}{subsection.2.1.2}}
 \backcite {Qing2003}{{9}{5}{figure.2.5}}
@@ -27,5 +23,6 @@
 \backcite {mbedtls}{{11}{7}{figure.2.7}}
 \backcite {tanenbaumSO}{{11}{2.3}{section.2.3}}
 \backcite {tanenbaumSO}{{12}{8}{figure.2.8}}
-\backcite {STM32F7}{{18}{3.4.1}{subsection.3.4.1}}
-\backcite {STM32F7}{{18}{11}{figure.3.11}}
+\backcite {FATFS}{{13}{9}{figure.2.9}}
+\backcite {STM32F7}{{19}{3.4.1}{subsection.3.4.1}}
+\backcite {STM32F7}{{19}{12}{figure.3.12}}
