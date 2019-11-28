@@ -59,22 +59,22 @@ Um dos seus principais usos é em \textit{smartphones}, em que são utilizados p
 \section{OBJETIVO GERAL}
 \label{sec:Objetivo Geral}
 
-Este trabalho de conclusão de curso tem como objetivo geral o desenvolvimento de um sistema \textit{open-source} para a atualização  de \textit{firmwares} \textit{OverThe Air} de sistemas embarcados baseado nas bibliotecas FatFs, LwIP e mbedTLS. 
+Este trabalho tem como objetivo geral o desenvolvimento de um sistema \textit{open-source} para a atualização  de \textit{firmwares} \textit{Over The Air} de sistemas embarcados baseado nas bibliotecas FatFs, LwIP e mbedTLS. 
 
 \section{OBJETIVOS ESPECÍFICOS}
 \label{sec:Objetivos Específicos}
 
  \begin{itemize}
-   \item Desenvolver o \textit{bootloader} que contém um sistema de arquivo FAT e atualiza o \textit{firmware}.
+   \item Desenvolver o \textit{bootloader} que utiliza o sistema de arquivo FAT.
    
    %\item Criar um servidor HTTP para a comunicação cliente-servidor.
    
-   \item Implementar uma API que fará a comunicação segura entre o servidor e a plataforma embarcada, verificará de disponibilidade de atualização e fará o \textit{download} da nova versão, se existente. Armazenará o \textit{firmware} recebido em um cartão SD. 
+   \item Implementar uma API que fará a comunicação segura entre o servidor e a plataforma embarcada, verificará de disponibilidade de atualização e fará o \textit{download} da nova versão, se existente. Armazenará o \textit{firmware} recebido em um cartão SD (Secure Digital). 
    %terminar essa
    
    %\item Produzir a tarefa de leitura de um cartão micro SD que guarda uma nova versão do \textit{firmware} e uma cópia do anterior, utilizando a biblioteca FatFs.
    %modificar a palavra produzir??
-   \item Comprovar o funcionamento da técnica de atualização remota de \textit{firmware}, utilizando a plataforma embarcada STM32F7.
+   \item Comprovar o funcionamento da técnica de atualização remota de \textit{firmware}, utilizando a plataforma embarcada STM32F746G-DISCOVERY.
    
  \end{itemize}
  

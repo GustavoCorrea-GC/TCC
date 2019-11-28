@@ -1,0 +1,8 @@
+{
+    "ltex.ignoreRuleInSentence": [
+        {
+            "rule": "GENERAL_GENDER_AGREEMENT_ERRORS",
+            "sentence": "^\\QNeste exemplo, iremos assumir que o foi desenvolvido e programado na memória flash.\\E$"
+        }
+    ]
+}
