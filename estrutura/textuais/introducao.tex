@@ -16,7 +16,7 @@ Sistemas embarcados estão presentes no dia a dia da maioria das pessoas, em mic
 
 
 
-Com a necessidade cada vez maior da implementação desses sistemas no nosso dia a dia, é imprescindível se obter \textit{hardwares} e \textit{softwares}, cada vez mais robustos e que atendem todas as necessidades dos seus usuários.
+Com a necessidade cada vez maior da implementação desses sistemas no nosso dia a dia, é imprescindível se obter \textit{hardwares} e \textit{softwares}, cada vez mais robustos e que atendam todas as necessidades dos seus usuários.
 Assim, o projeto desses produtos devem ser muito bem planejado, e executado de forma a serem entregues produtos de qualidade, à  prova de falhas e que possam reagir a erros, de forma a não causar danos a seus utilizadores. 
 %Os \textit{software}s desenvolvidos para sistemas embarcados muitas vezes são chamados de \textit{firmware}.
 %e como um desenvolvimento completamente sem falhas, \textit{bugs} e com máxima eficiência é quase inconcebível
@@ -29,15 +29,15 @@ Durante a fase de projeto de um sistema embarcado, deve-se avaliar diversos âmb
 %Por vezes as manutenções futuras do \textit{firmware} é esquecida, ou então ignorada, durante a fase de projeto, até por que esta é cara e não é algo banal, principalmente em projetos já implantados.
 
 Após a instalação final desse projeto para seu cliente, eventualmente pode ser necessária uma nova funcionalidade, uma otimização ou então, podem ser exigidos testes nesse sistema. Logo, é preciso que haja uma forma de se alterar esse produto mesmo após seu lançamento, para assim gerarmos um maior valor e confiabilidade ao sistema.
-A possibilidade de serem feitas manutenções futuras no \textit{software}, que no contexto de sistemas embarcados é chamado de \textit{firmware}, conhecida como atualização OTA (\textit{Over-The-Air}). Esse recurso não é obrigatório no projeto de um sistema embarcado, mas é muitas vezes necessário, podendo ser uma funcionalidade muito útil dependendo da aplicação do sistema em concepção. A decisão de utilizar ou não a atualização OTA pode influenciar na escolha do \textit{hardware} utilizado no projeto \cite{Ball2002}, 
+A possibilidade de serem feitas manutenções futuras no \textit{software}, que no contexto de sistemas embarcados é chamado de \textit{firmware}, é conhecida como atualização OTA (\textit{Over-The-Air}). Esse recurso não é obrigatório no projeto de um sistema embarcado, mas é muitas vezes necessário, podendo ser uma funcionalidade muito útil dependendo da aplicação do sistema em concepção. A decisão de utilizar ou não a atualização OTA pode influenciar na escolha do \textit{hardware} utilizado no projeto \cite{Ball2002}, 
 %também não é tão banal de ser criada, 
 podendo aumentar o custo do produto final.
-Uma das principais soluções adotadas para a manutenção desses programas é criar métodos de atualização em que, é necessária a presença de um agente humano fisicamente próximo do sistema para fazer a manutenção do \textit{software}, o que acaba aumentando o custo de manutenção do produto e o tornando menos atrativo para os seus compradores.
+Uma das principais soluções adotadas para a manutenção desses programas é criar métodos de atualização em que, é necessário a presença de um agente humano fisicamente próximo do sistema para fazer a manutenção do \textit{software}, o que acaba aumentando o custo de manutenção do produto e o tornando menos atrativo para os seus compradores.
 
 %Geralmente os sistemas de atualização remotos presentes em sistemas embarcados atuais utilizam ferramentas proprietarias e ...
 
 Este trabalho de conclusão de curso propõem um método de manutenção desses \textit{firmwares} de forma remota, que possa ser o mais portável possível.
-Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o \textit{download} do novo \textit{software} para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como a LwIP \cite{LWIP}, Mbedtls \cite{mbedtls} e a FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de \textit{software} que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória \textit{flash} do dispositivo, por ser dependente do \textit{hardware} utilizado.
+Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o \textit{download} do novo \textit{software} para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como a LwIP \cite{LWIP}, Mbed TLS \cite{mbedtls} e a FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de \textit{software} que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória \textit{flash} do dispositivo, por ser dependente do \textit{hardware} utilizado.
 
 %O Geovanni marcou o nome das bibliotecas, mas não sei se é para deixar elas em italico.
 %Citar Bibliotecas!!!!
@@ -49,6 +49,8 @@ Como é o primeiro programa a ser inicializado após um sistema ser iniciado ou 
 
 Um dos seus principais usos é em \textit{smartphones}, em que são utilizados para a atualização de sistemas operacionais como \textit{Android} e iOS, e como garantia de restauração em caso de erros irreversíveis no sistema operacional. É desenvolvido pelo próprio fabricante do dispositivo, e por padrão é bloqueado para os usuários, evitando a substituição do \textit{software} original do aparelho por uma versão customizada, mas ainda assim existem opções de desbloqueio do \textit{bootloader}, dependendo do modelo do aparelho e do fabricante \cite{Salute2018}.% mas pode destravada o \textit{bootloader}.
 
+Adicionar aqui um paragrafo sobre IoT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111
+
 %Falar sobre a utilização de bootloaders em sistemas android em celulares... e citar sites falando sobre bootloaders
 
 
@@ -59,7 +61,7 @@ Um dos seus principais usos é em \textit{smartphones}, em que são utilizados p
 \section{OBJETIVO GERAL}
 \label{sec:Objetivo Geral}
 
-Este trabalho tem como objetivo geral o desenvolvimento de um sistema \textit{open-source} para a atualização  de \textit{firmwares} \textit{Over The Air} de sistemas embarcados baseado nas bibliotecas FatFs, LwIP e mbedTLS. 
+Este trabalho tem como objetivo geral o desenvolvimento de um sistema \textit{open-source} para a atualização  de \textit{firmwares} \textit{Over The Air} para dispositivos IoT baseado nas bibliotecas FatFs, LwIP e Mbed TLS. 
 
 \section{OBJETIVOS ESPECÍFICOS}
 \label{sec:Objetivos Específicos}

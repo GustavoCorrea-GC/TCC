@@ -3,10 +3,10 @@
 \chapter{REVISÃO DA LITERATURA}
 \label{chap:fundamentacaoTeorica}
 Neste capítulo será feita uma revisão da literatura necessária para o entendimento deste trabalho de conclusão de curso. 
-Serão abordados os temas como: o processo de inicialização de um sistema embarcado, o que é um \bootloader  e o papel do \linker na criação de um arquivo executável e no mapeamento da memória da aplicação.
-Também será discutido sobre o protocolo TCP/IP, a biblioteca LwIP, assim como a biblioteca Mbed TSL.
+Serão abordados os temas como: o processo de inicialização de um sistema embarcado, o que é um \bootloader\ e o papel do \linker\ na criação de um arquivo executável e no mapeamento da memória da aplicação.
+Também será discutido sobre o protocolo TCP/IP, a biblioteca LwIP, assim como a biblioteca Mbed TLS.
 Será mostrado o sistema de arquivos FAT e a biblioteca FatFs.
-Com o conhecimento obtido sobre todos esses temas o leitor será capaz de compreender como será desenvolvido o método de atualização de firmware OTA.
+Com o conhecimento obtido sobre todos esses temas o leitor será capaz de compreender como será desenvolvido o método de atualização de \firmware\ OTA.
 
 
 %\section{PLATAFORMA EMBARCADA — STM32F7 DISCOVERY}%materiais
@@ -16,15 +16,15 @@ Com o conhecimento obtido sobre todos esses temas o leitor será capaz de compre
 %O conceito de \textit{firmware over the air} (FOTA),  consiste em um mecanismo de atualização remoto de firmware, já é muito utilizado em firmware de smartfones por fornecer uma forma segura, eficiente e conveniente de atualização.geralmente utilizado em smartfones.  
 \section{PROCESSO DE INICIALIZAÇÃO DO SISTEMA}
 
-Segundo \citeonline{Qing2003}, um processador embardado, após ser ligado, busca e executa o código de um endereço pré-definido e gravado permanentemente na memória. O código contido nesta localização da memória é chamado de \resetv. O \resetv\ é usualmente uma instrução de salto para outro espaço da memória em que o real código de inicialização se encontra. A razão desse salto para outra localidade da memória é para manter o \resetv pequeno. O \resetv pertence a uma pequena área da memória reservada pelo sistema por motivos especiais. O \resetv, assim como o código de inicialização do sistema, precisam estar armazenado permanentemente. Por causa desse problema, o código de inicialização, chamado de código \textit{bootstrap}, reside na memória somente de leitura (ROM), na flash ou outro memória não volátil. O termo \textit{loader} se refere ao código que é responsável por executar o \textit{bootstrap}, fazer o possível \download de uma imagem de outro local e inicialização da aplicação final.
+Segundo \citeonline{Qing2003}, um processador embardado, após ser ligado, busca e executa o código de um endereço pré-definido e gravado permanentemente na memória. O código contido nesta localização da memória é chamado de \resetv. O \resetv\ é usualmente uma instrução de salto para outro espaço da memória em que o real código de inicialização se encontra. A razão desse salto para outra localidade da memória é para manter o \resetv\ pequeno. O \resetv\ pertence a uma pequena área da memória reservada pelo sistema por motivos especiais. O \resetv, assim como o código de inicialização do sistema, precisa estar armazenado permanentemente. Por causa desse problema, o código de inicialização, chamado de código \textit{bootstrap}, reside na memória somente de leitura (ROM), na flash ou em outra memória não volátil. O termo \textit{loader} se refere ao código que é responsável por executar o \textit{bootstrap}, fazer o possível \download\ de uma imagem de outro local e inicialização da aplicação final.
 
-O conceito é melhor explicado atravéz de um exemplo. Neste exemplo, iremos assumir que o \loader foi desenvolvido e programado na memória flash. Além disso, será assumido que a imagem alvo contém varias seções de programa. Cada seção tem um lugar designado no mapa de memória. O \resetv esta contido em uma pequena ROM, que esta mapeada na localização 0x0h do espaço de endereços. A ROM contém alguns valores iniciais essênciais requeridos pelo processador quando o sistema é reinicializado (\textit{reset}). Esses valores são o \resetv, o \textit{stack pointer} (ponteiro de pilha) inicial e o endereço da memória de acesso randômico (RAM) usável. 
+O conceito é melhor explicado atravéz de um exemplo. Neste exemplo, iremos assumir que o \loader\ foi desenvolvido e programado na memória flash. Além disso, será assumido que a imagem alvo contém várias seções de programa. Cada seção tem um lugar designado no mapa de memória. O \resetv\ esta contido em uma pequena ROM, que esta mapeada na localização 0x0h do espaço de endereços. A ROM contém alguns valores iniciais essenciais requeridos pelo processador quando o sistema é reinicializado (\textit{reset}). Esses valores são o \resetv, o \textit{stack pointer} (ponteiro de pilha) inicial e o endereço da memória de acesso randômico (RAM) usável. 
 
-No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, o \resetv é uma instrução de salto para o endereço de memória 0x00040h; o \resetv transfere o controle do programa para a instrução neste endereço. O código de inicialização do sistema contém, entre outras coisas o programa \loader da imagem destino e o vetor de exceção padrão do sistema (exception vector). O vetor de exceção do sistema aponta para uma instrução que reside na memória flash.
+No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, o \resetv\ é uma instrução de salto para o endereço de memória 0x00040h; o \resetv\ transfere o controle do programa para a instrução neste endereço. O código de inicialização do sistema contém, entre outras coisas o programa \loader\ da imagem destino e o vetor de exceção padrão do sistema (\textit{exception vector}). O vetor de exceção do sistema aponta para uma instrução que reside na memória flash.
 
-A primeira parte do processo de \textit{bootstrap} do sistema é colocar o sistema em um estado conhecido. São colocados valores padrões apropriados nos registradores do processador. São colocados no \stackp os valores encontrados na ROM. O \loader desabilita as interrupções do sistema, pois o sistema ainda não esta preparado para lidar com interrupções. O \loader também inicializa a memória RAM e possivelmente a \textit{cache} do processador. Nesse ponto, o \loader executa um diagnóstico de \textit{hardware} limitado nos dispositivos necessários para estas operações.
+A primeira parte do processo de \textit{bootstrap} do sistema é colocar o sistema em um estado conhecido. São colocados valores padrões apropriados nos registradores do processador. São colocados no \stackp\ os valores encontrados na ROM. O \loader\ desabilita as interrupções do sistema, pois o sistema ainda não esta preparado para lidar com interrupções. O \loader\ também inicializa a memória RAM e possivelmente a \textit{cache} do processador. Nesse ponto, o \loader\ executa um diagnóstico de \textit{hardware} limitado nos dispositivos necessários para estas operações.
 
-A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. Para acabar com isso, o \loader pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader copia a seção do programa e a prepara para a execução.
+A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. Para acabar com isso, o \loader\ pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader\ copia a seção do programa e a prepara para a execução.
 
 \begin{figure}[H]
     \scriptsize
@@ -34,13 +34,13 @@ A execução do programa é mais rápida na RAM quando comparada ao mesmo códig
      \label{fig:INICIALIZAÇÃO}
 \end{figure}
 
-Uma imagem executável possui seções de dados inicializados e não inicializados. Essas seções são ambas legíveis e graváveis. Essas seções precisam residir na RAM, assim sendo são copiadas da memória flash para a RAM como parte do sistema de inicialização. A seção de dados inicializados (chamadas pelo \linker de .data e .sdata) contém os valores iniciais para as variáveis globais e estáticas. O contéudo dessa seção, portanto, faz parte da imagem executável final e é transferido completamente pelo \loader. Por outro lado, o contéudo da seção de dados não inicializado (chamado pelo \linker de .bss e .sbss) é vazio. O \linker reserva espaço para essa seção no mapa de memória. As informações de alocação dessas seções, como o tamanho da seção e o endereço de execução da seção, são parte do cabeçario da seção. É trabalho do \loader obter essas informações dos cabeçarios de seção e alocar a mesma quantidade de memória na RAM durante o processo de carregamento. O \loader coloca essas seções na RAM de acordo com o endereço de execução das seções.
+Uma imagem executável possui seções de dados inicializados e não inicializados. Essas seções são ambas legíveis e graváveis. Essas seções precisam residir na RAM, assim sendo são copiadas da memória flash para a RAM como parte do sistema de inicialização. A seção de dados inicializados (chamadas pelo \linker\ de .data e .sdata) contém os valores iniciais para as variáveis globais e estáticas. O contéudo dessa seção, portanto, faz parte da imagem executável final e é transferido completamente pelo \loader. Por outro lado, o contéudo da seção de dados não inicializado (chamado pelo \linker\ de .bss e .sbss) é vazio. O \linker\ reserva espaço para essa seção no mapa de memória. As informações de alocação dessas seções, como o tamanho da seção e o endereço de execução da seção, são parte do cabeçario da seção. É trabalho do \loader\ obter essas informações dos cabeçarios de seção e alocar a mesma quantidade de memória na RAM durante o processo de carregamento. O \loader\ coloca essas seções na RAM de acordo com o endereço de execução das seções.
 
-Uma imagem executável provavelmente possui constantes. Os dados das contantes são parte da seção chamada pelo \linker de .const, que é somente leitura. Sendo assim, é possível manter a seção .const na memória somente de leitura durante a execução do programa. Constantes de acesso frequente, como tabelas de \textit{lookup}, necessitam ser transferidas para a RAM para melhorar o desempenho do sistema.
+Uma imagem executável provavelmente possui constantes. Os dados das contantes são parte da seção chamada pelo \linker\ de .const, que é somente leitura. Sendo assim, é possível manter a seção .const na memória somente de leitura durante a execução do programa. Constantes de acesso frequente, como tabelas de \textit{lookup}, necessitam ser transferidas para a RAM para melhorar o desempenho do sistema.
 
-O próximo passo no processo de inicialização do sistema é o \loader inicializar os dispositivos do sistema. Apenas os dispositivos necessários são inicializados nesta etapa. Em outras palavras, um dispositivo é inicializado na medida em que um subconjunto necessário dos recursos e recursos do dispositivo estejam ativados e operacionais. Geralmente, os dispositivos são parte da interface de entrada e saida do sistema, portanto, esses dispositivos são completamente iniciados quando existe a necessidade de se fazer \download de uma imagem de outro local.
+O próximo passo no processo de inicialização do sistema é o \loader\ inicializar os dispositivos do sistema. Apenas os dispositivos necessários são inicializados nesta etapa. Em outras palavras, um dispositivo é inicializado na medida em que um subconjunto necessário dos recursos e recursos do dispositivo estejam ativados e operacionais. Geralmente, os dispositivos são parte da interface de entrada e saída do sistema, portanto, esses dispositivos são completamente iniciados quando existe a necessidade de se fazer \download\ de uma imagem de outro local.
 
-Agora o \loader esta pronto para transferir a imagem da aplicação para o sistema alvo. A imagem da aplicação pode conter um RTOS, um \textit{kernel}, e os demais códigos das aplicações que o desenvolvedor necessita.
+Agora o \loader\ esta pronto para transferir a imagem da aplicação para o sistema alvo. A imagem da aplicação pode conter um RTOS, um \textit{kernel}, e os demais códigos das aplicações que o desenvolvedor necessita.
 
 
 %Conhecer o processo de inicialização dos sistemas embarcados, também chamado de \boot, é muito importante para nos dar noção sobre quando e como entrará em execução tanto a aplicação final, quanto o bootloader.
@@ -85,8 +85,9 @@ Agora o \loader esta pronto para transferir a imagem da aplicação para o siste
 
 
 \subsection{BOOTLOADER}
-O \bootloader é um \textit{software} que, tem como responsabilidade a atualização do \firmware do sistema, operação também conhecida como \textit{in-aplicattion programing} (IAP). Reside em uma área protegida da memória, geralmente colocado no início da flash ou na ROM, e é o primeiro \textit{software} a ser executado após o \textit{reset} ou iniciação do sistema.
-É desenvolvido para receber comandos via periféricos de comunicação como: UART, I2C, SPI, CAN e Ethernet, e entender o mapa de memória do microcontrolador \cite{DavesDurlin2013}. A \autoref{Diag_Bootloader} mostra como geralmente fica alocado um \bootloader e o \firmware na memória.
+
+O \bootloader\ é um \textit{software} que, tem como responsabilidade a atualização do \firmware\ do sistema, operação também conhecida como \textit{in-aplicattion programing} (IAP). Reside em uma área protegida da memória, geralmente colocado no início da flash ou na ROM, e é o primeiro \textit{software} a ser executado após o \textit{reset} ou iniciação do sistema.
+É desenvolvido para receber comandos via periféricos de comunicação como: UART, I2C, SPI, CAN e Ethernet, e entender o mapa de memória do microcontrolador \cite{DavesDurlin2013}. A \autoref{Diag_Bootloader} mostra como geralmente fica alocado um \bootloader\ e o \firmware\ na memória.
 % que são usados para trocar do firmware do MCU e recebimento do novo código de aplicação. Frequentemente é necessário um programa externo para dar esses comandos ao bootloader \cite{Noviello2018}.
 
 \begin{figure}[H]
@@ -97,7 +98,7 @@ O \bootloader é um \textit{software} que, tem como responsabilidade a atualiza�
      \label{Diag_Bootloader}
 \end{figure}
 
-Sua função se resume geralmente a: comunicar-se com outro servidor, ler os arquivos enviados pelo \textit{host}, atualizar o \firmware de seu microcontrolador, e iniciar este novo \software. 
+Sua função se resume geralmente a: comunicar-se com outro servidor, ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar este novo \software. 
 Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras placas.
 %Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
 Portanto, é uma peça de \textit{software} que não é portável para várias plataformas. A \autoref{FluxoBootloader} mostra o funcionamento de um bootloader padrão. 
@@ -105,28 +106,28 @@ Portanto, é uma peça de \textit{software} que não é portável para várias p
 \begin{figure}[H]
     \scriptsize
      \centering
-     \includegraphics[scale=0.9]{dados/figuras/FluxoBootloader.jpg}
+     \includegraphics[scale=1]{dados/figuras/FluxoBootloader.jpg}
      \caption{Fluxograma de operações de um bootloader.}
      \label{FluxoBootloader}
 \end{figure}
 
 
 
-Os sistemas microcontrolados STM32 vem de fábrica com um \bootloader pré programado na ROM. Este \bootloader pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
+Os sistemas microcontrolados STM32 vem de fábrica com um \bootloader\ pré programado na ROM. Este \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
 
-É possível ser criado um \bootloader customizado com diversas funções adicionais, uma frequentemente usada é o uso do bootloader para descriptografar firmwares que podem chegar de via \textit{internet}, para se garantir a segurança e origem do \firmware, assim após esse processo o sistema pode substituir o \software anterior pelo recebido. 
+É possível ser criado um \bootloader\ customizado com diversas funções adicionais. Uma função frequentemente usada é o uso do \bootloader\ para descriptografar firmwares que podem chegar de via internet, para se garantir a segurança e origem do \firmware, assim após esse processo o sistema pode substituir o \software\ anterior pelo recebido. 
 
 
 
 \subsection{LINKER}
 
-Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados pelo compilador e \textit{assembler}. Criando assim os arquivos objetos, que contém os códigos de máquina binários(\textit{machine binary code}) e dados de programa (\textit{program data}). O \textit{archive utility} concatena uma coleção de arquivos objetos para formar uma biblioteca. Então o \linker obtém esses arquivos objetos como entrada e produz ou um arquivo executável, ou um arquivo objeto que pode ser utilizado em outro \linker com outros arquivos objetos. O arquivo de comandos de \linker (\textit{linker command file}) orienta o \linker em como combinar esses diferentes arquivos objetos e aonde colocar o código binário e os dados no sistema embarcado alvo. Assim podemos concluir que, a função principal de um \linker é combinar múltiplos arquivos objetos em um maior arquivo objeto relocável, um arquivo objeto compartilhado ou uma imagem executável final. Esse processo pode ser observado na \autoref{linker}.
+Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados pelo compilador e \textit{assembler}. Criando assim os arquivos objetos, que contém os códigos de máquina binários(\textit{machine binary code}) e dados de programa (\textit{program data}). O \textit{archive utility} concatena uma coleção de arquivos objetos para formar uma biblioteca. Então o \linker\ obtém esses arquivos objetos como entrada e produz ou um arquivo executável, ou um arquivo objeto que pode ser utilizado em outro \linker\ com outros arquivos objetos. O arquivo de comandos de \linker\ (\textit{linker command file}) orienta o \linker\ em como combinar esses diferentes arquivos objetos e aonde colocar o código binário e os dados no sistema embarcado alvo. Assim podemos concluir que, a função principal de um \linker\ é combinar múltiplos arquivos objetos em um maior arquivo objeto relocável, um arquivo objeto compartilhado ou uma imagem executável final. Esse processo pode ser observado na \autoref{linker}.
 
 \begin{figure}[H]
     \scriptsize
      \centering
      \includegraphics[scale=1]{dados/figuras/Linker.png}
-     \caption{Criando um arquivo de imagem para um sistema operacional alvo.\newline Fonte:\cite{Qing2003}}
+     \caption{Criando um arquivo de imagem para um sistema alvo.\newline Fonte:\cite{Qing2003}}
      \label{linker}
 \end{figure}
 
@@ -147,7 +148,7 @@ Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados p
 %     \label{linker}
 %\end{figure}
 
-O \linker precisa combinar esses arquivos objetos e fundir as seções de diferentes arquivos em um segmento de programa. Esse processo cria uma única imagem executável para o sistema embarcado alvo. O desenvolvedor utiliza comandos de \linker (chamados de \textit{linker directives}) para controlar como o \linker combina essas seções e aloca seus segmentos no sistema alvo. As diretivas de \linker ficam contidas no arquivo de comando de \linker. O objetivo de criar esse arquivo de comando de \linker é para que o desenvolvedor de sistemas embarcados possa mapear a imagem executável para o \textit{hardware} alvo de forma precisa e eficiente. 
+O \linker\ precisa combinar esses arquivos objetos e fundir as seções de diferentes arquivos em um segmento de programa. Esse processo cria uma única imagem executável para o sistema embarcado alvo. O desenvolvedor utiliza comandos de \linker\ (chamados de \textit{linker directives}) para controlar como o \linker\ combina essas seções e aloca seus segmentos no sistema alvo. As diretivas de \linker\ ficam contidas no arquivo de comando de \linker. O objetivo de criar esse arquivo de comando de \linker\ é para que o desenvolvedor de sistemas embarcados possa mapear a imagem executável para o \textit{hardware} alvo de forma precisa e eficiente. 
 
 \begin{figure}[H]
     \scriptsize
@@ -191,7 +192,7 @@ Possui três \textit{Aplication Programing interfaces} (APIs):
 
 
 \subsection{MBED TLS}
-A biblioteca mbed TLS foi desenvolvida para se integrar facilmente a aplicações embarcadas existentes, e fornecer os blocos de construção para uma comunicação segura, criptografia e gerenciamento de chaves. Como o seu intuito é ser o mais flexível possível, permite que sejam integrados ao sistema somente as funcionalidades necessárias, diminuindo assim o tamanho total que a biblioteca ocuparia no sistema \cite{mbedtls}.
+A biblioteca Mbed TLS foi desenvolvida para se integrar facilmente a aplicações embarcadas existentes, e fornecer os blocos de construção para uma comunicação segura, criptografia e gerenciamento de chaves. Como o seu intuito é ser o mais flexível possível, permite que sejam integrados ao sistema somente as funcionalidades necessárias, diminuindo assim o tamanho total que a biblioteca ocuparia no sistema \cite{mbedtls}.
 
 A \autoref{mbedtlsFig} ilustra como a biblioteca cria uma camada intermediaria entre a aplicação final e a camada TCP/IP.
 
@@ -206,9 +207,29 @@ A \autoref{mbedtlsFig} ilustra como a biblioteca cria uma camada intermediaria e
 
 
 %\section{CARTÃO SD}
-\section{SISTEMA DE ARQUIVO FAT}
+\section{SISTEMAS DE ARQUIVO}
+Segundo \citeonline{tanenbaumSO}, para resolver diversos problemas como o armazenamento de grandes quantidades de dados, a perda de dados após o processamento e execução do processo que os criou e tornar as informações independentes de quaisquer processos. Existe a necessidade da criação de uma estrutura de armazenamento de informações a longo prazo. Os três requisitos fundamentais para essa estrutura são:
 
-Segundo \citeonline{tanenbaumSO}, o sistema de arquivo FAT (\textit{File Allocation Table}) é implementado por meio de uma alocação de memória encadeada usando uma tabela na memória. Nesta organização, o bloco de memória inteiro esta disponível para dados. Além disso, o acesso aleatório é muito mais fácil. Mesmo que o encadeamento ainda tenha que ser seguido para encontrar determino deslocamento dentro do arquivo, ele esta inteiramente na memória. De modo que, pode ser seguido sem necessidade nenhuma de referenciar o disco.
+\begin{itemize}
+    \item Deve ser possivel armazenar um volume grande de informações.
+    \item Os dados devem sobreviver ao término do processo que os estão utilizando.
+    \item Vários processos devem ser capazes de acessar os dados concomitantemente.
+\end{itemize}
+
+Essa estrutura é chamada de arquivo, e é vastamente utilizada por diversos sistemas. Os arquivos são utilizados para armazenar dados em discos e outras mídias externas. Então os processos podem ler e escrever novos dados quando necessário. As informações armazenadas em arquivos devem ser persistentes, logo, não devem ser afetadas pela criação e pelo término do processo. Um arquivo só deve desaparecer quando o sei criador o apagar.
+
+O modo como os arquivos são estruturados, nomeados, acessados, usados, protegidos e implementados são definidos geralmente pelo sistema operacional. A parte do sistema operacional responsável por esse gerenciamento é chamada de sistema de arquivos. Os arquivos podem, no caso de sistemas embarcados, serem gerenciados por API's que criam uma camada independente do sistema operacional e gerenciam os arquivos, como é o caso da biblioteca FatFs. 
+
+Existem diversas formas de implementar um sistema de arquivo. Nesta implementação é necessário saber como os arquivos e seus diretórios são armazenados, como o espaço em disco é gerenciado e em como fazer tudo funcionar de modo eficiente e confiável. 
+Um dos sistemas de arquivos padrões para o uso em memórias que são divididas em bloco é o FAT32. 
+Um cartão SD é um dispositivo de memória não volátil criado pela SD Card Association \cite{SDCARD}, que possui sua memória dividida em blocos e faz uso do sistema de arquivo FAT.
+
+
+
+
+\subsection{SISTEMA DE ARQUIVO FAT}
+
+Segundo \citeonline{tanenbaumSO}, o sistema de arquivo FAT (\textit{File Allocation Table}) é implementado por meio de uma alocação de memória encadeada usando uma tabela na memória. Nesta organização, o bloco de memória inteiro esta disponível para dados. Além disso, o acesso aleatório é muito mais fácil. Mesmo que o encadeamento ainda tenha que ser seguido para encontrar determinado deslocamento dentro do arquivo, ele esta inteiramente na memória. De modo que, pode ser seguido sem necessidade nenhuma de referenciar o disco.
 
 A \autoref{FAT} ilustra como é a tabela, mostrando que o arquivo A inicia-se no bloco 4 e segue o encadeamento até o seu fim, assim como o arquivo B que se inicia no bloco 6. Ambos terminam com um marcador especial que no caso é o número -1.
 
@@ -224,17 +245,55 @@ A principal desvantagem deste método é que a tabela inteira precisa estar na m
 
 \subsection{FATFS}
 
-FatFs é um modulo genérico de um sistema de arquivo FAT/exFAT, para pequenos sistemas embarcados. É escrito em conformidade com a ANSI C (C89) e é completamente separado da camada de entrada e saída do sistema, portanto é independente da plataforma utilizada. A \autoref{FatFS}
-
+FatFs é um módulo genérico de um sistema de arquivo FAT/exFAT, para pequenos sistemas embarcados com recursos computacionais reduzidos. É escrito em conformidade com a ANSI C (C89) e é completamente separado da camada de entrada e saída do sistema, portanto, é independente da plataforma utilizada. É um \software\ livre de código aberto e proporciona a leitura, escrita, criação e remoção de arquivos, além do gerenciamento e navegação de diretórios. A \autoref{FatFS} ilustra como o módulo é independente da aplicação e da plataforma utilizada.
 
 \begin{figure}[H]
     \scriptsize
      \centering
-     \includegraphics[scale=0.5]{dados/figuras/fatfs.png}
+     \includegraphics[scale=0.6]{dados/figuras/fatfs.png}
      \caption{Posição da biblioteca FatFs na aplicação.\newline  Fonte:\cite{FATFS}}
      \label{FatFS}
 \end{figure}
+A FatFs fornece várias funções do sistema de arquivos para a aplicação.
+Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é ilustrado da \autoref{FatFS2}. Umas das principais funções fornecidas pela FatFs para a aplicação são:
 
+\begin{itemize}
+    \item Acesso a arquivos.
+    \begin{itemize}
+        \item f\_open - Abre/Cria um arquivo.
+        \item f\_close - Fecha um arquivo aberto.
+        \item f\_read - Lê os dados de um arquivo.
+        \item f\_write - Escreve dados em um arquivo.
+    \end{itemize}
+    \item Acesso a diretórios.
+    \begin{itemize}
+        \item f\_opendir - Abre um diretório.
+        \item f\_closedir - Fecha um diretório aberto.
+    \end{itemize}
+    \item Gerenciamento de arquivos e diretórios.
+    \begin{itemize}
+        \item f\_stat - Verifica a existência de um arquivo ou diretório.
+        \item f\_unlink - Remove um arquivo ou diretório. 
+        \item f\_rename - Renomeia ou move um arquivo ou diretório.
+        \item f\_mkdir - Cria um diretório.
+        \item f\_chdir - Muda o diretórios atual.
+    \end{itemize}
+    \item Gerenciamento de volume e configurações do sistema.
+    \begin{itemize}
+        \item f\_mount - Registra ou remove registro da área de trabalho da partição.
+        \item f\_mkfs - Cria uma partição FAT na unidade lógica.
+        \item f\_fdisk - Cria uma partição na unidade física.
+        \item f\_getfree - Obtém o espaço livre da partição.
+    \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.6]{dados/figuras/fatfs2.png}
+     \caption{Manipulação da memória por meio da API da FatFs.\newline  Fonte:\cite{FATFS}}
+     \label{FatFS2}
+\end{figure}
 %\section{SERVIDORES HTTP}
 
 %É uma boa prática iniciar cada novo capítulo com um breve texto introdutório (tipicamente, dois ou três parágrafos) que deve deixar claro o quê será discutido no capítulo, bem como a organização do capítulo.
