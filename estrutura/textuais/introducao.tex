@@ -2,8 +2,8 @@
 
 \chapter{INTRODUÇÃO}
 \label{chap:introducao}
-Com a evolução da microeletrônica e, por consequência, a redução de custo de periféricos e o crescimento do poder computacional de processadores, os sistemas computacionais se tornaram cada vez mais pequenos e baratos. Devido a isso, processadores e microcontroladores passaram a ser instalados em produtos, o que deu origem ao conceito de sistema embarcado, que são sistemas de processamento de informação embutidos em produtos \cite{Marwedel2006}.
-A utilização desses sistemas foi disseminada em várias áreas como, a automobilística, aeronáutica, ferroviária, industrial, médica, entre outras, automatizando as mais diversas funções. Em algumas dessas funções era fundamental a presença de agentes humanos para serem realizadas, ou não existiam, pois uma pessoa não a exerceria em tempo hábil.
+Com a evolução da microeletrônica e, por consequência, a redução de custo de periféricos e o crescimento do poder computacional de processadores, os sistemas computacionais se tornaram cada vez menores e baratos. Devido a isso, processadores e microcontroladores passaram a ser instalados em produtos, o que deu origem ao conceito de sistema embarcado, que são sistemas de processamento de informação embutidos em produtos \cite{Marwedel2006}.
+A utilização desses sistemas foi disseminada em várias áreas como, a automobilística, aeronáutica, ferroviária, industrial, médica, entre outras, automatizando as mais diversas funções. Em algumas dessas funções era fundamental a presença de agentes humanos para serem realizadas, ou não existiam, pois, uma pessoa não a exerceria em tempo hábil.
 
 % \textit{Apollo Guidance Computer} (AGC) foi conhecido como o primeiro sistema embarcado da história, instalado no \textit{Apollo command module} e no \textit{Apollo Lunar Module}, tinha como proposito principal fornecer interfaces eletrônicas e de computação para orientação, navegação e controle da espaçonave.
 
@@ -25,7 +25,7 @@ Assim, o projeto desses produtos devem ser muito bem planejado, e executado de f
 
 
 %Pensando na durabilidade e qualidade destes produtos,
-Durante a fase de projeto de um sistema embarcado, deve-se avaliar diversos âmbitos, como desempenho, confiabilidade, consumo de energia, manufaturabilidade etc. É também necessário validar essas avaliações, com o intuito de verificar se atenderão os requisitos de projeto, e pela necessidade desses produtos serem eficientes, é indispensável que esses sistemas passem por uma fase de otimização, em que mudanças no projeto podem melhorar a eficiência energética do produto ou até mesmo gerar novas funcionalidades a esses equipamentos. Portanto o projeto como um todo precisa ser testado para evitar que erros e \textit{bugs} possam vir a permanecer no produto final \cite{Marwedel2006}, criando um ciclo de desenvolvimento que deve ser repetido até se obter um produto eficiente, de qualidade e completo.
+Durante a fase de projeto de um sistema embarcado, deve-se avaliar diversos âmbitos, como desempenho, confiabilidade, consumo de energia, manufaturabilidade, etc. É também necessário validar essas avaliações, com o intuito de verificar se atenderão os requisitos de projeto. Pela necessidade desses produtos serem eficientes, é indispensável que esses sistemas passem por uma fase de otimização, em que mudanças no projeto podem melhorar a eficiência energética do produto ou até mesmo gerar novas funcionalidades a esses equipamentos. Portanto, o projeto todo precisa ser testado para evitar que erros e \textit{bugs} possam vir a permanecer no produto final \cite{Marwedel2006}, criando um ciclo de desenvolvimento que deve ser repetido até se obter um produto eficiente, de qualidade e completo.
 %Por vezes as manutenções futuras do \textit{firmware} é esquecida, ou então ignorada, durante a fase de projeto, até por que esta é cara e não é algo banal, principalmente em projetos já implantados.
 
 Após a instalação final desse projeto para seu cliente, eventualmente pode ser necessária uma nova funcionalidade, uma otimização ou então, podem ser exigidos testes nesse sistema. Logo, é preciso que haja uma forma de se alterar esse produto mesmo após seu lançamento, para assim gerarmos um maior valor e confiabilidade ao sistema.
@@ -36,8 +36,8 @@ Uma das principais soluções adotadas para a manutenção desses programas é c
 
 %Geralmente os sistemas de atualização remotos presentes em sistemas embarcados atuais utilizam ferramentas proprietarias e ...
 
-Este trabalho de conclusão de curso propõem um método de manutenção desses \textit{firmwares} de forma remota, que possa ser o mais portável possível.
-Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o \textit{download} do novo \textit{software} para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como a LwIP \cite{LWIP}, Mbed TLS \cite{mbedtls} e a FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de \textit{software} que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória \textit{flash} do dispositivo, por ser dependente do \textit{hardware} utilizado.
+Esse trabalho de conclusão de curso propõe um método de manutenção desses \textit{firmwares} de forma remota, que possa ser o mais portável possível.
+Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o \textit{download} do novo \textit{software} para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como a LwIP \cite{LWIP}, Mbed TLS \cite{mbedtls} e a FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de \textit{software} que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória flash do dispositivo, por ser dependente do \textit{hardware} utilizado.
 
 %O Geovanni marcou o nome das bibliotecas, mas não sei se é para deixar elas em italico.
 %Citar Bibliotecas!!!!
@@ -45,11 +45,12 @@ Na solução proposta, o dispositivo embarcado poderá verificar periodicamente 
 %para a plataforma STM32F746, onde, através de um servidor na internet, um novo código pode ser enviado ao \textit{hardware}, por uma requisição do próprio sistema embarcado. Existirão tarefas que farão a verificação da disponibilidade da atualização, e o download de forma segura, utilizando as bibliotecas já bem estabelecidas LwIP e MbedTSL, a gravação deste arquivo e do \textit{software} anteriormente instalado no produto, em um cartão SD, para caso haja a necessidade de se reverter a atualização, será feita por meio da biblioteca FatFs, e então a troca do antigo \textit{software} pelo novo é feito a partir de um \textit{bootloader}.
 
 Os \textit{bootloaders} estão atualmente presentes em todos os computadores pessoais e em alguns sistemas embarcados. Esse \textit{software} prepara a maioria dos \textit{hardwares} presentes na máquina para um sistema operacional ou outro programa entrar em ação.
-Como é o primeiro programa a ser inicializado após um sistema ser iniciado ou após um \textit{reset}, ele pode ter várias funções, como, realizar checagem de periféricos, verificar se o \textit{firmware} presente na memória não está corrompido, além de poder fazer a troca do \textit{software} presente na memória \cite{DavesDurlin2013}, que será sua principal utilização neste trabalho.
+Como é o primeiro programa a ser inicializado após um sistema ser iniciado ou após um \textit{reset}, ele pode ter várias funções, como, realizar checagem de periféricos, verificar se o \textit{firmware} presente na memória não está corrompido, além de poder fazer a troca do \textit{software} presente na memória \cite{DavesDurlin2013}, que será sua principal utilização nesse trabalho.
 
 Um dos seus principais usos é em \textit{smartphones}, em que são utilizados para a atualização de sistemas operacionais como \textit{Android} e iOS, e como garantia de restauração em caso de erros irreversíveis no sistema operacional. É desenvolvido pelo próprio fabricante do dispositivo, e por padrão é bloqueado para os usuários, evitando a substituição do \textit{software} original do aparelho por uma versão customizada, mas ainda assim existem opções de desbloqueio do \textit{bootloader}, dependendo do modelo do aparelho e do fabricante \cite{Salute2018}.% mas pode destravada o \textit{bootloader}.
 
-Adicionar aqui um paragrafo sobre IoT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111
+IoT (\textit{Internet of things}), é o conceito que se refere à interconexão digital de objetos cotidianos com a internet. A internet das coisas em outras palavras pode ser descrita como uma rede de dispositivos embarcados, como sensores, câmeras, carros e demais objetos do cotidiano, capazes de obter e transmitir dados pela internet. A empresa de consultoria Gartner \cite{Gartner} diz que, até 2020 são esperados mais de 20 bilhões de "coisas"\  conectadas a internet. Essas "coisas"\  não são dispositivos de uso geral como \textit{smartphones} e PCs, mas objetos de função única.
+
 
 %Falar sobre a utilização de bootloaders em sistemas android em celulares... e citar sites falando sobre bootloaders
 
@@ -61,7 +62,7 @@ Adicionar aqui um paragrafo sobre IoT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 \section{OBJETIVO GERAL}
 \label{sec:Objetivo Geral}
 
-Este trabalho tem como objetivo geral o desenvolvimento de um sistema \textit{open-source} para a atualização  de \textit{firmwares} \textit{Over The Air} para dispositivos IoT baseado nas bibliotecas FatFs, LwIP e Mbed TLS. 
+Esse trabalho tem como objetivo geral o desenvolvimento de um sistema \textit{open-source} para a atualização  de \textit{firmwares} \textit{Over The Air} para dispositivos IoT baseado nas bibliotecas FatFs, LwIP e Mbed TLS. 
 
 \section{OBJETIVOS ESPECÍFICOS}
 \label{sec:Objetivos Específicos}
@@ -71,7 +72,7 @@ Este trabalho tem como objetivo geral o desenvolvimento de um sistema \textit{op
    
    %\item Criar um servidor HTTP para a comunicação cliente-servidor.
    
-   \item Implementar uma API que fará a comunicação segura entre o servidor e a plataforma embarcada, verificará de disponibilidade de atualização e fará o \textit{download} da nova versão, se existente. Armazenará o \textit{firmware} recebido em um cartão SD (Secure Digital). 
+   \item Implementar uma API que fará a comunicação segura entre o servidor e a plataforma embarcada, verificará a disponibilidade de atualização e fará o \textit{download} da nova versão, se existente. Armazenará o \textit{firmware} recebido em um cartão SD (Secure Digital). 
    %terminar essa
    
    %\item Produzir a tarefa de leitura de um cartão micro SD que guarda uma nova versão do \textit{firmware} e uma cópia do anterior, utilizando a biblioteca FatFs.
