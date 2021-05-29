@@ -16,13 +16,13 @@ Com o conhecimento obtido sobre todos esses temas o leitor será capaz de compre
 %O conceito de \textit{firmware over the air} (FOTA),  consiste em um mecanismo de atualização remoto de firmware, já é muito utilizado em firmware de smartfones por fornecer uma forma segura, eficiente e conveniente de atualização.geralmente utilizado em smartfones.  
 \section{PROCESSO DE INICIALIZAÇÃO DO SISTEMA}
 
-Segundo \citeonline{Qing2003}, um processador embarcado, após ser ligado, busca e executa o código de um endereço pré-definido e gravado permanentemente na memória. O código contido nessa localização da memória é chamado de \resetv. O \resetv\ é usualmente uma instrução de salto para outro espaço da memória em que o real código de inicialização se encontra. A razão desse salto para outra localidade da memória é para manter o \resetv\ pequeno. O \resetv\ pertence a uma pequena área da memória reservada pelo sistema por motivos especiais. O \resetv, assim como o código de inicialização do sistema, precisa estar armazenado permanentemente. Por causa desse problema, o código de inicialização, chamado de código \textit{bootstrap}, reside na memória somente de leitura (ROM), na flash ou em outra memória não volátil. O termo \textit{loader} se refere ao código que é responsável por executar o \textit{bootstrap}, fazer o possível \download\ de uma imagem de outro local e inicialização da aplicação final.
+Segundo \citeonline{Qing2003}, um processador embarcado, após ser ligado, busca e executa o código de um endereço pré-definido e gravado permanentemente na memória. O código contido nessa localização da memória é chamado de \resetv. O \resetv\ é usualmente uma instrução de salto para outro espaço da memória em que o real código de inicialização se encontra. A razão deste salto para outra localidade da memória é para manter o \resetv\ pequeno. O \resetv\ pertence a uma pequena área da memória reservada pelo sistema por motivos especiais. O \resetv, assim como o código de inicialização do sistema, precisa estar armazenado permanentemente. Por causa deste problema, o código de inicialização, chamado de código \textit{bootstrap}, reside na memória somente de leitura (ROM), na flash ou em outra memória não volátil. O termo \textit{loader} se refere ao código que é responsável por executar o \textit{bootstrap}, fazer o possível \download\ de uma imagem de outro local e inicialização da aplicação final.
 
-O conceito é melhor explicado por meio de um exemplo. Nesse exemplo, iremos assumir que o \loader\ foi desenvolvido e programado na memória flash. Além disso, será assumido que a imagem alvo contém várias seções de programa. Cada seção tem um lugar designado no mapa de memória. O \resetv\ está contido em uma pequena ROM, que está mapeada na localização 0x0h do espaço de endereços. A ROM contém alguns valores iniciais essenciais requeridos pelo processador quando o sistema é reinicializado (\textit{reset}). Esses valores são o \resetv, o \textit{stack pointer} (ponteiro de pilha) inicial e o endereço da memória de acesso randômico (RAM) usável. 
+O conceito é melhor explicado por meio de um exemplo. Neste exemplo, iremos assumir que o \loader\ foi desenvolvido e programado na memória flash. Além disso, será assumido que a imagem alvo contém várias seções de programa. Cada seção tem um lugar designado no mapa de memória. O \resetv\ está contido em uma pequena ROM, que está mapeada na localização 0x0h do espaço de endereços. A ROM contém alguns valores iniciais essenciais requeridos pelo processador quando o sistema é reinicializado (\textit{reset}). Esses valores são o \resetv, o \textit{stack pointer} (ponteiro de pilha) inicial e o endereço da memória de acesso randômico (RAM) usável. 
 
-No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, o \resetv\ é uma instrução de salto para o endereço de memória 0x00040h; o \resetv\ transfere o controle do programa para a instrução nesse endereço. O código de inicialização do sistema contém, entre outras coisas o programa \loader\ da imagem destino e o vetor de exceção padrão do sistema (\textit{exception vector}). O vetor de exceção do sistema aponta para uma instrução que reside na memória flash.
+No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, o \resetv\ é uma instrução de salto para o endereço de memória 0x00040h; o \resetv\ transfere o controle do programa para a instrução neste endereço. O código de inicialização do sistema contém, entre outras coisas o programa \loader\ da imagem destino e o vetor de exceção padrão do sistema (\textit{exception vector}). O vetor de exceção do sistema aponta para uma instrução que reside na memória flash.
 
-A primeira parte do processo de \textit{bootstrap} do sistema é colocar o sistema em um estado conhecido. São colocados valores padrões apropriados nos registradores do processador. São colocados no \stackp\ os valores encontrados na ROM. O \loader\ desabilita as interrupções do sistema, pois o sistema ainda não está preparado para lidar com interrupções. O \loader\ também inicializa a memória RAM e possivelmente a \textit{cache} (memória transitória) do processador. Nesse ponto, o \loader\ executa um diagnóstico de \textit{hardware} limitado nos dispositivos necessários para essas operações.
+A primeira parte do processo de \textit{bootstrap} do sistema é colocar o sistema em um estado conhecido. São colocados valores padrões apropriados nos registradores do processador. São colocados no \stackp\ os valores encontrados na ROM. O \loader\ desabilita as interrupções do sistema, pois o sistema ainda não está preparado para lidar com interrupções. O \loader\ também inicializa a memória RAM e possivelmente a \textit{cache} (memória transitória) do processador. Neste ponto, o \loader\ executa um diagnóstico de \textit{hardware} limitado nos dispositivos necessários para essas operações.
 
 A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. O \loader\ pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader\ copia a seção do programa e a prepara para a execução.
 
@@ -113,7 +113,7 @@ Portanto, é uma peça de \textit{software} que não é portável para várias p
 
 
 
-Os sistemas microcontrolados STM32 vem de fábrica com um \bootloader\ pré programado na ROM. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
+Os sistemas microcontrolados STM32 possuem um \bootloader\ pré programado na ROM desde sua fabricação. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
 
 É possível ser criado um \bootloader\ customizado com diversas funções adicionais. Uma função frequentemente usada é o uso do \bootloader\ para descriptografar firmwares que podem chegar via internet, para se garantir a segurança e origem do \firmware, assim após esse processo o sistema pode substituir o \software\ anterior pelo recebido. 
 
@@ -121,7 +121,7 @@ Os sistemas microcontrolados STM32 vem de fábrica com um \bootloader\ pré prog
 
 \subsection{LINKER}
 
-Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados pelo compilador e \textit{assembler}. Criando assim os arquivos objetos, que contém os códigos de máquina binários(\textit{machine binary code}) e dados de programa (\textit{program data}). O \textit{archive utility} concatena uma coleção de arquivos objetos para formar uma biblioteca. Então o \linker\ obtém esses arquivos objetos como entrada e produz ou um arquivo executável, ou um arquivo objeto que pode ser utilizado em outro \linker\ com outros arquivos objetos. O arquivo de comandos de \linker\ (\textit{linker command file}) orienta o \linker\ em como combinar esses diferentes arquivos objetos e aonde colocar o código binário e os dados no sistema embarcado alvo. Assim podemos concluir que, a função principal de um \linker\ é combinar múltiplos arquivos objetos em um maior arquivo objeto relocável, um arquivo objeto compartilhado ou uma imagem executável final. Esse processo pode ser observado na \autoref{linker}.
+Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados pelo compilador e \textit{assembler}. Criando assim os arquivos objetos, que contém os códigos de máquina binários (\textit{machine binary code}) e dados de programa (\textit{program data}). O \textit{archive utility} concatena uma coleção de arquivos objetos para formar uma biblioteca. Então o \linker\ obtém esses arquivos objetos como entrada e produz ou um arquivo executável, ou um arquivo objeto que pode ser utilizado em outro \linker\ com outros arquivos objetos. O arquivo de comandos de \linker\ (\textit{linker command file}) orienta o \linker\ em como combinar esses diferentes arquivos objetos e aonde colocar o código binário e os dados no sistema embarcado alvo. Assim podemos concluir que, a função principal de um \linker\ é combinar múltiplos arquivos objetos em um arquivo objeto relocável maior, um arquivo objeto compartilhado ou uma imagem executável final. Esse processo pode ser observado na \autoref{linker}.
 
 \begin{figure}[H]
     \scriptsize
@@ -166,9 +166,9 @@ O \linker\ precisa combinar esses arquivos objetos e fundir as seções de difer
 
 \section {COMUNICAÇÃO CLIENTE-SERVIDOR}
 
-Um programa cliente é um programa que funciona em um sistema final, que solicita e recebe um serviço de um programa servidor, que funciona em outro sistema final. Uma vez que o programa cliente é executado em um computador e o programa servidor, é executado em outro, aplicações cliente-servidor são, por definição, aplicações distribuídas. O programa cliente e o servidor interagem enviando mensagens um para o outro pela internet. Nesse nível de abstração, os roteadores, enlaces e outros componentes da internet funcionam como uma caixa-preta que transferem mensagens entre os componentes distribuídos, comunicantes, de uma aplicação \cite{Kurose2010}.
+Um programa cliente é um programa que funciona em um sistema computacional, que solicita e recebe um serviço de um programa servidor, que funciona em outro sistema final. Uma vez que o programa cliente é executado em um computador e o programa servidor, é executado em outro, aplicações cliente-servidor são, por definição, aplicações distribuídas. Os programas cliente e o servidor interagem enviando mensagens um para o outro, pela internet ou qualquer outra rede local ou remota. Neste nível de abstração, os roteadores, enlaces e outros componentes da internet funcionam como uma caixa-preta que transferem mensagens entre os componentes distribuídos, comunicantes, de uma aplicação \cite{Kurose2010}.
 
-A comunicação cliente-servidor na internet é feita por meio de diversos protocolos de rede, esse conjunto de protocolos é conhecido como pilha TCP/IP (\textit{Transmission Control Protocol/Internet Protocol}). Essa pilha é dividida em quatro camadas, onde cada camada é encarregada de realizar uma série de funções, concedendo um grupo de serviços bem definidos para o protocolo da camada superior. A \autoref{fig:PilhaTCP} ilustra a pilha TPC/IP e seus protocolos. 
+A comunicação cliente-servidor na internet é feita por meio de diversos protocolos de rede, cujo conjunto de protocolos é conhecido como pilha TCP/IP (\textit{Transmission Control Protocol/Internet Protocol}). Essa pilha é dividida em quatro camadas, em que cada camada é encarregada de realizar uma série de funções, concedendo um grupo de serviços bem definidos para o protocolo da camada superior. A \autoref{fig:PilhaTCP} ilustra a pilha TPC/IP e seus protocolos. 
 
 \begin{figure}[H]
     \scriptsize
@@ -181,7 +181,7 @@ A comunicação cliente-servidor na internet é feita por meio de diversos proto
 Essas camadas são denominadas:
 
 \begin{itemize}
-    \item Camada de aplicação: onde residem os protocolos de nível mais alto. Um protocolo da camada de aplicação é distribuído por diversos sistemas finais, sendo que a aplicação em um sistema usa o protocolo para trocar pacotes de informação com a aplicação em outro sistema.
+    \item Camada de aplicação: em que residem os protocolos de nível mais alto. Um protocolo da camada de aplicação é distribuído por diversos sistemas finais, sendo que a aplicação em um sistema usa o protocolo para trocar pacotes de informação com a aplicação em outro sistema.
     Exemplos de protocolos:
     \begin{itemize}
         \item HTTP (\textit{Hypertext transfer protocol}).
@@ -189,13 +189,13 @@ Essas camadas são denominadas:
         \item FTP (\textit{File Transfer protocol}).
         \item DNS (\textit{Domain Name System}).
     \end{itemize}
-    \item Camada transporte: onde reside os protocolos que fazem o transporte de dados da camada de aplicação, transportando mensagens entre os lados do cliente e do servidor de uma aplicação.
+    \item Camada transporte: em que reside os protocolos que fazem o transporte de dados da camada de aplicação, transportando mensagens entre os lados do cliente e do servidor de uma aplicação.
     Exemplos de protocolos:
     \begin{itemize}
         \item TCP (\textit{Transmission Control Protocol}).
         \item UDP (\textit{User Datagram Protocol}).
     \end{itemize}
-    \item Camada de rede: camada que contém o protocolo responsável pela movimentação, de uma máquina para outra, de pacotes de camada de rede conhecidos como datagramas. Um protocolo da camada de transporte passa um segmento da mesma e um endereço de destino a camada de rede. A camada de rede prove o serviço de entrega do segmento a camada de transporte da máquina destinatária. O protocolo da camada de rede é chamado de IP (\textit{Internet Protocol}).
+    \item Camada de rede: camada que contém o protocolo responsável pela movimentação, de uma máquina para outra, de pacotes de camada de rede conhecidos como datagramas. Um protocolo da camada de transporte passa um segmento TCP ou UDP e um endereço de destino à camada de rede. A camada de rede prove o serviço de entrega do segmento à camada de transporte da máquina destinatária. O protocolo da camada de rede é chamado de IP (\textit{Internet Protocol}).
     \item Camada de enlace: é a camada que contém os protocolos que ficam responsáveis por enviar datagramas de um nó a outro, ou seja, faz o transporte do datagrama entre elementos da rede, como de uma máquina ao roteador, ou de roteador para roteador. Exemplos de protocolos:
     \begin{itemize}
         \item Arpanet.
@@ -205,22 +205,22 @@ Essas camadas são denominadas:
 
 \end{itemize}
 
-Com a popularização da Internet essa comunicação se tornou cada vez mais comum, atingindo bilhões de usuários no mundo todo. Assim a comunicação cliente servidor precisa ser segura. A segurança de redes se preocupa em garantir que pessoas mal-intencionadas não leiam ou modifiquem secretamente mensagens enviadas a outro destinatário. Ela também lida com meio de identificar se uma mensagem recebida é verdadeira e tem uma origem confiável \cite{tanenbaumRedes}.
+Com a popularização da internet essa comunicação se tornou cada vez mais comum, atingindo bilhões de usuários no mundo todo. Assim a comunicação cliente servidor precisa ser segura. A segurança de redes se preocupa em garantir que pessoas mal-intencionadas não leiam ou modifiquem secretamente mensagens enviadas a outro destinatário. Ela também lida com meio de identificar se uma mensagem recebida é verdadeira e tem uma origem confiável \cite{tanenbaumRedes}.
 
 
 
 \subsection{LWIP}
 %Com a necessidade de se obter os binários dos códigos do novo firmware o sistema irá se utilizar da biblioteca amplamente conhecida e utilizada LWIP.
-A Biblioteca LwIP é uma implementação da pilha TCP/IP, focada em ser pequena e portável, reduzindo a utilização de recursos como memória RAM e ainda tendo um TCP completo, se tornando adequada para sistemas embarcados. Foi originalmente desenvolvida por Adam Dunkels nos laboratórios da \textit{Computer and Networks Architectures} (CNA), no Instituto Sueco de Ciência da Computação (SICS) e agora é desenvolvido e mantido por uma rede mundial de desenvolvedores \cite{LWIP}.
+A Biblioteca LwIP é uma implementação da pilha TCP/IP, focada em ser pequena e portável, reduzindo a utilização de recursos como memória RAM e ainda tendo um TCP completo, se tornando adequada para sistemas embarcados. Foi originalmente desenvolvida por Adam Dunkels nos laboratórios da \textit{Computer and Networks Architectures} (CNA), no Instituto Sueco de Ciência da Computação (SICS) e agora é desenvolvida e mantida por uma rede mundial de desenvolvedores \cite{LWIP}.
 
-Possui três \textit{Aplication Programing interfaces} (APIs):
+Possui três \textit{Aplication Programing Interfaces} (APIs):
 \begin{itemize}
-\item RAW API (API Crua): É a API nativa do LwIP, possui a melhor desempenho e o menor tamanho de código, porém torna o desenvolvimento de aplicações mais complexo.
+\item RAW API (API básica): É a API nativa do LwIP, possui melhor desempenho e o menor tamanho de código, porém torna o desenvolvimento de aplicações mais complexo.
 \item Netconn API: É uma API sequencial de alto nível que requer um sistema operacional de tempo real (RTOS). Habilita operações com múltiplas \textit{threads}.
 \item BSD Sockets API: API de \textit{sockets} de Berkeley, desenvolvida em cima da API Netconn.
 \end{itemize}
 
-Essas API's implementam diversos protocolos de rede, incluindo, entre outros, os seguintes protocolos:
+Essas API's implementam diversos protocolos de rede, incluindo:
 \begin{itemize}
     \item HTTP permite a obtenção de recursos, tais como documentos HTML, imagens, scripts e outros tipos de arquivos.
     \item FTP para o envio e recebimento de arquivos.
@@ -233,7 +233,7 @@ Essas API's implementam diversos protocolos de rede, incluindo, entre outros, os
     
 \end{itemize} 
 
-A seguir serão explanados com mais profundidade alguns dos protocolos implementados pela LwIP.
+A seguir serão explanados com mais profundidade alguns dos protocolos implementados pela LwIP que serão utilizados neste trabalho.
 
 \subsubsection{HYPERTEXT TRANSFER PROTOCOL (HTTP)}
 Segundo \citeonline{Kurose2010}, o protocolo da camada de aplicação HTTP é implementado em dois programas, um programa cliente e outro servidor. Os dois são executados em sistemas finais diferentes, se comunicam entre eles por meio de uma troca de mensagens HTTP. O HTTP define a estrutura dessas mensagens assim como o modo como o cliente e o servidor as trocam. 
@@ -246,14 +246,14 @@ O cliente envia mensagens de requisição HTTP para sua interface de socket e re
 
 Segundo \citeonline{tanenbaumRedes}, O TCP foi projetado especificamente para oferecer um fluxo de bytes fim a fim confiável em uma inter-rede não-confiável. Uma inter-rede é diferente de uma única rede porque suas diversas partes podem ter topologias, larguras de banda, retardos, tamanhos de pacotes e outros parâmetros totalmente diferentes. O TCP foi projetado para se adaptar dinamicamente às propriedades da inter-rede e ser robusto diante de muitos categorias de falhas que podem ocorrer.
 
-Cada máquina compatível com TCP tem uma entidade de transporte TCP, que pode ser um procedimento de biblioteca, um processo do usuário ou parte do núcleo. Em todos os casos, ele gerencia fluxos e interfaces TCP para a camada IP. Uma entidade TCP aceita fluxos de dados de usuários provenientes de processos locais, divide-os em partes de no máximo 64 KB e envia cada parte em um datagrama IP distinto. Quando os datagramas IP que contem dados TCP chegam a uma máquina, eles são enviados à entidade TCP, que restaura o fluxo de bytes originais.
+Cada máquina compatível com TCP tem uma entidade de transporte TCP, que pode ser um procedimento de biblioteca, um processo do usuário ou parte do núcleo. Em todos os casos, ele gerencia fluxos e interfaces TCP para a camada IP. Uma entidade TCP aceita fluxos de dados de usuários provenientes de processos locais, divide-os em partes de no máximo 64 kB e envia cada parte em um datagrama IP distinto. Quando os datagramas IP que contem dados TCP chegam a uma máquina, eles são enviados à entidade TCP, que restaura o fluxo de bytes originais.
 
 A camada IP não oferece garantia que os datagramas serão entregues de forma apropriada, portanto, cabe ao TCP administrar os \textit{timers} e retransmiti-los sempre que necessário. Os datagramas também podem chegar fora de ordem, o TCP também terá que os reorganizar em mensagens na sequência correta. 
 
 \subsection{MBED TLS}
 A biblioteca Mbed TLS foi desenvolvida para se integrar facilmente a aplicações embarcadas existentes, e fornecer os blocos de construção para uma comunicação segura, criptografia e gerenciamento de chaves. Como o seu intuito é ser o mais flexível possível, permite que sejam integrados ao sistema somente as funcionalidades necessárias, diminuindo assim o tamanho total que a biblioteca ocuparia no sistema \cite{mbedtls}.
 
-A \autoref{mbedtlsFig} ilustra como a biblioteca cria uma camada intermediária entre a aplicação final e a camada TCP/IP, chamada de TLS (\textit{Transport Layer Security}). A Mbed TLS pode ser usada para criar um servidor e cliente SSL(\textit{Secure Sockets Layer})/TLS, fornecendo uma estrutura para a configurar e se comunicar por meio de um canal de comunicação SSL/TLS. A camada TLS criada depende diretamente dos módulos de análise de certificado, criptografia simétrica ou assimétrica e \hash\ da biblioteca utilizada.
+A \autoref{mbedtlsFig} ilustra como a biblioteca cria uma camada intermediária entre a aplicação final e a camada TCP/IP, chamada de TLS (\textit{Transport Layer Security}). A Mbed TLS pode ser usada para criar um servidor e cliente SSL (\textit{Secure Sockets Layer})/TLS, fornecendo uma estrutura para a configurar e se comunicar por meio de um canal de comunicação SSL/TLS. A camada TLS criada depende diretamente dos módulos de análise de certificado, criptografia simétrica ou assimétrica e \hash\ da biblioteca utilizada.
 
 \begin{figure}[H]
     \scriptsize
@@ -291,7 +291,7 @@ SHA-2 é um conjunto de funções \hash\ criptográficas que contém mudanças s
 
 %\section{CARTÃO SD}
 \section{SISTEMAS DE ARQUIVO}
-Segundo \citeonline{tanenbaumSO}, para resolver diversos problemas como o armazenamento de grandes quantidades de dados, a perda de dados após o processamento e execução do processo que os criou e tornar as informações independentes de quaisquer processos. Existe a necessidade da criação de uma estrutura de armazenamento de informações a longo prazo. Os três requisitos fundamentais para essa estrutura são:
+Segundo \citeonline{tanenbaumSO}, para resolver diversos problemas com o armazenamento de grandes quantidades de dados, a perda de dados após o fim da execução do processo que os criou e a necessidade de tornar esses dados independentes de quaisquer processos. Existe a necessidade da criação de uma estrutura de armazenamento de informações a longo prazo. Os três requisitos fundamentais para essa estrutura são:
 
 \begin{itemize}
     \item Deve ser possivel armazenar um volume grande de informações.
@@ -324,7 +324,9 @@ A \autoref{FAT} ilustra como é a tabela, mostrando que o arquivo $A$ inicia-se 
      \label{FAT}
 \end{figure}
 
-A principal desvantagem desse método é que a tabela inteira precisa estar na memória o tempo todo. Com um disco de 20 GB e um tamanho de bloco de 1 KB, a tabela precisa de 20 milhões de entradas, uma para cada um dos 20 milhões de blocos do disco. Cada entrada tem de ter no mínimo 3 bytes para manter o endereço dos blocos. Para facilitar sua pesquisa, as entradas acabam ocupando 4 bytes. Assim, a tabela ocupará 60 MB ou 80 MB de memória principal o tempo todo, dependendo do sistema para ser otimizado para espaço ou para tempo.
+A principal desvantagem deste método é que a tabela inteira precisa estar na memória o tempo todo. Com um disco de 20 GB e um tamanho de bloco de 1 KB, a tabela precisa de 20 milhões de entradas, uma para cada um dos 20 milhões de blocos do disco. Cada entrada tem de ter no mínimo 3 bytes para manter o endereço dos blocos. Para facilitar sua pesquisa, as entradas acabam ocupando 4 bytes. Assim, a tabela ocupará 60 MB ou 80 MB de memória principal o tempo todo, dependendo do sistema para ser otimizado para espaço ou para tempo.
+
+Existe também o sistema de arquivo exFAT que é utilizado para mídias com capacidade de armazenamento maiores que 4 GB, que foi adotada como sistema de arquivo padrão para cartões de memória (SD card) maiores de 4 GB, pela SD Card Association \cite{SDCARD}.
 
 \subsection{FATFS}
 
@@ -391,7 +393,7 @@ Foram identificados três trabalhos correlatos.
 
 \begin{itemize}
 
-    \item \textbf{Firmware over the air for automotive, Fotamotive}: Esse trabalho introduz uma solução para atualização de veículos com a ajuda de fabricantes de equipamentos originais para reduzir custos, \textit{recalls} aumentar a qualidade, facilitar as atualizações e controlar melhor a frota de veículos no mercado. Essa solução consiste em atualizar a unidade de controle do motor por meio de métodos OTA, sem a necessidade de uma conexão física com o veículo \cite{Odat2014}.
+    \item \textbf{Firmware over the air for automotive, Fotamotive}: Esse trabalho introduz uma solução para atualização de veículos com a ajuda de fabricantes de equipamentos altomotivos para reduzir custos com \textit{recalls} e assim aumentar a qualidade de seus produtos, facilitar as atualizações e controlar melhor a frota de veículos no mercado. Essa solução consiste em atualizar a unidade de controle do motor por meio de métodos OTA, sem a necessidade de uma conexão física com o veículo \cite{Odat2014}.
 
     \item \textbf{Firmware over the air for home cybersecurity in the Internet of Things}: Esse trabalho descreve a utilização de um método de atualização de \firmware\ para roteadores caseiros, utilizando sistemas de gerenciamento de rede e de suporte de operações de fornecedores de acesso à \textit{internet} \cite{Teng2017}.
     
