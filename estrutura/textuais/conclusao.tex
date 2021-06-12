@@ -2,15 +2,21 @@
 
 \chapter{CONCLUSÃO}
 \label{chap:conclusao}
+O trabalho conseguiu alcançar o objetivo especifico de criar um sistema de atualização de firmware Over-The-Air utilizando as bibliotecas FatFs, MBED TLS e LWIP. Todos os objetivos específicos também foram atingidos visto que foi desenvolvido um bootloader que utiliza o sistema de aquivo FAT, foi implementada uma API que faz a comunicação com o servidor e armazena arquivos no cartão SD e assim foi comprovado o funcionamento do sistema na plataforma embarcada STM32F746NGH6-DISCOVERY.
 
-Parte final do texto, na qual se apresentam as conclusões do trabalho acadêmico. É importante fazer uma análise crítica do trabalho, destacando os principais resultados e as contribuições do trabalho para a área de pesquisa.
+Concluindo o trabalho foi possivel observar que o bootloader desenvolvido é muito mais portável que inicialmente se pensava. Como o processo de troca de firmware foi desenvolvido utilizando o HAL da STM foi possível fazer com que o bootloader funcione para toda a linha de microcontroladores da familia STM32 que possuam a biblioteca FatFS e acesso a um cartão SD. Alem de ser um bootloader robusto que consegue se recuperar em caso de falhas como quedas de energia durante o processo de troca de firmware.
 
+A API que faz a busca dos arquivos no servidor HTTP e os armazena no cartao SD se mostrou perfeitamente funcional, conseguindo fazer a comparação de versões e a verificação de integridade do firmware baixado a partir de um hash baixado, deixando o sistema muito mais seguro contra falhas, além de conseguir fazer com que todo o sistema seja des-inicializado para fazer com que o bootloader seja executado em sua sequencia.
+
+A implementação do sistema de atualização implementado na plataforma embarcada STM32F746NGH6 se mostrou efetuada com sucesso, conseguindo mostrar como diferentes firmwares puderam ser trocados de forma rápida, eficiente e dando ao usuário sinalizações que mostravam cada etapa do sistema.
+
+Um dos revezes deste trabalho foi o fato que o sistema de atualização ocupa um espaço consideravel na memória flash dos microcontroladores, fazendo com que o sistema não funcione em hardwares com pouca memória, assim diminuindo a usabilidade do sistema, mas ainda é um ferramenta muito util e poderosa para sistemas mais robustos. Fazendo que que se abra a possibilidade de trabalhos futuros que possam melhorar ainda mais o sistema criado.
 \section{TRABALHOS FUTUROS}
 \label{sec:trabalhosFuturos}
 
-Também deve indicar, se possível e/ou conveniente, como o trabalho pode ser estendido ou aprimorado.
+Com o intuito de se tornar ainda mais robusto e ocupar uma quantidade de memória menor, este capitulo aborda algumas propostas de melhoria do sistema que podem ser feitas em trabalhos futuros. Essa proposta faz com que o sistema seja mais atrativo para ser utilizado em sistemas com uma quantidade menor de memória.
 
-\section{CONSIDERAÇÕES FINAIS}
-\label{sec:consideracoesFinais}
+Uma proposta consiste em utilizar todas as ferramentas já utilizadas no bootloader no próprio firmware em será atualizado. O firmware pode a partir de ponteiros de função utilizar as funções presentes na biblioteca do FatFS e do HAL que já estão implementadas no bootloader em sua aplicação, não sendo necessário reimplementa-las no firmware da aplicação, tornando o tamanho final do seu firmware da aplicação menor, assim fazendo com que placas de menor memória possam utilizar o sistema.
 
-Encerramento do trabalho acadêmico.
+Pode-se utilizar outros meios de comunicação para a obtenção do novo firmware, fazendo com que não exista a necessidade de se utilizar toda a comunicação com o servidor e assim diminuindo a quantidade de memória ocupada pelo sistema. Uma implementação possivel pode ser o uso de UART para a obtenção do firmware, onde o firmware é dividido em diversos pacotes e esses são enviados aos poucos para o hardware e podem ser conferirdos CRCs no final de cada pacote para se obter uma prova de que o firmware obtido é integro.
+

@@ -16,15 +16,12 @@ Com o conhecimento obtido sobre todos esses temas o leitor será capaz de compre
 %O conceito de \textit{firmware over the air} (FOTA),  consiste em um mecanismo de atualização remoto de firmware, já é muito utilizado em firmware de smartfones por fornecer uma forma segura, eficiente e conveniente de atualização.geralmente utilizado em smartfones.  
 \section{PROCESSO DE INICIALIZAÇÃO DO SISTEMA}
 
-Segundo \citeonline{Qing2003}, um processador embarcado, após ser ligado, busca e executa o código de um endereço pré-definido e gravado permanentemente na memória. O código contido nessa localização da memória é chamado de \resetv. O \resetv\ é usualmente uma instrução de salto para outro espaço da memória em que o real código de inicialização se encontra. A razão deste salto para outra localidade da memória é para manter o \resetv\ pequeno. O \resetv\ pertence a uma pequena área da memória reservada pelo sistema por motivos especiais. O \resetv, assim como o código de inicialização do sistema, precisa estar armazenado permanentemente. Por causa deste problema, o código de inicialização, chamado de código \textit{bootstrap}, reside na memória somente de leitura (ROM), na flash ou em outra memória não volátil. O termo \textit{loader} se refere ao código que é responsável por executar o \textit{bootstrap}, fazer o possível \download\ de uma imagem de outro local e inicialização da aplicação final.
+Segundo \citeonline{Qing2003}, um processador embarcado, após ser ligado, busca e executa o programa de um endereço pré-definido e gravado permanentemente na memória. A instrução contida nessa localização da memória é geralmente chamada de vetor de reset. O vetor de reset contém diversos ponteiro que apontam para diferentes regiões de memória e dependendo da posição desse ponteiro ele pode apontar para rotinas de inicialização, tratamento de interrupção entre outras rotinas.
+O ponteiro contido na região de inicialização do vetor de reset geralmente aponta para uma instrução de salto para outro espaço da memória em que a real rotina de inicialização se encontra. A razão deste salto para outra localidade da memória é para manter o vetor de reset pequeno. O vetor de reset pertence a uma pequena área da memória reservada pelo sistema por motivos especiais. O vetor de reset, assim como o código de inicialização do sistema, precisa estar armazenado permanentemente. Por causa deste problema, a rotina de inicialização, chamado de programa \textit{bootstrap}, reside na memória somente de leitura (ROM), na flash ou em outra memória não volátil. O termo \textit{loader} se refere ao subprograma que é responsável por executar o \textit{bootstrap}, fazer o possível \download\ de um binário do firmware executável, também conhecido como imagem, de outro local e inicialização da aplicação final.
 
-O conceito é melhor explicado por meio de um exemplo. Neste exemplo, iremos assumir que o \loader\ foi desenvolvido e programado na memória flash. Além disso, será assumido que a imagem alvo contém várias seções de programa. Cada seção tem um lugar designado no mapa de memória. O \resetv\ está contido em uma pequena ROM, que está mapeada na localização 0x0h do espaço de endereços. A ROM contém alguns valores iniciais essenciais requeridos pelo processador quando o sistema é reinicializado (\textit{reset}). Esses valores são o \resetv, o \textit{stack pointer} (ponteiro de pilha) inicial e o endereço da memória de acesso randômico (RAM) usável. 
+O conceito é melhor explicado por meio do exemplo criado por \citeonline{Qing2003}. Neste exemplo, assumimos que o \loader\ foi desenvolvido e programado na memória flash. Além disso, será assumido que a imagem alvo contém várias seções de programa. Cada seção tem um lugar designado no mapa de memória. O \resetv\ está contido em uma pequena ROM, que está mapeada na localização 0x0h do espaço de endereços. A ROM contém alguns valores iniciais essenciais requeridos pelo processador quando o sistema é reinicializado (\textit{reset}). Esses valores são o \resetv, o \textit{stack pointer} (ponteiro de pilha) inicial e o endereço da memória de acesso randômico (RAM). 
 
 No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, o \resetv\ é uma instrução de salto para o endereço de memória 0x00040h; o \resetv\ transfere o controle do programa para a instrução neste endereço. O código de inicialização do sistema contém, entre outras coisas o programa \loader\ da imagem destino e o vetor de exceção padrão do sistema (\textit{exception vector}). O vetor de exceção do sistema aponta para uma instrução que reside na memória flash.
-
-A primeira parte do processo de \textit{bootstrap} do sistema é colocar o sistema em um estado conhecido. São colocados valores padrões apropriados nos registradores do processador. São colocados no \stackp\ os valores encontrados na ROM. O \loader\ desabilita as interrupções do sistema, pois o sistema ainda não está preparado para lidar com interrupções. O \loader\ também inicializa a memória RAM e possivelmente a \textit{cache} (memória transitória) do processador. Neste ponto, o \loader\ executa um diagnóstico de \textit{hardware} limitado nos dispositivos necessários para essas operações.
-
-A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. O \loader\ pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader\ copia a seção do programa e a prepara para a execução.
 
 \begin{figure}[H]
     \scriptsize
@@ -33,6 +30,10 @@ A execução do programa é mais rápida na RAM quando comparada ao mesmo códig
      \caption{Processo de inicialização de um sistema embarcado.\newline Fonte:\cite{Qing2003}}
      \label{fig:INICIALIZAÇÃO}
 \end{figure}
+
+A primeira parte do processo de \textit{bootstrap} do sistema é colocar o sistema em um estado conhecido. São posicionados valores padrões apropriados nos registradores do processador. São colocados no \stackp\ os valores encontrados na ROM. O \loader\ desabilita as interrupções do sistema, pois o sistema ainda não está preparado para lidar com interrupções. O \loader\ também inicializa a memória RAM e possivelmente a \textit{cache} (memória transitória) do processador. Neste ponto, o \loader\ executa um diagnóstico de \textit{hardware} limitado nos dispositivos necessários para essas operações.
+
+A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. O \loader\ pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader\ copia a seção do programa e a prepara para a execução \cite(Qing2003).
 
 Uma imagem executável possui seções de dados inicializados e não inicializados. Essas seções são ambas legíveis e graváveis. Essas seções precisam residir na RAM, assim sendo são copiadas da memória flash para a RAM como parte do sistema de inicialização. A seção de dados inicializados (chamadas pelo \linker\ de .data e .sdata) contém os valores iniciais para as variáveis globais e estáticas. O contéudo dessa seção, portanto, faz parte da imagem executável final e é transferido completamente pelo \loader. Por outro lado, o contéudo da seção de dados não inicializado (chamado pelo \linker\ de .bss e .sbss) é vazio. O \linker\ reserva espaço para essa seção no mapa de memória. As informações de alocação dessas seções, como o tamanho da seção e o endereço de execução da seção, são parte do cabeçalho da seção. É trabalho do \loader\ obter essas informações dos cabeçalhos de seção e alocar a mesma quantidade de memória na RAM durante o processo de carregamento. O \loader\ coloca essas seções na RAM de acordo com o endereço de execução das seções.
 
@@ -98,10 +99,10 @@ O \bootloader\ é um \textit{software} que tem como responsabilidade a atualiza�
      \label{Diag_Bootloader}
 \end{figure}
 
-Sua função se resume geralmente a: comunicar-se com outro servidor, ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo \software. 
-Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras placas.
+A função do \bootloader\ se resume geralmente a: comunicar-se com outro servidor, ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo programa. 
+Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras plataformas.
 %Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
-Portanto, é uma peça de \textit{software} que não é portável para várias plataformas. A \autoref{FluxoBootloader} mostra o funcionamento de um bootloader padrão. 
+Portanto, é uma programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um bootloader padrão. 
 
 \begin{figure}[H]
     \scriptsize
@@ -113,21 +114,24 @@ Portanto, é uma peça de \textit{software} que não é portável para várias p
 
 
 
-Os sistemas microcontrolados STM32 possuem um \bootloader\ pré programado na ROM desde sua fabricação. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
+Os microcontroladore da família STM32 desenvolvidos pela empresa ST \citeonline{STM32F7} possuem um \bootloader\ pré programado na ROM desde sua fabricação. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
 
-É possível ser criado um \bootloader\ customizado com diversas funções adicionais. Uma função frequentemente usada é o uso do \bootloader\ para descriptografar firmwares que podem chegar via internet, para se garantir a segurança e origem do \firmware, assim após esse processo o sistema pode substituir o \software\ anterior pelo recebido. 
+Um \bootloader\ customizado pode conter diversas funções adicionais, uma função frequentemente usada é o uso do \bootloader\ para descriptografar firmwares que podem chegar via internet, para se garantir a segurança e origem do \firmware.
 
 
 
 \subsection{LINKER}
 
-Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados pelo compilador e \textit{assembler}. Criando assim os arquivos objetos, que contém os códigos de máquina binários (\textit{machine binary code}) e dados de programa (\textit{program data}). O \textit{archive utility} concatena uma coleção de arquivos objetos para formar uma biblioteca. Então o \linker\ obtém esses arquivos objetos como entrada e produz ou um arquivo executável, ou um arquivo objeto que pode ser utilizado em outro \linker\ com outros arquivos objetos. O arquivo de comandos de \linker\ (\textit{linker command file}) orienta o \linker\ em como combinar esses diferentes arquivos objetos e aonde colocar o código binário e os dados no sistema embarcado alvo. Assim podemos concluir que, a função principal de um \linker\ é combinar múltiplos arquivos objetos em um arquivo objeto relocável maior, um arquivo objeto compartilhado ou uma imagem executável final. Esse processo pode ser observado na \autoref{linker}.
+Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados pelo compilador e \textit{assembler}. Criando assim os arquivos objetos, que contém os códigos de máquina binários (\textit{machine binary code}) e dados de programa (\textit{program data}).
+O utilitário de arquivo é um programa que concatena uma coleção de arquivos objetos para formar uma biblioteca. Então o \linker\ obtém esses arquivos objetos como entrada e produz ou um arquivo executável, ou um arquivo objeto que pode ser utilizado em outro \linker\ com outros arquivos objetos.
+O arquivo de comandos de \linker\ (\textit{linker command file}) orienta o \linker\ em como combinar esses diferentes arquivos objetos e em que local da memória colocar o código binário e os dados no sistema embarcado alvo.
+Em conclusão, a função principal de um \linker\ é combinar múltiplos arquivos objetos em um arquivo objeto maior, um arquivo objeto compartilhado ou uma imagem executável final. Esse processo pode ser observado na \autoref{linker}.
 
 \begin{figure}[H]
     \scriptsize
      \centering
      \includegraphics[scale=0.5]{dados/figuras/Linker.png}
-     \caption{Criando um arquivo de imagem para um sistema alvo.\newline Fonte:\cite{Qing2003}}
+     \caption{Criando um arquivo de imagem para um sistema.\newline Fonte: adaptado de \cite{Qing2003}}
      \label{linker}
 \end{figure}
 
@@ -155,14 +159,8 @@ O \linker\ precisa combinar esses arquivos objetos e fundir as seções de difer
      \centering
      \includegraphics[scale=0.7]{dados/figuras/Linker4.png}
      \caption{Mapeando uma imagem executável em um sistema alvo.\newline Fonte:\cite{Qing2003}}
-     \label{linker}
+     \label{linker4}
 \end{figure}
-
-
-
-
-
-
 
 \section {COMUNICAÇÃO CLIENTE-SERVIDOR}
 
@@ -178,7 +176,7 @@ A comunicação cliente-servidor na internet é feita por meio de diversos proto
      \label{fig:PilhaTCP}
 \end{figure}
 
-Essas camadas são denominadas:
+Segundo \citeonline{Kurose2010}, essas camadas são denominadas:
 
 \begin{itemize}
     \item Camada de aplicação: em que residem os protocolos de nível mais alto. Um protocolo da camada de aplicação é distribuído por diversos sistemas finais, sendo que a aplicação em um sistema usa o protocolo para trocar pacotes de informação com a aplicação em outro sistema.
@@ -212,7 +210,6 @@ Com a popularização da internet essa comunicação se tornou cada vez mais com
 \subsection{LWIP}
 %Com a necessidade de se obter os binários dos códigos do novo firmware o sistema irá se utilizar da biblioteca amplamente conhecida e utilizada LWIP.
 A Biblioteca LwIP é uma implementação da pilha TCP/IP, focada em ser pequena e portável, reduzindo a utilização de recursos como memória RAM e ainda tendo um TCP completo, se tornando adequada para sistemas embarcados. Foi originalmente desenvolvida por Adam Dunkels nos laboratórios da \textit{Computer and Networks Architectures} (CNA), no Instituto Sueco de Ciência da Computação (SICS) e agora é desenvolvida e mantida por uma rede mundial de desenvolvedores \cite{LWIP}.
-
 Possui três \textit{Aplication Programing Interfaces} (APIs):
 \begin{itemize}
 \item RAW API (API básica): É a API nativa do LwIP, possui melhor desempenho e o menor tamanho de código, porém torna o desenvolvimento de aplicações mais complexo.
@@ -235,22 +232,28 @@ Essas API's implementam diversos protocolos de rede, incluindo:
 
 A seguir serão explanados com mais profundidade alguns dos protocolos implementados pela LwIP que serão utilizados neste trabalho.
 
-\subsubsection{HYPERTEXT TRANSFER PROTOCOL (HTTP)}
+\subsubsection{Hypertext Transfer Protocol (HTTP)}
 Segundo \citeonline{Kurose2010}, o protocolo da camada de aplicação HTTP é implementado em dois programas, um programa cliente e outro servidor. Os dois são executados em sistemas finais diferentes, se comunicam entre eles por meio de uma troca de mensagens HTTP. O HTTP define a estrutura dessas mensagens assim como o modo como o cliente e o servidor as trocam. 
 
 O HTTP define como clientes requisitam documentos aos servidores e como eles os transferem ao cliente. Ele utiliza o TCP como seu protocolo de transporte subjacente. O cliente HTTP primeiramente inicia uma conexão TCP com o servidor. Após essa conexão ser estabelecida, os processos da aplicação e do servidor acessam o TCP por meio de sua interface de sockets. No lado do cliente a interface de socket é uma porta entre o processo cliente e a conexão TCP. No lado do servidor, ela é uma porta entre o processo servidor  e a conexão TCP.
 
 O cliente envia mensagens de requisição HTTP para sua interface de socket e recebe uma mensagem de resposta HTTP de sua interface de socket. De uma maneira parecida acontece do lado do servidor, onde ele recebe mensagens de requisição HTTP de sua interface de socket e envia mensagens respostas a sua interface. Assim a mensagem sai da camada de aplicação e passa para a camada de transporte. 
 
-\subsubsection{TRANSMISSION CONTROL PROTOCOL (TCP)}
+\subsubsection{Transmission Control Protocol (TCP)}
 
 Segundo \citeonline{tanenbaumRedes}, O TCP foi projetado especificamente para oferecer um fluxo de bytes fim a fim confiável em uma inter-rede não-confiável. Uma inter-rede é diferente de uma única rede porque suas diversas partes podem ter topologias, larguras de banda, retardos, tamanhos de pacotes e outros parâmetros totalmente diferentes. O TCP foi projetado para se adaptar dinamicamente às propriedades da inter-rede e ser robusto diante de muitos categorias de falhas que podem ocorrer.
 
 Cada máquina compatível com TCP tem uma entidade de transporte TCP, que pode ser um procedimento de biblioteca, um processo do usuário ou parte do núcleo. Em todos os casos, ele gerencia fluxos e interfaces TCP para a camada IP. Uma entidade TCP aceita fluxos de dados de usuários provenientes de processos locais, divide-os em partes de no máximo 64 kB e envia cada parte em um datagrama IP distinto. Quando os datagramas IP que contem dados TCP chegam a uma máquina, eles são enviados à entidade TCP, que restaura o fluxo de bytes originais.
 
-A camada IP não oferece garantia que os datagramas serão entregues de forma apropriada, portanto, cabe ao TCP administrar os \textit{timers} e retransmiti-los sempre que necessário. Os datagramas também podem chegar fora de ordem, o TCP também terá que os reorganizar em mensagens na sequência correta. 
+A camada IP não oferece garantia que os datagramas serão entregues de forma apropriada, portanto, cabe ao TCP administrar os \textit{timers} e retransmiti-los sempre que necessário. Os datagramas também podem chegar fora de ordem, o TCP também terá que os reorganizar em mensagens na sequência correta.
+
+\subsubsection{Internet Protocol (IP)}
+
+Aqui vou explanar um pouco sobre o protocolo IP
 
 \subsection{MBED TLS}
+A Mbed TLS provê a implementação da camada de segurança para a comunicação com o servidor, que pode evitar que uma versão maliciosa do software seja recebida de uma fonte não confiável. Também nos fornece peças de software contendo algoritmos criptográficos, que podem ser facilmente acoplados a qualquer aplicação. Como é o caso do algoritmo SHA-2 que ficará responsável por fazer a verificação da integridade dos arquivos baixados.
+
 A biblioteca Mbed TLS foi desenvolvida para se integrar facilmente a aplicações embarcadas existentes, e fornecer os blocos de construção para uma comunicação segura, criptografia e gerenciamento de chaves. Como o seu intuito é ser o mais flexível possível, permite que sejam integrados ao sistema somente as funcionalidades necessárias, diminuindo assim o tamanho total que a biblioteca ocuparia no sistema \cite{mbedtls}.
 
 A \autoref{mbedtlsFig} ilustra como a biblioteca cria uma camada intermediária entre a aplicação final e a camada TCP/IP, chamada de TLS (\textit{Transport Layer Security}). A Mbed TLS pode ser usada para criar um servidor e cliente SSL (\textit{Secure Sockets Layer})/TLS, fornecendo uma estrutura para a configurar e se comunicar por meio de um canal de comunicação SSL/TLS. A camada TLS criada depende diretamente dos módulos de análise de certificado, criptografia simétrica ou assimétrica e \hash\ da biblioteca utilizada.
@@ -263,9 +266,9 @@ A \autoref{mbedtlsFig} ilustra como a biblioteca cria uma camada intermediária 
      \label{mbedtlsFig}
 \end{figure}
 
-A Mbed TLS provê a implementação da camada de segurança para a comunicação com o servidor, que pode evitar que uma versão maliciosa do software seja recebida de uma fonte não confiável. Também nos fornece peças de software contendo algoritmos criptográficos, que podem ser facilmente acoplados a qualquer aplicação. Como é o caso do algoritmo SHA-2 que ficará responsável por fazer a verificação da integridade dos arquivos baixados.
 
-\subsubsection{TRANSPORT LAYER SECURITY (TLS)}
+
+\subsubsection{Transport Layer Security (TLS)}
 
 A \textit{Transport Layer Security} assim como seu precursor \textit{Secure Sockets Layer}, é um protocolo de segurança projetado para fornecer segurança na comunicação sobre uma rede de computadores.
 Segundo \citeonline{TLSV12}, o protocolo TLS visa fornecer privacidade e integridade de dados entre aplicações que se comunicam. Quando uma rede está protegida por TLS, conexões entre um cliente e um servidor devem ter uma ou mais das seguintes propriedades:
@@ -277,7 +280,7 @@ Segundo \citeonline{TLSV12}, o protocolo TLS visa fornecer privacidade e integri
 
 Uma vantagem do TLS é que ele é independente do protocolo da aplicação. No entanto, ele não especifica como os protocolos adicionam segurança ao TLS, as decisões sobre como iniciar o \textit{handshaking} e como interpretar os certificados de autenticação trocados são deixadas ao critério dos projetistas e desenvolvedores de protocolos executados sobre o TLS.
 
-\subsubsection{FUNÇÃO HASH}
+\subsubsection{Função Hash}
 
 Segundo \citeonline{Kurose2010}, uma função \textit{hash} é um algoritmo que recebe uma entrada, $m$, e computa uma cadeia de bits de tamanho fixo $H(m)$ conhecida como \textit{hash}. Uma função de \textit{hash} criptográfica deve apresentar a seguinte propriedade:
 no processamento, é impraticável encontrar duas mensagens diferentes $x$ e $y$ em que $H(x)=H(y)$.
@@ -285,6 +288,7 @@ no processamento, é impraticável encontrar duas mensagens diferentes $x$ e $y$
 A SHA-1 (Secure \textit{Hash} Algorithm) é um conjunto de funções \textit{hash} criptográficas projetadas pela NSA\cite{NSA}. Esse algoritmo, de forma resumida, se baseia em processar um resumo de mensagem de 160 bits por meio de um processo de quatro etapas, formado por uma etapa de enchimento(Adicionando 'uns' seguidos de 'zeros' suficientes, de maneira em que o comprimento da mensagem satisfaça determinados critérios), uma etapa de anexação (anexação de uma representação de alguns bits do comprimento da mensagem antes do enchimento), uma etapa de inicialização de um acumulador e uma etapa final iterativa, em que os blocos de palavras da mensagem são processados (misturados) em quatro rodadas de processamento. 
 
 Comparando o \hash\ computado (a saída de execução do algoritmo) a um valor de \hash\ conhecido e esperado, pode-se determinar a integridade dos dados. Por exemplo, calcular o \hash\ de um arquivo baixado e comparar o resultado com um \hash\ conhecido, pode comprovar que o arquivo foi modificado ou adulterado.
+
 SHA-2 é um conjunto de funções \hash\ criptográficas que contém mudanças significativas de seu antecessor. É composta por seis funções \hash\ com valores de \hash\ que são de 224, 256, 384 ou 512 bits: SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256.
 
 
@@ -294,12 +298,12 @@ SHA-2 é um conjunto de funções \hash\ criptográficas que contém mudanças s
 Segundo \citeonline{tanenbaumSO}, para resolver diversos problemas com o armazenamento de grandes quantidades de dados, a perda de dados após o fim da execução do processo que os criou e a necessidade de tornar esses dados independentes de quaisquer processos. Existe a necessidade da criação de uma estrutura de armazenamento de informações a longo prazo. Os três requisitos fundamentais para essa estrutura são:
 
 \begin{itemize}
-    \item Deve ser possivel armazenar um volume grande de informações.
-    \item Os dados devem sobreviver ao término do processo que os estão utilizando.
+    \item Deve ser possivel armazenar um volume grande de informações;
+    \item Os dados devem sobreviver ao término do processo que os estão utilizando;
     \item Vários processos devem ser capazes de acessar os dados concomitantemente.
 \end{itemize}
 
-Essa estrutura é chamada de arquivo, e é vastamente utilizada por diversos sistemas. Os arquivos são utilizados para armazenar dados em discos e outras mídias externas. Então os processos podem ler e escrever novos dados quando necessário. As informações armazenadas em arquivos devem ser persistentes, logo, não devem ser afetadas pela criação e pelo término do processo. Um arquivo só deve desaparecer quando o seu criador o apagar.
+Essa estrutura é chamada de arquivo, e é vastamente utilizada por diversos sistemas. Os arquivos são utilizados para armazenar dados em discos e outras mídias externas. Então os processos podem ler e escrever novos dados quando necessário. As informações armazenadas em arquivos devem ser persistentes, logo, não devem ser afetadas pela criação e pelo término do processo. Um arquivo só deve desaparecer quando o seu criador o apagar \cite{tanenbaumSO}.
 
 O modo como os arquivos são estruturados, nomeados, acessados, usados, protegidos e implementados são definidos geralmente pelo sistema operacional. A parte do sistema operacional responsável por esse gerenciamento é chamada de sistema de arquivos. Os arquivos podem, no caso de sistemas embarcados, ser gerenciados por API's que criam uma camada independente do sistema operacional e gerenciam os arquivos, como é o caso da biblioteca FatFs. 
 
@@ -312,7 +316,7 @@ Um cartão SD é um dispositivo de memória não volátil criado pela SD Card As
 
 \subsection{SISTEMA DE ARQUIVO FAT}
 
-Segundo \citeonline{tanenbaumSO}, o sistema de arquivo FAT (\textit{File Allocation Table}) é implementado por meio de uma alocação de memória encadeada usando uma tabela na memória. Nessa organização, o bloco de memória inteiro está disponível para dados. Além disso, o acesso aleatório é muito mais fácil. Mesmo que o encadeamento ainda tenha que ser seguido para encontrar determinado deslocamento dentro do arquivo, ele está inteiramente na memória. De modo que, pode ser seguido sem necessidade nenhuma de referenciar o disco.
+Segundo \citeonline{tanenbaumSO}, o sistema de arquivo FAT (\textit{File Allocation Table}) é implementado por meio de uma alocação de memória encadeada usando uma tabela na memória. Nessa organização, o bloco de memória inteiro está disponível para dados. Além disso, o acesso aleatório é muito mais fácil. Mesmo que o encadeamento ainda tenha que ser seguido para encontrar determinado deslocamento dentro do arquivo, ele está inteiramente na memória, de modo que, pode ser seguido sem necessidade nenhuma de referenciar o disco.
 
 A \autoref{FAT} ilustra como é a tabela, mostrando que o arquivo $A$ inicia-se no bloco 4 e segue o encadeamento até o seu fim, assim como o arquivo $B$ que se inicia no bloco 6. Ambos terminam com um marcador especial que no caso é o número -1.
 
@@ -324,7 +328,7 @@ A \autoref{FAT} ilustra como é a tabela, mostrando que o arquivo $A$ inicia-se 
      \label{FAT}
 \end{figure}
 
-A principal desvantagem deste método é que a tabela inteira precisa estar na memória o tempo todo. Com um disco de 20 GB e um tamanho de bloco de 1 KB, a tabela precisa de 20 milhões de entradas, uma para cada um dos 20 milhões de blocos do disco. Cada entrada tem de ter no mínimo 3 bytes para manter o endereço dos blocos. Para facilitar sua pesquisa, as entradas acabam ocupando 4 bytes. Assim, a tabela ocupará 60 MB ou 80 MB de memória principal o tempo todo, dependendo do sistema para ser otimizado para espaço ou para tempo.
+A principal desvantagem deste método é que a tabela inteira precisa estar na memória o tempo todo. Com um disco de 20 GB e um tamanho de bloco de 1 KB, a tabela precisa de 20 milhões de entradas, uma para cada um dos 20 milhões de blocos do disco. Cada entrada tem de ter no mínimo 3 bytes para manter o endereço dos blocos. Para facilitar sua pesquisa, as entradas acabam ocupando 4 bytes. Assim, a tabela ocupará 60 MB ou 80 MB de memória principal o tempo todo.
 
 Existe também o sistema de arquivo exFAT que é utilizado para mídias com capacidade de armazenamento maiores que 4 GB, que foi adotada como sistema de arquivo padrão para cartões de memória (SD card) maiores de 4 GB, pela SD Card Association \cite{SDCARD}.
 
@@ -340,7 +344,7 @@ FatFs é um módulo genérico de um sistema de arquivo FAT/exFAT, para pequenos 
      \label{FatFS}
 \end{figure}
 A FatFs fornece várias funções do sistema de arquivos para a aplicação.
-Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é ilustrado da \autoref{FatFS2}. Umas das principais funções fornecidas pela FatFs para a aplicação são:
+Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é ilustrado da \autoref{FatFS2}. As principais funções fornecidas pela FatFs para a aplicação são \cite{FATFS}:
 
 \begin{itemize}
     \item Acesso a arquivos.
@@ -385,9 +389,12 @@ Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é
 %Também servirá ao propósito de "amarrar"{} o conteúdo deste capítulo com o conteúdo do capítulo imediatamente anterior.
 
 
+\section{HARDWARE ABSTRACTION LAYER (HAL)}
+
+\subsection{HAL STM32}
 \section{TRABALHOS CORRELATOS}
 
-Foram identificados três trabalhos correlatos.
+Durante a elaboração desse trabalho foram identificados alguns trabalhos que produziam alguns métodos de atualização OTA para diversas aplicações, que serão explanados a seguir:
 
 %pode ter latencia de interrupção porem deve ser controlada
 

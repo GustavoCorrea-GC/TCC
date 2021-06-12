@@ -12,14 +12,14 @@ A outra parte desse trabalho será uma API, contendo as demais funções necess�
 Após ser confirmada a existência de uma nova versão de \firmware, em um tempo determinado pelo projetista a API irá se comunicar novamente com o servidor com o intuito de fazer o \download\ dessa nova versão, e a armazenar em um endereço de memória predeterminado no cartão SD do sistema, para que então o \bootloader\ entre em ação após uma reinicialização do sistema.
 A API será uma peça de \software\ que poderá ser substituída e atualizada em conjunto com as demais aplicações do sistema, como, as bibliotecas LwIP, Mbed TLS, o sistema operacional, entre outras peças de \software\ utilizadas pela aplicação. 
 
-O sistema de atualização OTA utiliza-se de bibliotecas já conhecidas e vastamente utilizadas por desenvolvedores de sistemas embarcados. Para que assim projetos que necessitem fazer comunicação segura via rede, leitura e escrita de cartões SD, possam utilizar esse sistema de modo a poupar espaço na memória, visando a reutilização dessas bibliotecas. Portanto, o sistema pode ser amplamente utilizado por sistema de IoT. 
+O sistema de atualização OTA utiliza-se de bibliotecas já conhecidas e vastamente utilizadas por desenvolvedores de sistemas embarcados. Assim projetos que necessitem fazer comunicação segura via rede, leitura e escrita de cartões SD, possam utilizar esse sistema de modo a poupar espaço na memória, visando a reutilização dessas bibliotecas. Portanto, o sistema pode ser amplamente utilizado por sistema de IoT. 
 %Será utilizada o \textit{kit} de desenvolvimento STM32F746G \textit{Discovery}, onde será inicialmente desenvolvida a API, suas tarefas e o \textit{bootloader} que serão os principais componentes desse sistema.
 
 Em caso de uma falha durante o processo de atualização OTA e o sistema não responda após a atualização, o sistema tem a habilidade de se recuperar. Como não haverá sobreescrita na área em que o \textit{firmware} está posicionado no cartão SD, uma simples reinicialização do sistema pode fazer com que o bootloader seja ativado novamente e refaça o processo de cópia da memória.
 
 O sistema de atualização irá funcionar da seguinte forma, após a inicialização do sistema o \bootloader\ é executado e verifica a existência de um novo \firmware, no caso negativo ele inicia normalmente o \software\ principal da aplicação. No caso positivo, o \bootloader\ inicia o processo de substituição de \textit{firmware}, após a troca, o novo \software\ é iniciado. Durante a execução da aplicação principal do sistema e em um tempo determinado pelo projetista a API entra em contato com o servidor para verificar a disponibilidade de um \software\ novo, em caso positivo ela agenda um período para a atualização do \firmware, no caso negativo ele continua a execução da aplicação. 
 
-Caso haja uma atualização quando o horário do agendamento chegar, a API irá conectar-se ao servidor e iniciar o processo de \download\ do \firmware\ novo e armazena-lo em uma área já predefinida do cartão SD para que o \bootloader\ possa o encontrar. Após o \download\ o sistema irá ser reiniciado e o \bootloader\ entrará será executado novamente. 
+Caso haja uma atualização quando o horário do agendamento chegar, a API irá conectar-se ao servidor e iniciar o processo de \download\ do \firmware\ novo e armazená-lo em uma área já predefinida do cartão SD para que o \bootloader\ possa o encontrar. Após o \download\ o sistema será reiniciado e o \bootloader\ entrará será executado novamente. 
 %De forma resumida o funcionamento do sistema pode ser visto na \autoref{Funcionamento}, 
 
 
@@ -36,13 +36,13 @@ Caso haja uma atualização quando o horário do agendamento chegar, a API irá 
 
 A partir de um arquivo de \textit{linker}, a memória da plataforma será customizada com o intuito de abrigar os arquivos necessários para o \bootloader\ e protegê-lo de eventuais sobrescritas que podem vir a ocorrer. Esse arquivo de \textit{linker}, assim como o próprio \textit{bootloader}, será escrito somente para a plataforma STM32F7, visto que cada plataforma tem suas próprias características como, tamanho de memória e endereços diferentes para cada fabricante e/ou arquitetura.
 
-No arquivo de \linker\ será especificada uma área especial na memória flash do sistema em que será abrigado o \bootloader. Também será responsável por fazer com que o \bootloader\ seja chamado após da função \textit{main}. Assim podemos garantir que o \bootloader\ sempre entre em ação após a reinicialização do sistema embarcado.
+No arquivo de \linker\ será especificada uma área especial na memória flash do sistema em que será abrigado o \bootloader. Também será responsável por fazer com que o \bootloader\ seja chamado após da função \textit{main}. Assim será garantido que o \bootloader\ sempre entre seja executado após a reinicialização do sistema embarcado.
 
 %irá verificar o \textit{hash} da nova versão, verificando a integridade e origem do \textit{software},
 
 O \textit{bootloader} será responsável em fazer a troca de cada versão de \textit{firmware} instalado no sistema embarcado. Sempre que o sistema for iniciado, o \textit{bootloader} será inicializado e fará a procura de um novo \textit{firmware} em um endereço de memória já predeterminado. Essa busca será possível pelo fato da biblioteca FatFs, que está implementada junto ao \bootloader, criar um sistema de arquivos no cartão SD do sistema alvo, assim o \bootloader\ pode acessar a memória do cartão sem a necessidade da aplicação final ser inicializada.
 
-Se após o reset a procura retornar com um resultado positivo para a existência de uma nova versão de \software, o \bootloader\ inicia o processo de atualização. Nesse processo o \bootloader\ substitui completamente o \software\ e demais bibliotecas e API's em áreas não protegidas na memória, pelo binário do \textit{firmware} presente no cartão SD. Esse processo será implementado com o uso das funções de escrita do HAL (\textit{Hardware Abstraction Layer}) fornecida pela STM32, já conhecida e utilizada por diversos desenvolvedores, com o intuito de se deixar o código do \bootloader\ mais reutilizável. O funcionamento resumido do \textit{bootloader} pode ser observado na \autoref{fig:DiagBootloader}.
+Se após o reset a procura retornar com um resultado positivo para a existência de uma nova versão de \software, o \bootloader\ inicia o processo de atualização. Nesse processo o \bootloader\ substitui completamente o \textit{firmware} e demais bibliotecas e API's em áreas não protegidas na memória, pelo binário do \textit{firmware} presente no cartão SD. Esse processo será implementado com o uso das funções de escrita do HAL (\textit{Hardware Abstraction Layer}) fornecida pela STM32, já conhecida e utilizada por diversos desenvolvedores, com o intuito de se deixar o código do \bootloader\ mais reutilizável. O funcionamento resumido do \textit{bootloader} pode ser observado na \autoref{fig:DiagBootloader}.
 
 \begin{figure}[H]
     \scriptsize
@@ -92,6 +92,7 @@ Quando o desenvolvedor iniciar a função OTA, a API iniciará novamente a comun
 A partir da utilização da biblioteca FatFs, será criado um sistema de arquivo FAT, que gerenciará a memória presente no cartão SD dentro da aplicação, e ele pode ser utilizado tanto pela aplicação final do sistema embarcado, quanto pela API. Esse sistema de arquivo será utilizado para que se possa identificar a posição na memória em que o \textit{firmware} novo será colocado após o seu \download, evitando que outros arquivos, pertencentes a aplicação final, sejam colocados nessa localização, e fazendo com que o \bootloader\ interprete de forma errada os arquivos gerando erros.
 
 
+
 %maquina de estado para leitura do arquivo.
 \section{MATERIAIS UTILIZADOS}
 
@@ -111,7 +112,7 @@ A \autoref{STM32F7} ilustra o kit STM32F746NGH6-Discovery.
      \label{STM32F7}
 \end{figure}
 
-Algumas de suas principais características são:
+Algumas de suas principais características são \cite{STM32F7}:
 \begin{itemize}
     \item Microcontrolador STM32F746NGH6 com 1 Mbytes de memória flash e 340 Kbytes de RAM, em um pacote BGA216.
     \item 128-Mbit de memória Quad-SPI Flash.
