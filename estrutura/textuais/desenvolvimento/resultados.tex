@@ -5,22 +5,6 @@
 \label{Chap:Resultados}
 
 Este capítulo apresenta o que foi obtido como resultado deste trabalho e as experiências do autor durante o desenvolvimento do sistema de atualização de firmware over-the-air. Primeiro será apresentado os resultados mostrando como é um processo de atualização realizado com sucesso e em seguida discutido o uso e vantagens e desvantagens do sistema. 
-Inicialmente irei falar sobre qual o firmware que foi gerado para este teste, seu conteúdo e suas variáveis que fariam a diferenciação entre os as versões de firmwares, e mostrando as etapas em de atualização que são realizadas neste processo.
-
-\section {FIRMWARES DE TESTE PROPOSTOS}
-Para os testes apresentados neste trabalho foram desenvolvidos três firmwares muito parecidos, ambos possuem todas as bibliotecas necessárias para que sistema de atualização OTA proposto funcionem corretamente, além de possuírem o sistema operacional de tempo real FreeRTOS. Esses firmwares foram desenvolvido para somente darem suporte ao sistema e não exercerem nenhuma outra função, então temos uma estimativa do tamanho que somente o sistema de atualização, suas bibliotecas e o FreeRTOS ocupam em memória.
-
-Esses firmwares contém em sua função main, além de inicializações necessárias de drivers, bibliotecas e do sistema operacional, uma pequena função que apresenta uma mensagem de apresentação mostrando a versão do firmware atual e uma mensagem de teste somente para fazer uma diferenciação entre as versões e como mostrada na \autoref{mensagemteste}. 
-
-\begin{figure}[H]
-    \scriptsize
-     \centering
-     \includegraphics[scale=1.2]{dados/figuras/ToDo.jpg}
-     \caption{As três mensagens exibidas para diferenciação dos \firmware. \newline Fonte: Autoria própria.}
-     \label{mensagemteste}
-\end{figure}
-
-A função padrão destes firmware é um laço infinito que a cada XXXX segundos inicializa a função OTA que inicializa o processo de atualização, assim temos uma garantia que o firmware ira sempre ficar executando a funçao OTA.
 
 \section{PROCESSO DE ATUALIZAÇÃO DE FIRMWARE}
 Aqui apresentaremos todo o processo de atualização feito para assim comprovar o funcionamento do sistema desenvolvido neste trabalho, com isso é abordado desde a inicialização do firmware que será substituído, a disponibilização de um novo firmware no servidor, a inicialização deste firmware na plataforma embarcada STM32F746G e sua mensagem de apresentação.
@@ -28,7 +12,15 @@ Aqui apresentaremos todo o processo de atualização feito para assim comprovar 
 \subsection{ESTADO INICIAL DO MICROCONTROLADOR}
 Inicialmente é gravado no microcontrolador o bootloader e depois o firmware 1, com isso temos a memória FLASH preenchida separadamente, visto que definimos areas diferentes para aplicação e bootloader no arquivo de linker, assim fica o estado inicial da memória do microcontrolador no inicio do teste.
 
-Com o bootloader e firmware 1 gravados no hardware já é possivel fazer a primeira inicialização do sistema, com a reinicialização do hardware o sistema inicializa o bootloader para poder dar sequencia de atualização ou pulo para a aplicação.
+Com o bootloader e firmware 1 gravados no hardware já é possivel fazer a primeira inicialização do sistema, com a reinicialização do hardware o sistema inicializa o bootloader para poder dar sequencia de atualização ou pulo para a aplicação. A \autoref{memoriaflash} mostra a configuração de memória flash do microcontrolador.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=1.2]{dados/figuras/ToDo.jpg}
+     \caption{As três mensagens exibidas para diferenciação dos \firmware. \newline Fonte: Autoria própria.}
+     \label{memoriaflash}
+\end{figure}
 
 \subsection{INICIALIZAÇÃO DO BOOTLOADER}
 Após todos processos de inicialização o bootloader é executado, como o intuito é que ele seja pequeno e de forma que se adapte para todos os tipos de microcontroladores da familia STM32, não existe nenhum tipo de sinalização durante seus processos, assim sua função principal que é fazer a troca de firmware e pulo para a aplicação é executada de forma que o usuário não é capas de identificar.

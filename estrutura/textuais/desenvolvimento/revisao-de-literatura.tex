@@ -26,14 +26,15 @@ No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, o \resetv\ é uma instru�
 \begin{figure}[H]
     \scriptsize
      \centering
-     \includegraphics[scale=1]{dados/figuras/BootOriginal.png}
-     \caption{Processo de inicialização de um sistema embarcado.\newline Fonte:\cite{Qing2003}}
+     %\includesvg[width=0.8\linewidth]{dados/figuras/inicializacaoBoot.svg}
+     \includegraphics[scale=0.75]{dados/figuras/inicializacaoBoot.pdf}
+     \caption{Processo de inicialização de um sistema embarcado.\newline Fonte: adaptado de \cite{Qing2003}}
      \label{fig:INICIALIZAÇÃO}
 \end{figure}
 
 A primeira parte do processo de \textit{bootstrap} do sistema é colocar o sistema em um estado conhecido. São posicionados valores padrões apropriados nos registradores do processador. São colocados no \stackp\ os valores encontrados na ROM. O \loader\ desabilita as interrupções do sistema, pois o sistema ainda não está preparado para lidar com interrupções. O \loader\ também inicializa a memória RAM e possivelmente a \textit{cache} (memória transitória) do processador. Neste ponto, o \loader\ executa um diagnóstico de \textit{hardware} limitado nos dispositivos necessários para essas operações.
 
-A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. O \loader\ pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader\ copia a seção do programa e a prepara para a execução \cite(Qing2003).
+A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. O \loader\ pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader\ copia a seção do programa e a prepara para a execução \cite{Qing2003}.
 
 Uma imagem executável possui seções de dados inicializados e não inicializados. Essas seções são ambas legíveis e graváveis. Essas seções precisam residir na RAM, assim sendo são copiadas da memória flash para a RAM como parte do sistema de inicialização. A seção de dados inicializados (chamadas pelo \linker\ de .data e .sdata) contém os valores iniciais para as variáveis globais e estáticas. O contéudo dessa seção, portanto, faz parte da imagem executável final e é transferido completamente pelo \loader. Por outro lado, o contéudo da seção de dados não inicializado (chamado pelo \linker\ de .bss e .sbss) é vazio. O \linker\ reserva espaço para essa seção no mapa de memória. As informações de alocação dessas seções, como o tamanho da seção e o endereço de execução da seção, são parte do cabeçalho da seção. É trabalho do \loader\ obter essas informações dos cabeçalhos de seção e alocar a mesma quantidade de memória na RAM durante o processo de carregamento. O \loader\ coloca essas seções na RAM de acordo com o endereço de execução das seções.
 
@@ -79,47 +80,6 @@ Agora o \loader\ está pronto para transferir a imagem da aplicação para o sis
 
 
 
-
-
-
-
-
-
-\subsection{BOOTLOADER}
-
-O \bootloader\ é um \textit{software} que tem como responsabilidade a atualização do \firmware\ do sistema, operação também conhecida como \textit{in-aplicattion programing} (IAP). Reside em uma área protegida da memória, geralmente colocado no início da flash ou na ROM, e é o primeiro \textit{software} a ser executado após o \textit{reset} ou iniciação do sistema.
-É desenvolvido para receber comandos via periféricos de comunicação como: UART, I2C, SPI, CAN e Ethernet, e entender o mapa de memória do microcontrolador \cite{DavesDurlin2013}. A \autoref{Diag_Bootloader} mostra como geralmente fica alocado um \bootloader\ e o \firmware\ na memória.
-% que são usados para trocar do firmware do MCU e recebimento do novo código de aplicação. Frequentemente é necessário um programa externo para dar esses comandos ao bootloader \cite{Noviello2018}.
-
-\begin{figure}[H]
-    \scriptsize
-     \centering
-     \includegraphics[scale=0.7]{dados/figuras/DiagBootloaderOriginal.png}
-     \caption{Alocação do bootloader e firmware nas memórias flash e ram.\newline Fonte:\cite{DavesDurlin2013}}
-     \label{Diag_Bootloader}
-\end{figure}
-
-A função do \bootloader\ se resume geralmente a: comunicar-se com outro servidor, ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo programa. 
-Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras plataformas.
-%Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
-Portanto, é uma programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um bootloader padrão. 
-
-\begin{figure}[H]
-    \scriptsize
-     \centering
-     \includegraphics[scale=1]{dados/figuras/FluxoBootloader.jpg}
-     \caption{Fluxograma de operações de um bootloader.}
-     \label{FluxoBootloader}
-\end{figure}
-
-
-
-Os microcontroladore da família STM32 desenvolvidos pela empresa ST \citeonline{STM32F7} possuem um \bootloader\ pré programado na ROM desde sua fabricação. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
-
-Um \bootloader\ customizado pode conter diversas funções adicionais, uma função frequentemente usada é o uso do \bootloader\ para descriptografar firmwares que podem chegar via internet, para se garantir a segurança e origem do \firmware.
-
-
-
 \subsection{LINKER}
 
 Segundo \citeonline{Qing2003}, os arquivos de uma aplicação são processados pelo compilador e \textit{assembler}. Criando assim os arquivos objetos, que contém os códigos de máquina binários (\textit{machine binary code}) e dados de programa (\textit{program data}).
@@ -158,9 +118,50 @@ O \linker\ precisa combinar esses arquivos objetos e fundir as seções de difer
     \scriptsize
      \centering
      \includegraphics[scale=0.7]{dados/figuras/Linker4.png}
-     \caption{Mapeando uma imagem executável em um sistema alvo.\newline Fonte:\cite{Qing2003}}
+     \caption{Mapeando uma imagem executável em um sistema alvo.\newline Fonte: adaptado de \cite{Qing2003}}
      \label{linker4}
 \end{figure}
+
+
+
+
+
+
+\subsection{BOOTLOADER}
+
+O \bootloader\ é um \textit{software} que tem como responsabilidade a atualização do \firmware\ do sistema, operação também conhecida como \textit{in-aplicattion programing} (IAP). Reside em uma área protegida da memória, geralmente colocado no início da flash ou na ROM, e é o primeiro \textit{software} a ser executado após o \textit{reset} ou iniciação do sistema.
+É desenvolvido para receber comandos via periféricos de comunicação como: UART, I2C, SPI, CAN e Ethernet, e entender o mapa de memória do microcontrolador \cite{DavesDurlin2013}. A \autoref{Diag_Bootloader} mostra como geralmente fica alocado um \bootloader\ e o \firmware\ na memória.
+% que são usados para trocar do firmware do MCU e recebimento do novo código de aplicação. Frequentemente é necessário um programa externo para dar esses comandos ao bootloader \cite{Noviello2018}.
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.7]{dados/figuras/DiagBootloaderOriginal.png}
+     \caption{Alocação do bootloader e firmware nas memórias FLASH e RAM.\newline Fonte: Adaptado de \cite{DavesDurlin2013}}
+     \label{Diag_Bootloader}
+\end{figure}
+
+A função do \bootloader\ se resume geralmente a: comunicar-se com outro servidor, ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo programa. 
+Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras plataformas.
+%Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
+Portanto, é uma programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um bootloader padrão. 
+
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.8]{dados/figuras/FluxoBootloader.png}
+     \caption{Fluxograma de operações de um bootloader.}
+     \label{FluxoBootloader}
+\end{figure}
+
+
+
+Os microcontroladore da família STM32 desenvolvidos pela empresa ST \citeonline{STM32F7} possuem um \bootloader\ pré programado na ROM desde sua fabricação. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
+
+Um \bootloader\ customizado pode conter diversas funções adicionais, uma função frequentemente usada é o uso do \bootloader\ para descriptografar firmwares que podem chegar via internet, para se garantir a segurança e origem do \firmware.
+
+
+
 
 \section {COMUNICAÇÃO CLIENTE-SERVIDOR}
 
@@ -171,8 +172,8 @@ A comunicação cliente-servidor na internet é feita por meio de diversos proto
 \begin{figure}[H]
     \scriptsize
      \centering
-     \includegraphics[scale=1]{dados/figuras/PilhaTCP-IP.png}
-     \caption{Pilha TCP/IP e seus protocolos.\newline Fonte:\cite{tanenbaumRedes}}
+     \includegraphics[scale=0.8]{dados/figuras/PilhaTCP-IP.png}
+     \caption{Pilha TCP/IP e seus protocolos.\newline Fonte: adaptado de \cite{tanenbaumRedes}}
      \label{fig:PilhaTCP}
 \end{figure}
 
@@ -247,9 +248,9 @@ Cada máquina compatível com TCP tem uma entidade de transporte TCP, que pode s
 
 A camada IP não oferece garantia que os datagramas serão entregues de forma apropriada, portanto, cabe ao TCP administrar os \textit{timers} e retransmiti-los sempre que necessário. Os datagramas também podem chegar fora de ordem, o TCP também terá que os reorganizar em mensagens na sequência correta.
 
-\subsubsection{Internet Protocol (IP)}
+%\subsubsection{Internet Protocol (IP)}
 
-Aqui vou explanar um pouco sobre o protocolo IP
+%Segundo \citeonline{Kurose2010}, o protocolo IP  
 
 \subsection{MBED TLS}
 A Mbed TLS provê a implementação da camada de segurança para a comunicação com o servidor, que pode evitar que uma versão maliciosa do software seja recebida de uma fonte não confiável. Também nos fornece peças de software contendo algoritmos criptográficos, que podem ser facilmente acoplados a qualquer aplicação. Como é o caso do algoritmo SHA-2 que ficará responsável por fazer a verificação da integridade dos arquivos baixados.
@@ -261,8 +262,8 @@ A \autoref{mbedtlsFig} ilustra como a biblioteca cria uma camada intermediária 
 \begin{figure}[H]
     \scriptsize
      \centering
-     \includegraphics[scale=1]{dados/figuras/mbedtls.png}
-     \caption{Pilha de comunicação.\newline Fonte:\cite{mbedtls}}
+     \includegraphics[scale=0.6]{dados/figuras/mbedtls.png}
+     \caption{Pilha de comunicação.\newline Fonte: adaptado de \cite{mbedtls}}
      \label{mbedtlsFig}
 \end{figure}
 
@@ -344,7 +345,7 @@ FatFs é um módulo genérico de um sistema de arquivo FAT/exFAT, para pequenos 
      \label{FatFS}
 \end{figure}
 A FatFs fornece várias funções do sistema de arquivos para a aplicação.
-Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é ilustrado da \autoref{FatFS2}. As principais funções fornecidas pela FatFs para a aplicação são \cite{FATFS}:
+Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é ilustrado da \autoref{FatFS}. As principais funções fornecidas pela FatFs para a aplicação são \cite{FATFS}:
 
 \begin{itemize}
     \item Acesso a arquivos.
@@ -376,13 +377,6 @@ Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é
     \end{itemize}
 \end{itemize}
 
-\begin{figure}[H]
-    \scriptsize
-     \centering
-     \includegraphics[scale=0.6]{dados/figuras/fatfs2.png}
-     \caption{Manipulação da memória por meio da API da FatFs.\newline  Fonte:\cite{FATFS}}
-     \label{FatFS2}
-\end{figure}
 %\section{SERVIDORES HTTP}
 
 %É uma boa prática iniciar cada novo capítulo com um breve texto introdutório (tipicamente, dois ou três parágrafos) que deve deixar claro o quê será discutido no capítulo, bem como a organização do capítulo.
@@ -390,8 +384,35 @@ Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é
 
 
 \section{HARDWARE ABSTRACTION LAYER (HAL)}
+A camada de abstração de hardware (\textit{hardware abstraction layer}) é uma divisão logica de código que serve como camada de abstração entre o hardware e o software de um sistema computacional. Ele prove uma interface de drivers dos periférico do microcontrolador com o programa, permitindo assim uma comunicação mais fácil entre hardware e software.
 
-\subsection{HAL STM32}
+O principal objetivo de um HAL é permitir que diferentes arquiteturas de hardwares funcionem com o mesmo software, para isso fazem uso de uma interface uniforme dos periféricos do sistema, mantendo sempre as mesmas chamadas de funções e de periférico desde a sua inicialização até sua utilização.
+
+O HAL está incluído em diversos sistemas operacionais para evitar que se modifiquem o Kernel para que ele possa ser executado em diferentes arquiteturas com diferentes conjuntos de hardwares. Um computador pode possuir uma camada de abstração de hardware dentro do kernel de seu sistema operacional, ou de forma de drivers que garantem uma interface consistente para a aplicação interagir com os periféricos fornecidos pelo hardware disponível.
+
+As vantagens que o HAL fornece são:
+\begin{itemize}
+    \item Permite que aplicações extraiam o máximo de desempenho possível dos hardwares.
+    \item Possibilitar que os sistemas operacionais e diversos software funcionem em diferentes arquiteturas de hardware.
+    \item Permite que driver de dispositivos forneçam acesso direto a periféricos do hardware, o que permite que programas sejam independentes dos dispositivos.
+    \item Facilita assim a portabilidade de um software.
+\end{itemize}
+
+\subsection{STM32CUBE HAL} 
+
+Segundo a \citeonline{STM32F7HAL}, o STM32Cube é uma iniciativa da STMicroelectronics para melhorar significativamente a produtividade do desenvolvedor, reduzindo o esforço, o tempo e o custo de desenvolvimento, e ele cobre toda a linha de produtos da STM32.
+
+É uma ferramenta de desenvolvimento que é composta por um software que permite a geração de códigos em C iniciais de um novo projeto. Nesta ferramenta é possivel já fazer as configurações iniciais de periféricos, bibliotecas, configurações de clock entre outras definições necessárias. Todos esses ajustes são feitos a partir de uma interface gráfica facilitando o entendimento e tornando ainda mais rápido o desenvolvimento. A interface do STM32Cube pode ser vista na \autoref{STM32Cube}.
+\begin{figure}[H]
+    \scriptsize
+     \centering
+     \includegraphics[scale=0.43]{dados/figuras/stm32cube.png}
+     \caption{Posição da biblioteca FatFs na aplicação.\newline  Fonte:\cite{FATFS}}
+     \label{STM32Cube}
+\end{figure}
+
+Segundo a \citeonline{STM32F7HAL}, as APIs do driver HAL são divididas em duas categorias: APIs genéricas, que fornecem funções comuns e genéricas para todas as séries STM32 e APIs extendidas, que incluem funções específicas e personalizadas para uma determinada familia ou microcontrolador especifico. Os drivers HAL incluem um conjunto completo de APIs prontas para uso que simplificam a implementação do aplicativo do usuário. Por exemplo, os periféricos de comunicação contêm APIs para inicializar e configurar-los, gerenciar transferências de dados, lidar com interrupções ou acesso direto a memória e gerenciar erros de comunicação.
+
 \section{TRABALHOS CORRELATOS}
 
 Durante a elaboração desse trabalho foram identificados alguns trabalhos que produziam alguns métodos de atualização OTA para diversas aplicações, que serão explanados a seguir:
