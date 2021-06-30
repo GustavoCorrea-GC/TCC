@@ -1,10 +1,10 @@
 % ORIENTAÇÕES GERAIS------------------------------------------------------------
 
 \chapter{UTILIZANDO O SISTEMA}
-Com o intuito de fazer a ferramenta criada neste projeto ser facilmente utilizada por diversos desenvolvedores esse capitulo foi criado para facilitar o entendimento de como utilizar o sistema de atualização OTA proposto. Destacando como portar e utilizar o bootloader e toda a API do firmware OTA. Para a utilização de ambos os firmwares desenvolvidos neste trabalho é sempre necessário que as bibliotecas que são utilizadas por eles já estejam incluidas no projeto. Para o bootloader, é necessário somente a biblioteca FATFS, enquanto para o OTA são necessárias as bibliotecas FATFS, LWIP e MBED TLS.
+Com o intuito de fazer a ferramenta criada neste projeto ser facilmente utilizada por diversos desenvolvedores esse capitulo foi criado para facilitar o entendimento de como utilizar o sistema de atualização OTA proposto. Destacando como portar e utilizar o \bootloader\ e toda a API do firmware OTA. Para a utilização de ambos os programas desenvolvidos neste trabalho é sempre necessário que as bibliotecas que são utilizadas por eles já estejam incluídas no projeto. Para o \bootloader, é necessário somente a biblioteca FATFS, enquanto para o OTA são necessárias as bibliotecas FATFS, LWIP e MBED TLS.
 
 \section{PORTANDO O BOOTLOADER}
-Para se utilizar o bootloader proposto em outros sistemas embarcados da familia STM32 deve-se primeiramente observar a organização da memória FLASH do sistema microcontrolado que se deseja portar o bootloader. Como podemos observar na \autoref{STM32F7_FLASH} a memória FLASH do microcontrolador STM32F746NGH6 possui oito setores de memória com tamanhos distintos, para esse trabalho foi selecionado o primeiro setor de memória para abrigar o bootloader.
+Para se utilizar o \bootloader proposto em outros sistemas embarcados da familia STM32 deve-se primeiramente observar a organização da memória FLASH do sistema microcontrolado que se deseja portar o \bootloader. Como podemos observar na \autoref{STM32F7_FLASH} a memória FLASH do microcontrolador STM32F746NGH6 possui oito setores de memória com tamanhos distintos, com isso foi selecionado o primeiro setor de memória para abrigar o \bootloader.
 
 \begin{table}[H]
     \scriptsize
@@ -27,8 +27,10 @@ Para se utilizar o bootloader proposto em outros sistemas embarcados da familia 
     \end{table}
 
 
-Para isso foi necessário modificar no arquivo de linker o tamanho máximo da memória utilizável para evitar que os dados do bootloader ultrapassem o tamanho que determinamos para ele. Assim no arquivo de linker foi modificado de forma que o tamanho máximo da memória seja de 32Kbytes e iniciada no setor 0. Com isso a configuração de memória do bootloader para o microcontrolador utilizado neste trabalho ficou da seguinte forma:
+Para fazer o porte foi necessário modificar no arquivo de linker o tamanho máximo da memória utilizável para evitar que os dados do \bootloader\ ultrapassem o tamanho que determinamos para ele. Assim no arquivo de linker foi modificado de forma que o tamanho máximo da memória seja de 32 Kbytes e iniciada no setor 0. Com isso a configuração de memória do \bootloader\ para o microcontrolador utilizado neste trabalho ficou da seguinte forma:
 
+
+\begin{algorithm}[H]
 \begin{lstlisting}
 /* Specify the memory areas */
 MEMORY
@@ -36,26 +38,30 @@ MEMORY
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 320K
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 32K
 }
+
 \end{lstlisting}
+\caption{Trecho do arquivo de comandos de linker que é necessário alterar para o porte do \textit{bootloader}.
+\newline Fonte: Autoria própria.}
+\end{algorithm}
 
-Como cada microcontrolador tem sua configuração de memória o desenvolvedor deve observar a configuração do sistema alvo e colocar sempre o bootloader no setor 0 de seu microcontrolador.
+Como cada microcontrolador tem sua configuração de memória, o desenvolvedor deve observar a configuração do sistema alvo e colocar sempre o \bootloader no setor 0 de seu microcontrolador.
 
-Feita a modificação no arquivo de linker o desenvolvedor iniciará a alteração do arquivo bootloader.h que contem algumas definições dependentes do seu microcontrolador. Neste arquivo as definições que precisam ser alteradas são:
+Feita a modificação no arquivo de linker, o desenvolvedor iniciará a alteração do arquivo \textbf{bootloader.h} que contém algumas definições dependentes do seu microcontrolador. Neste arquivo as definições que precisam ser alteradas são:
 \begin{itemize}
-    \item FIRMWARE\_VERSION\_ADDRESS: Esta definição mostra ao bootloader a posição na memória FLASH em que se deve armazenar a versão atual da aplicação presente na placa e deve ser sempre os quatro últimos bytes da memória, e deve sempre ser o mesmo configurado na API de atualização OTA. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x080FFFFC.
+    \item FIRMWARE\_VERSION\_ADDRESS: Esta definição mostra ao \bootloader\ a posição na memória FLASH em que se deve armazenar a versão atual da aplicação presente na placa, deve ser sempre os quatro últimos bytes da memória, e necessita sempre ser a mesma posição configurada na API de atualização OTA. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x080FFFFC.
     \item FIRMWARE\_PATH: Esta definição mostra qual o caminho do arquivo em que se encontra o novo firmware que foi baixado pela API OTA, deve ser sempre igual ao que será definido na API.
     \item FIRMWARE\_NEW\_VERSION\_PATH: Esta definição mostra qual o caminho do arquivo em que se encontra a versão do novo firmware que foi baixado pela API OTA, deve ser sempre igual ao que será definido na API.
-    \item APP\_START\_ADDRESS: Esta definição mostra ao bootloader a posição na memória FLASH em que se deve armazenar o inicio da aplicação que será trocada sendo sempre o inicio do setor 1. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x08008000.
+    \item APP\_START\_ADDRESS: Esta definição mostra ao \bootloader\ a posição na memória FLASH em que se deve armazenar o inicio da aplicação que será trocada sendo sempre o inicio do setor 1. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x08008000.
    
 \end{itemize}
 
-Com essas alterações já é possível utilizar o bootloader em sistemas embarcados que utilizam microcontroladores da família STM32, restando agora a configuração da aplicação que será utilizada em conjunto com o bootloader e a configuração da API de atualização OTA.
+Com essas alterações já é possível utilizar o \bootloader\ em sistemas embarcados que utilizam microcontroladores da família STM32, restando agora a configuração da API de atualização OTA que será utilizada em conjunto com o \bootloader.
 
 \section{CONFIGURAÇÃO DA API OTA}
-Assim como no bootloader, a aplicação também precisa ter seu arquivo de linker modificado para evitar sobrescritas no espaço reservado para o bootloader e reservar o espaço necessário para a variável de versão. Com isso o desenvolvedor deve novamente observar a \autoref{STM32F7_FLASH} e verificar qual posição de memória se inicia sua aplicação e o tamanho total dela deve ser obtido com a seguinte formula:
+Assim como no \bootloader, a aplicação também precisa ter seu arquivo de linker modificado para evitar sobrescritas no espaço reservado para o \bootloader\ e reservar o espaço necessário para a variável de versão. Com isso o desenvolvedor deve novamente observar a \autoref{STM32F7_FLASH} e verificar qual posição de memória se inicia sua aplicação e o tamanho total dela deve ser obtido com a seguinte formula:
 
 \begin{equation}
-    Tamanho\ da\ aplicacao = Final\ da\ FLASH - inicio\ do\ setor\ 1\ da\ FLASH - 4\ bytes 
+    Tamanho\ do\ app = Final\ da\ FLASH - inicio\ do\ setor\ 1\ da\ FLASH - 4\ bytes 
     \label{eq:calculo_flash}
 \end{equation}
 
@@ -63,7 +69,7 @@ Assim como no bootloader, a aplicação também precisa ter seu arquivo de linke
 Utilizando a formula para o microcontrolador STM32F746NGH6 temos que o inicio do setor 1 de memória é 0x08008000 e o fim do ultimo setor de memória é 0x080FFFFF, assim podemos obter os valores de de inicio e tamanho da aplicação e assim configurar o arquivo de linker da aplicação da seguinte forma:
 
 
-
+\begin{algorithm}[H]
 \begin{lstlisting}
 /* Specify the memory areas */
 MEMORY
@@ -72,16 +78,19 @@ RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 320K
 FLASH (rx)      : ORIGIN = 0x08008000, LENGTH = 0xF7FFB
 }
 \end{lstlisting}
+\caption{Trecho do arquivo de comandos de linker que é necessário alterar para o porte da aplicação.
+\newline Fonte: Autoria própria.}
+\end{algorithm}
 
-Feitas as alterações necessárias no arquivo de linker o desenvolvedor tem que alterar algumas definições no arquivo ota\_server.h com o intuito de adequar a API de atualização OTA para a sua aplicação. Neste arquivo as definições que precisam ser alteradas são:
+Feitas as alterações necessárias no arquivo de linker, o desenvolvedor tem que alterar algumas definições no arquivo \textbf{ota\_server.h} com o intuito de adequar a API de atualização OTA para a sua aplicação. Neste arquivo as definições que precisam ser alteradas são:
 
 \begin{itemize}
-    \item FIRMWARE\_VERSION\_ADDRESS: Esta definição mostra a aplicação a posição na memória FLASH em que se deve armazenar a versão atual da aplicação presente na placa e deve ser sempre os quatro últimos bytes da memória, e deve sempre ser o mesmo configurado no bootloader. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x080FFFFC.
-    \item FIRMWARE\_PATH: Esta definição mostra qual o caminho do arquivo em que de deve armazenar o novo firmware que deverá ser baixado pela API OTA, deve ser sempre igual ao que será definido no bootloader.
-    \item FIRMWARE\_NEW\_VERSION\_PATH: Esta definição mostra qual o caminho do arquivo em que se deve armazenar a versão do novo firmware que será baixado pela API OTA, deve ser sempre igual ao que será definido no bootloader.
-    \item BOOTLOADER\_START\_ADDRESS: Esta definição mostra a aplicação a posição na memória FLASH em que está armazenado o inicio do bootloader sendo sempre o inicio do setor 0. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x08000000.
-    \item FIRMWARE\_NEW\_VERSION\_HASH\_PATH: Esta definição mostra qual o caminho do arquivo em que de deve armazenar o hash do novo firmware para que se compare com o hash gerado pelo firmware baixado, assim fazendo um teste para verificar se o firmware baixado é integro.
-    \item AUTH\_SERVER: Esta definição mostra qual deve ser o endereço do servidor em que se deve obter os arquivos necessários para a atualização de firmware, então deve ser personalizada para cada aplicação.
+    \item FIRMWARE\_VERSION\_ADDRESS: Esta definição mostra a aplicação a posição na memória FLASH em que se deve armazenar a versão atual da aplicação presente na placa e deve ser sempre os quatro últimos bytes da memória, e deve sempre ser o mesmo configurado no \bootloader. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x080FFFFC.
+    \item FIRMWARE\_PATH: Esta definição mostra qual o caminho do arquivo em que de deve armazenar o novo \firmware\ que deverá ser baixado pela API OTA, deve ser sempre igual ao que será definido no \bootloader.
+    \item FIRMWARE\_NEW\_VERSION\_PATH: Esta definição mostra qual o caminho do arquivo em que se deve armazenar a versão do novo \firmware\ que será baixado pela API OTA, deve ser sempre igual ao que será definido no \bootloader.
+    \item BOOTLOADER\_START\_ADDRESS: Esta definição mostra a aplicação a posição na memória FLASH em que está armazenado o inicio do \bootloader sendo sempre o inicio do setor 0. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x08000000.
+    \item FIRMWARE\_NEW\_VERSION\_HASH\_PATH: Esta definição mostra qual o caminho do arquivo em que de deve armazenar o hash do novo \firmware\ para que se compare com o hash gerado pelo \firmware\ baixado, assim fazendo um teste para verificar se o \firmware\ baixado é integro e autentico.
+    \item AUTH\_SERVER: Esta definição mostra qual deve ser o endereço do servidor em que se deve obter os arquivos necessários para a atualização de \firmware, então deve ser personalizada para cada aplicação.
     \item AUTH\_PORT: Esta definição mostra qual deve ser a porta que se deve conectar no servidor, como estamos utilizando uma camada de TLS esta porta deve ser a 443.
     \item AUTH\_REQUEST\_VERSION: Esta definição mostra qual a requisição HTTP do arquivo contendo o número da nova versão que deverá ser baixada pela API.
     \item AUTH\_REQUEST\_FIRMWARE: Esta definição mostra qual a requisição HTTP do firmware da nova versão que deverá ser baixada pela API.
@@ -89,7 +98,7 @@ Feitas as alterações necessárias no arquivo de linker o desenvolvedor tem que
     \item SSL\_CA\_PEM: Esta definição mostra o certificado SSL utilizado na comunicação com o servidor.
 \end{itemize}
 
-Com essas definições corretamente configuradas pode-se utilizar facilmente a API de atualização OTA proposta neste trabalho ficando a cargo do desenvolvedor somente programar em sua aplicação o algoritmos que determina quando a função que inicia a atualização é chamada para que o processo de atualização OTA proposto neste trabalho se encarregue de fazer todo o processo de forma autónoma. 
+Com essas definições corretamente configuradas pode-se utilizar facilmente a API de atualização OTA proposta neste trabalho, ficando a cargo do desenvolvedor somente programar em sua aplicação o algoritmos que determina quando a função que inicia a atualização é chamada, para que o processo de atualização OTA proposto neste trabalho se encarregue de fazer todo o processo de forma autónoma. 
 
 
 

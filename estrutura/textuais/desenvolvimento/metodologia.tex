@@ -137,16 +137,16 @@ Algumas de suas principais características são \cite{STM32F7}:
 \end{itemize}
 
 \subsection {FIRMWARES DE TESTE PROPOSTOS}
-Para os testes apresentados neste trabalho foram desenvolvidos três firmwares muito parecidos, ambos possuem todas as bibliotecas necessárias para que sistema de atualização OTA proposto funcionem corretamente, além de possuírem o sistema operacional de tempo real FreeRTOS. Esses firmwares foram desenvolvido para somente darem suporte ao sistema e não exercerem nenhuma outra função, então temos uma estimativa do tamanho que somente o sistema de atualização, suas bibliotecas e o FreeRTOS ocupam em memória.
+Para os testes apresentados neste trabalho foram desenvolvidos dois \textit{firmwares} muito parecidos, ambos possuem todas as bibliotecas necessárias para que sistema de atualização OTA proposto funcione corretamente, além de possuírem o sistema operacional de tempo real FreeRTOS. Esses \textit{firmwares} foram desenvolvido para somente darem suporte ao sistema e não exercerem nenhuma outra função, com isso temos uma estimativa do tamanho que somente o sistema de atualização, suas bibliotecas e o FreeRTOS ocupam em memória.
 
-Esses firmwares contém em sua função main, além de inicializações necessárias de drivers, bibliotecas e do sistema operacional, uma pequena função que apresenta uma mensagem de apresentação mostrando a versão do firmware atual e uma mensagem de teste somente para fazer uma diferenciação entre as versões e como mostrada na \autoref{mensagemteste}. 
+Esses \textit{firmwares} contém além de inicializações necessárias de drivers, bibliotecas e do sistema operacional, uma pequena função que apresenta uma mensagem de apresentação mostrando a versão do firmware atual e uma mensagem de teste somente para fazer uma diferenciação entre as versões, as frases são \textit{"Firmware 1 - Technology is just nature we taught to do cool trick"} e \textit{"Firmware 2 - The universe is a complexity machine"}. O exemplo de funcionamento do firmware 1 pode ser observado na \autoref{mensagemteste}. 
 
 \begin{figure}[H]
     \scriptsize
      \centering
-     \includegraphics[scale=1.2]{dados/figuras/ToDo.jpg}
+     \includegraphics[scale=1]{dados/figuras/Firmware1.png}
      \caption{As três mensagens exibidas para diferenciação dos \firmware. \newline Fonte: Autoria própria.}
      \label{mensagemteste}
 \end{figure}
 
-A função padrão destes firmware é um laço infinito que a cada XXXX segundos inicializa a função OTA que inicializa o processo de atualização, assim temos uma garantia que o firmware ira sempre ficar executando a funçao OTA.
+A função padrão destes firmware é um laço infinito que a cada 1 segundos inicializa a função OTA que realiza o processo de atualização, assim temos uma garantia que o firmware ira sempre ficar executando a funçao OTA.
