@@ -1,9 +1,9 @@
 % ORIENTAÇÕES GERAIS------------------------------------------------------------
 
-\chapter{UTILIZANDO O SISTEMA}
+\section{UTILIZANDO O SISTEMA}
 Com o intuito de fazer a ferramenta criada neste projeto ser facilmente utilizada por diversos desenvolvedores esse capitulo foi criado para facilitar o entendimento de como utilizar o sistema de atualização OTA proposto. Destacando como portar e utilizar o \bootloader\ e toda a API do firmware OTA. Para a utilização de ambos os programas desenvolvidos neste trabalho é sempre necessário que as bibliotecas que são utilizadas por eles já estejam incluídas no projeto. Para o \bootloader, é necessário somente a biblioteca FATFS, enquanto para o OTA são necessárias as bibliotecas FATFS, LWIP e MBED TLS.
 
-\section{PORTANDO O BOOTLOADER}
+\subsection{PORTANDO O BOOTLOADER}
 Para se utilizar o \bootloader proposto em outros sistemas embarcados da familia STM32 deve-se primeiramente observar a organização da memória FLASH do sistema microcontrolado que se deseja portar o \bootloader. Como podemos observar na \autoref{STM32F7_FLASH} a memória FLASH do microcontrolador STM32F746NGH6 possui oito setores de memória com tamanhos distintos, com isso foi selecionado o primeiro setor de memória para abrigar o \bootloader.
 
 \begin{table}[H]
@@ -57,7 +57,7 @@ Feita a modificação no arquivo de linker, o desenvolvedor iniciará a alteraç
 
 Com essas alterações já é possível utilizar o \bootloader\ em sistemas embarcados que utilizam microcontroladores da família STM32, restando agora a configuração da API de atualização OTA que será utilizada em conjunto com o \bootloader.
 
-\section{CONFIGURAÇÃO DA API OTA}
+\subsection{CONFIGURAÇÃO DA API OTA}
 Assim como no \bootloader, a aplicação também precisa ter seu arquivo de linker modificado para evitar sobrescritas no espaço reservado para o \bootloader\ e reservar o espaço necessário para a variável de versão. Com isso o desenvolvedor deve novamente observar a \autoref{STM32F7_FLASH} e verificar qual posição de memória se inicia sua aplicação e o tamanho total dela deve ser obtido com a seguinte formula:
 
 \begin{equation}

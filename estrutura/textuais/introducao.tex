@@ -36,14 +36,14 @@ podendo aumentar o custo do produto final.
 Uma das principais soluções adotadas para a manutenção desses programas é criar métodos de atualização em que, é necessário a presença de um agente humano fisicamente próximo do sistema para fazer a manutenção do \textit{software}, o que acaba aumentando o custo de manutenção do produto e o tornando menos atrativo para os seus compradores.
 
 %Geralmente os sistemas de atualização remotos presentes em sistemas embarcados atuais utilizam ferramentas proprietarias e ...
-Os \textit{bootloaders} estão atualmente presentes em todos os computadores pessoais e em alguns sistemas embarcados. Esse \textit{software} prepara a maioria dos \textit{hardwares} presentes na máquina para um sistema operacional ou outro programa é executado.
-Como é o primeiro programa a ser inicializado após um sistema ser iniciado ou após um \textit{reset}, ele pode ter várias funções, como, realizar checagem de periféricos, verificar se o \textit{firmware} presente na memória não está corrompido, além de poder fazer a troca do \textit{software} presente na memória \cite{DavesDurlin2013}, que será sua principal utilização nesse trabalho.
+Os \textit{bootloaders} estão atualmente presentes em todos os computadores pessoais e em alguns sistemas embarcados. Esse \textit{software} prepara a maioria dos \textit{hardwares} presentes na máquina para um sistema operacional ou outro programa ser executado.
+Como é o primeiro programa a ser executado após um sistema ser iniciado ou após um \textit{reset}, ele pode ter várias funções, como, realizar checagem de periféricos, verificar se o \textit{firmware} presente na memória não está corrompido, além de poder fazer a troca do \textit{software} presente na memória \cite{DavesDurlin2013}, que será sua principal utilização nesse trabalho.
 
 Um dos seus principais usos é em \textit{smartphones}, em que são utilizados para a atualização de sistemas operacionais como \textit{Android} e iOS, e como garantia de restauração em caso de erros irreversíveis no sistema operacional. É desenvolvido pelo próprio fabricante do dispositivo, e por padrão é bloqueado para os usuários, evitando a substituição do \textit{software} original do aparelho por uma versão customizada, mas ainda assim existem opções de desbloqueio do \textit{bootloader}, dependendo do modelo do aparelho e do fabricante \cite{Salute2018}.% mas pode destravada o \textit{bootloader}.
 
-\textit{Internet of things} ou IoT é o conceito que se refere à interconexão digital de objetos cotidianos com a internet. A internet das coisas em outras palavras pode ser descrita como uma rede de dispositivos embarcados, como sensores, câmeras, carros e demais objetos do cotidiano, capazes de obter e transmitir dados pela internet. A empresa de consultoria Gartner \cite{Gartner} diz que, até 2020, são esperados mais de 20 bilhões de "coisas"\  conectadas a internet. Essas "coisas"\  não são dispositivos de uso geral como \textit{smartphones} e PCs, mas objetos de função única.
+\textit{Internet of things} ou IoT é o conceito que se refere à interconexão digital de objetos cotidianos com a internet. A internet das coisas em outras palavras pode ser descrita como uma rede de dispositivos embarcados, como sensores, câmeras, carros e demais objetos do cotidiano, capazes de obter e transmitir dados pela internet. Em 2019, a empresa de consultoria Gartner \cite{Gartner} diz que, até 2020, são esperados mais de 20 bilhões de "coisas"\  conectadas a internet. Essas "coisas"\  não são dispositivos de uso geral como \textit{smartphones} e PCs, mas objetos de função única.
 
-Esse trabalho de conclusão de curso propõe um método de manutenção desses \textit{firmwares} de forma remota, que possa ser o mais portável possível.
+Nesse cenário de crescimento constante de dispositivos embarcados conectados a internet, o presente trabalho de conclusão de curso propõe um método de manutenção desses \textit{firmwares} de forma remota, que possa ser o mais portável possível para a família de microcontroladores STM32.
 Na solução proposta, o dispositivo embarcado poderá verificar periodicamente um servidor a procura de uma nova versão do seu \textit{firmware}. Quando encontrado, será realizado o \textit{download} do novo \textit{firmware} para a memória interna do dispositivo, para posterior atualização do equipamento. O diferencial da abordagem proposta é basear a solução em bibliotecas amplamente difundidas em sistemas embarcados, como a LwIP \cite{LWIP}, Mbed TLS \cite{mbedtls} e a FatFS\cite{FATFS}. Dessa forma, o código do sistema de atualização é totalmente portável, desde que a plataforma escolhida tenha suporte a tais bibliotecas. A única peça de \textit{software} que não será totalmente portável será o \textit{bootloader} que substituirá o \textit{firmware} antigo pelo novo na memória flash do dispositivo, por ser dependente do \textit{hardware} utilizado.
 
 %O Geovanni marcou o nome das bibliotecas, mas não sei se é para deixar elas em italico.
@@ -72,11 +72,11 @@ Esse trabalho tem como objetivo geral o desenvolvimento de um sistema \textit{op
 \label{sec:Objetivos Específicos}
 
  \begin{itemize}
-   \item Desenvolver o \textit{bootloader} que utiliza o sistema de arquivo FAT.
+   \item Desenvolver o \bootloader\ para microcontroladores STM32 utilizando a biblioteca FatFS..
    
    %\item Criar um servidor HTTP para a comunicação cliente-servidor.
    
-   \item Implementar uma API que fará a comunicação segura entre o servidor e a plataforma embarcada, verificará a disponibilidade de atualização e fará o \textit{download} da nova versão, se existente. Armazenará o \textit{firmware} recebido em um cartão SD (Secure Digital). 
+   \item Implementar uma API que fará a comunicação segura entre o servidor e a plataforma embarcada, verificará a disponibilidade de atualização e fará o \textit{download} da nova versão, se existente. Ainda, armazenará o \textit{firmware} recebido em um cartão SD (Secure Digital). 
    %terminar essa
    
    %\item Produzir a tarefa de leitura de um cartão micro SD que guarda uma nova versão do \textit{firmware} e uma cópia do anterior, utilizando a biblioteca FatFs.

@@ -21,7 +21,7 @@ O ponteiro contido na região de inicialização do vetor de reset geralmente ap
 
 O conceito é melhor explicado por meio do exemplo criado por \citeonline{Qing2003}. Neste exemplo, assumimos que o \loader\ foi desenvolvido e programado na memória flash. Além disso, será assumido que a imagem alvo contém várias seções de programa. Cada seção tem um lugar designado no mapa de memória. O \resetv\ está contido em uma pequena ROM, que está mapeada na localização 0x0h do espaço de endereços. A ROM contém alguns valores iniciais essenciais requeridos pelo processador quando o sistema é reinicializado (\textit{reset}). Esses valores são o \resetv, o \textit{stack pointer} (ponteiro de pilha) inicial e o endereço da memória de acesso randômico (RAM). 
 
-No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, o \resetv\ é uma instrução de salto para o endereço de memória 0x00040h; o \resetv\ transfere o controle do programa para a instrução neste endereço. O código de inicialização do sistema contém, entre outras coisas o programa \loader\ da imagem destino e o vetor de exceção padrão do sistema (\textit{exception vector}). O vetor de exceção do sistema aponta para uma instrução que reside na memória flash.
+No exemplo ilustrado na \autoref{fig:INICIALIZAÇÃO}, mostra o processo de inicialização de um sistema linux, mas pode ser utilizado para um sistema embarcado, em que não necessariamente se copiaria a imagem da flash para a memória RAM. Como ilustrado o \resetv\ é uma instrução de salto para o endereço de memória 0x00040h; o \resetv\ transfere o controle do programa para a instrução neste endereço. O código de inicialização do sistema contém, entre outras coisas o programa \loader\ da imagem destino e o vetor de exceção padrão do sistema (\textit{exception vector}). O vetor de exceção do sistema aponta para uma instrução que reside na memória flash.
 
 \begin{figure}[H]
     \scriptsize
@@ -90,7 +90,7 @@ Em conclusão, a função principal de um \linker\ é combinar múltiplos arquiv
 \begin{figure}[H]
     \scriptsize
      \centering
-     \includegraphics[scale=0.5]{dados/figuras/Linker.png}
+     \includegraphics[scale=0.42]{dados/figuras/Linker.png}
      \caption{Criando um arquivo de imagem para um sistema.\newline Fonte: adaptado de \cite{Qing2003}}
      \label{linker}
 \end{figure}
@@ -141,7 +141,7 @@ O \bootloader\ é um \textit{software} que tem como responsabilidade a atualiza�
      \label{Diag_Bootloader}
 \end{figure}
 
-A função do \bootloader\ se resume geralmente a: comunicar-se com outro servidor, ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo programa. 
+A função do \bootloader\ se resume geralmente a: comunicar-se com outro servidor, ou por comunicação serial, USB, cartão SD, entre outros meios, e ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo programa. 
 Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras plataformas.
 %Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
 Portanto, é uma programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um bootloader padrão. 
@@ -239,6 +239,14 @@ Segundo \citeonline{Kurose2010}, o protocolo da camada de aplicação HTTP é im
 O HTTP define como clientes requisitam documentos aos servidores e como eles os transferem ao cliente. Ele utiliza o TCP como seu protocolo de transporte subjacente. O cliente HTTP primeiramente inicia uma conexão TCP com o servidor. Após essa conexão ser estabelecida, os processos da aplicação e do servidor acessam o TCP por meio de sua interface de sockets. No lado do cliente a interface de socket é uma porta entre o processo cliente e a conexão TCP. No lado do servidor, ela é uma porta entre o processo servidor  e a conexão TCP.
 
 O cliente envia mensagens de requisição HTTP para sua interface de socket e recebe uma mensagem de resposta HTTP de sua interface de socket. De uma maneira parecida acontece do lado do servidor, onde ele recebe mensagens de requisição HTTP de sua interface de socket e envia mensagens respostas a sua interface. Assim a mensagem sai da camada de aplicação e passa para a camada de transporte. 
+
+Segundo \citeonline{Mozila}, alguns exemplos de requisições são:
+\begin{itemize}
+    \item GET: requisição que solicita a apresentação de um recurso especifico, e deve sempre retornar dados.
+    \item POST: requisição utilizada para submeter uma entidade a um recurso especifico, modificando assim o recurso.
+    \item PUT: requisição que substitui todas as atuais representações do recurso de destino pelos dados da requisição.
+    \item DELETE: requisição que remove recurso especifico.
+\end{itemize} 
 
 \subsubsection{Transmission Control Protocol (TCP)}
 
