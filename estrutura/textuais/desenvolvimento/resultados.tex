@@ -68,12 +68,12 @@ Caso o cliente OTA não conseguir encontrar no servidor um dos arquivos que são
 \end{figure}
 
 \subsection{FALHA AO COMPARAR HASH}
-Após o download da última versão do \firmware, o cliente OTA gera um hash utilizando a função de hash sha-256 que a biblioteca MbedTLS fornece, esse hash é comparado com o que foi obtido do servidor para garantirmos que o \firmware obtido está integro e não corrompido. Caso essa comparação falhe uma mensagem é mostrada para o usuário, essa mensagem pode ser observada na \autoref{erro_hash}.
+Após o download da última versão do \firmware, o cliente OTA gera um hash utilizando a função de hash sha-256 que a biblioteca MbedTLS fornece, esse hash é comparado com o que foi obtido do servidor para garantirmos que o \firmware\ obtido está integro e não corrompido. Caso essa comparação falhe uma mensagem é mostrada para o usuário, essa mensagem pode ser observada na \autoref{erro_hash}.
 \begin{figure}[H]
     \scriptsize
      \centering
      \includegraphics[scale=1.2]{dados/figuras/hash_error.png}
-     \caption{Erro ao comparar hash do servidor com a hash gerada a partir do \firmware obtido do servidor. \newline Fonte: Autoria própria.}
+     \caption{Erro ao comparar hash do servidor com a hash gerada a partir do \firmware\ obtido do servidor. \newline Fonte: Autoria própria.}
      \label{erro_hash}
 \end{figure}
 \subsection{QUEDA DE ENERGIA DURANTE PROCESSO DE ATUALIZAÇÃO}
@@ -83,10 +83,13 @@ Caso exista uma queda de energia, ou algo que faça com que o microcontrolador s
 \section{DISCUSSÃO}
 Os resultado obtidos mostraram que o sistema de atualização de \textit{firmware Over-The-Air} proposto neste trabalho funciona, e que todo o processo desde a verificação de uma aplicação válida feita pelo \bootloader, seu processo de atualização e as obtenções e verificações de arquivos da API de atualização OTA ocorrem com sucesso.
 
-Como o \bootloader ocupa 22 Kbytes de espaço na memória flash ele pode ser utilizado por diversas placas da familia de microcontroladores STM32 que possuam um setor da memória maior que esse espaço. Com a aplicação que foi utilizada para testar este trabalho que possui em seu código somente a API de atualização, as bibliotecas que são necessárias para esse trabalho e o sistema operacional FreeRTOS, ocupam juntos cerca de 294 Kbytes. Assim a aplicação do usuário ainda teria um espaço de 674 Kbytes restante na plataforma que utilizamos para teste se contarmos junto o espaço reservado para o \bootloader. Essa aplicação ainda não precisaria incluir novamente as bibliotecas FATFS, MBED TLS, LWIP e o sistema operacional FreeRTOS.
+Como o \bootloader\ ocupa 22 Kbytes de espaço na memória flash ele pode ser utilizado por diversas placas da familia de microcontroladores STM32 que possuam um setor da memória maior que esse espaço. Com a aplicação que foi utilizada para testar este trabalho que possui em seu código somente a API de atualização, as bibliotecas que são necessárias para esse trabalho e o sistema operacional FreeRTOS, ocupam juntos cerca de 294 Kbytes. Assim a aplicação do usuário ainda teria um espaço de 674 Kbytes restante na plataforma que utilizamos para teste se contarmos junto o espaço reservado para o \bootloader. 
+
+As bibliotecas utilizadas acabam por ocupar quase todo esse espaço, pois analisando a compilação podemos identificar a quantidade de memória utilizada por cada uma delas. A biblioteca FatFS acaba por ocupar cerca de 8 Kbytes de memória, a LwIP en torno de 50 Kbytes de memória e por fim a MbedTLS que ocupa aproximadamente 135 Kbytes de memória, tornando ela biblioteca que mais ocupa espaço na flash. Temos então que aproximadamente 193 Kbytes do \firmware\ é ocupados pelas bibliotecas, assim dois terços do \firmware\ desenvolvido é ocupado pelo por funções e outras definições das bibliotecas. A API de atualização desenvolvida ocupa por volta de 2 Kbytes, ficando o restando do \firmware\ sendo ocupado pelo sistema operacional, outras funções do HAL e demais códigos de inicialização.
+
+Todo essa quantidade de memória gasta poderia ser reduzida drásticamente caso não houvesse a necessidade de haver criptografia com o uso da biblioteca MbedTLS, poderia ser economizada 135 Kbytes de memória somente com essa modificação. Outra possibilidade que não foi abordada neste trabalho é a otimização da compilação com o objetivo de se diminuir a ocupação da memória, que poderia diminuir o tamanho total do código de 294 Kbytes para cerca de 260 Kbytes. Outra otimização que pode ser feita é a otimização com o intuito de se aumentar a performance, fazendo com que o código ocupe aproximadamente de 350 Kbytes.
 
 
-
-Com essa informação sobre o tamanho dos arquivos, é possível notar que este sistema de atualização não é tão portável quanto se esperava no inicio deste trabalho, visto que só para ter um sistema de atualização funcional precisamos que o hardware em que se deseja ter esse sistema tenha ao menos 512 Kbytes de memória FLASH, diminuindo muito a quantidade de microcontroladores que poderiam utilizar este sistema.
+Com essa informação sobre o tamanho dos arquivos, é possível notar que este sistema de atualização não é tão portável quanto se esperava no inicio deste trabalho, visto que só para ter um sistema de atualização funcional precisamos que o hardware em que se deseja ter esse sistema tenha ao menos 512 Kbytes de memória FLASH, diminuindo muito a quantidade de microcontroladores que poderiam utilizar este sistema. Esse sistema acaba sendo muito proveitoso para aplicações que já utilizam essas bibliotecas, pois assim não precisariam incluir novamente as bibliotecas FATFS, MbedTLS, LWIP.
 
 Ainda assim é possível afirmar que o sistema cumpre com o objetivo geral e específicos propostos, visto que o sistema é capaz de efetuar a atualização da plataforma embarcada STM32F746NGH6 da forma proposta e ainda é capaz de identificar quando houve falhas em seu sistema de atualização e se recuperar de forma autónoma dessas falhas.

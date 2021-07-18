@@ -36,7 +36,7 @@ A primeira parte do processo de \textit{bootstrap} do sistema é colocar o siste
 
 A execução do programa é mais rápida na RAM quando comparada ao mesmo código executado diretamente na memória flash. O \loader\ pode opcionalmente copiar o código da memória flash para a RAM. Por causa dessa capacidade, uma seção de programa pode tanto ter um endereço de carregamento, quanto um endereço de execução. O endereço de carregamento é onde a seção do programa reside, enquanto o endereço de execução é o endereço em que o \loader\ copia a seção do programa e a prepara para a execução \cite{Qing2003}.
 
-Uma imagem executável possui seções de dados inicializados e não inicializados. Essas seções são ambas legíveis e graváveis. Essas seções precisam residir na RAM, assim sendo são copiadas da memória flash para a RAM como parte do sistema de inicialização. A seção de dados inicializados (chamadas pelo \linker\ de .data e .sdata) contém os valores iniciais para as variáveis globais e estáticas. O contéudo dessa seção, portanto, faz parte da imagem executável final e é transferido completamente pelo \loader. Por outro lado, o contéudo da seção de dados não inicializado (chamado pelo \linker\ de .bss e .sbss) é vazio. O \linker\ reserva espaço para essa seção no mapa de memória. As informações de alocação dessas seções, como o tamanho da seção e o endereço de execução da seção, são parte do cabeçalho da seção. É trabalho do \loader\ obter essas informações dos cabeçalhos de seção e alocar a mesma quantidade de memória na RAM durante o processo de carregamento. O \loader\ coloca essas seções na RAM de acordo com o endereço de execução das seções.
+Uma imagem executável possui seções de dados inicializados e não inicializados. Essas seções são ambas legíveis e graváveis. Essas seções precisam residir na RAM, assim sendo são copiadas da memória flash para a RAM como parte do sistema de inicialização. A seção de dados inicializados (chamadas pelo \linker\ de .data e .sdata) contém os valores iniciais para as variáveis globais e estáticas. O conteúdo dessa seção, portanto, faz parte da imagem executável final e é transferido completamente pelo \loader. Por outro lado, o conteúdo da seção de dados não inicializado (chamado pelo \linker\ de .bss e .sbss) é vazio. O \linker\ reserva espaço para essa seção no mapa de memória. As informações de alocação dessas seções, como o tamanho da seção e o endereço de execução da seção, são parte do cabeçalho da seção. É trabalho do \loader\ obter essas informações dos cabeçalhos de seção e alocar a mesma quantidade de memória na RAM durante o processo de carregamento. O \loader\ coloca essas seções na RAM de acordo com o endereço de execução das seções.
 
 Uma imagem executável provavelmente possui constantes. Os dados das contantes são parte da seção chamada pelo \linker\ de .const, que é somente leitura. Sendo assim, é possível manter a seção .const na memória somente de leitura durante a execução do programa. Constantes de acesso frequente, como tabelas de \textit{lookup}, necessitam ser transferidas para a RAM para melhorar o desempenho do sistema.
 
@@ -137,28 +137,28 @@ O \bootloader\ é um \textit{software} que tem como responsabilidade a atualiza�
     \scriptsize
      \centering
      \includegraphics[scale=0.7]{dados/figuras/DiagBootloaderOriginal.png}
-     \caption{Alocação do bootloader e firmware nas memórias FLASH e RAM.\newline Fonte: Adaptado de \cite{DavesDurlin2013}}
+     \caption{Alocação do \bootloader\ e \firmware\ nas memórias FLASH e RAM.\newline Fonte: Adaptado de \cite{DavesDurlin2013}}
      \label{Diag_Bootloader}
 \end{figure}
 
 A função do \bootloader\ se resume geralmente a: comunicar-se com outro servidor, ou por comunicação serial, USB, cartão SD, entre outros meios, e ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo programa. 
 Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras plataformas.
 %Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
-Portanto, é uma programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um bootloader padrão. 
+Portanto, é uma programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um \bootloader\ padrão. 
 
 \begin{figure}[H]
     \scriptsize
      \centering
      \includegraphics[scale=0.8]{dados/figuras/FluxoBootloader.png}
-     \caption{Fluxograma de operações de um bootloader.}
+     \caption{Fluxograma de operações de um \bootloader.\newline Fonte: autoria própria.}
      \label{FluxoBootloader}
 \end{figure}
 
 
 
-Os microcontroladore da família STM32 desenvolvidos pela empresa ST \citeonline{STM32F7} possuem um \bootloader\ pré programado na ROM desde sua fabricação. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}.
+Os microcontroladores da família STM32 desenvolvidos pela empresa ST \citeonline{STM32F7} possuem um \bootloader\ pré programado na ROM desde sua fabricação. Esse \bootloader\ pode utilizar diversos periféricos de comunicação, e para cada periférico diferente a ST padronizou diferentes protocolos que permitem várias operações, como: obter o ID do chip, escrever e ler bytes na RAM e memória flash, apagar setores das memórias, ativar áreas de proteção na memória e pular para o código principal do sistema \cite{Noviello2018}. Como esse \bootloader\ é muito dependente do microcontrolador, ele não foi utilizado neste trabalho.
 
-Um \bootloader\ customizado pode conter diversas funções adicionais, uma função frequentemente usada é o uso do \bootloader\ para descriptografar firmwares que podem chegar via internet, para se garantir a segurança e origem do \firmware.
+Um \bootloader\ customizado pode conter diversas funções adicionais, uma função frequentemente usada é o uso do \bootloader\ para descriptografar \textit{firmwares} que podem chegar via internet, para se garantir a segurança e origem do \firmware.
 
 
 
@@ -307,7 +307,7 @@ SHA-2 é um conjunto de funções \hash\ criptográficas que contém mudanças s
 Segundo \citeonline{tanenbaumSO}, para resolver diversos problemas com o armazenamento de grandes quantidades de dados, a perda de dados após o fim da execução do processo que os criou e a necessidade de tornar esses dados independentes de quaisquer processos. Existe a necessidade da criação de uma estrutura de armazenamento de informações a longo prazo. Os três requisitos fundamentais para essa estrutura são:
 
 \begin{itemize}
-    \item Deve ser possivel armazenar um volume grande de informações;
+    \item Deve ser possível armazenar um volume grande de informações;
     \item Os dados devem sobreviver ao término do processo que os estão utilizando;
     \item Vários processos devem ser capazes de acessar os dados concomitantemente.
 \end{itemize}
@@ -392,7 +392,7 @@ Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é
 
 
 \section{HARDWARE ABSTRACTION LAYER (HAL)}
-A camada de abstração de hardware (\textit{hardware abstraction layer}) é uma divisão logica de código que serve como camada de abstração entre o hardware e o software de um sistema computacional. Ele prove uma interface de drivers dos periférico do microcontrolador com o programa, permitindo assim uma comunicação mais fácil entre hardware e software.
+A camada de abstração de hardware (\textit{Hardware Abstraction Layer}) é uma divisão logica de código que serve como camada de abstração entre o hardware e o software de um sistema computacional. Ele prove uma interface de drivers dos periférico do microcontrolador com o programa, permitindo assim uma comunicação mais fácil entre hardware e software.
 
 O principal objetivo de um HAL é permitir que diferentes arquiteturas de hardwares funcionem com o mesmo software, para isso fazem uso de uma interface uniforme dos periféricos do sistema, mantendo sempre as mesmas chamadas de funções e de periférico desde a sua inicialização até sua utilização.
 
@@ -410,16 +410,16 @@ As vantagens que o HAL fornece são:
 
 Segundo a \citeonline{STM32F7HAL}, o STM32Cube é uma iniciativa da STMicroelectronics para melhorar significativamente a produtividade do desenvolvedor, reduzindo o esforço, o tempo e o custo de desenvolvimento, e ele cobre toda a linha de produtos da STM32.
 
-É uma ferramenta de desenvolvimento que é composta por um software que permite a geração de códigos em C iniciais de um novo projeto. Nesta ferramenta é possivel já fazer as configurações iniciais de periféricos, bibliotecas, configurações de clock entre outras definições necessárias. Todos esses ajustes são feitos a partir de uma interface gráfica facilitando o entendimento e tornando ainda mais rápido o desenvolvimento. A interface do STM32Cube pode ser vista na \autoref{STM32Cube}.
+É uma ferramenta de desenvolvimento que é composta por um software que permite a geração de códigos em C iniciais de um novo projeto. Nesta ferramenta é possível já fazer as configurações iniciais de periféricos, bibliotecas, configurações de clock entre outras definições necessárias. Todos esses ajustes são feitos a partir de uma interface gráfica facilitando o entendimento e tornando ainda mais rápido o desenvolvimento. A interface do STM32Cube pode ser vista na \autoref{STM32Cube}.
 \begin{figure}[H]
     \scriptsize
      \centering
      \includegraphics[scale=0.43]{dados/figuras/stm32cube.png}
-     \caption{Posição da biblioteca FatFs na aplicação.\newline  Fonte:\cite{FATFS}}
+     \caption{Interface do stm32cube.\newline  Fonte: autoria própria.}
      \label{STM32Cube}
 \end{figure}
 
-Segundo a \citeonline{STM32F7HAL}, as APIs do driver HAL são divididas em duas categorias: APIs genéricas, que fornecem funções comuns e genéricas para todas as séries STM32 e APIs extendidas, que incluem funções específicas e personalizadas para uma determinada familia ou microcontrolador especifico. Os drivers HAL incluem um conjunto completo de APIs prontas para uso que simplificam a implementação do aplicativo do usuário. Por exemplo, os periféricos de comunicação contêm APIs para inicializar e configurar-los, gerenciar transferências de dados, lidar com interrupções ou acesso direto a memória e gerenciar erros de comunicação.
+Segundo a \citeonline{STM32F7HAL}, as APIs do driver HAL são divididas em duas categorias: APIs genéricas, que fornecem funções comuns e genéricas para todas as séries STM32 e APIs estendidas, que incluem funções específicas e personalizadas para uma determinada familia ou microcontrolador especifico. Os drivers HAL incluem um conjunto completo de APIs prontas para uso que simplificam a implementação do aplicativo do usuário. Por exemplo, os periféricos de comunicação contêm APIs para inicializar e configurar-los, gerenciar transferências de dados, lidar com interrupções ou acesso direto a memória e gerenciar erros de comunicação.
 
 \section{TRABALHOS CORRELATOS}
 
@@ -429,7 +429,7 @@ Durante a elaboração desse trabalho foram identificados alguns trabalhos que p
 
 \begin{itemize}
 
-    \item \textbf{Firmware over the air for automotive, Fotamotive}: Esse trabalho introduz uma solução para atualização de veículos com a ajuda de fabricantes de equipamentos altomotivos para reduzir custos com \textit{recalls} e assim aumentar a qualidade de seus produtos, facilitar as atualizações e controlar melhor a frota de veículos no mercado. Essa solução consiste em atualizar a unidade de controle do motor por meio de métodos OTA, sem a necessidade de uma conexão física com o veículo \cite{Odat2014}.
+    \item \textbf{Firmware over the air for automotive, Fotamotive}: Esse trabalho introduz uma solução para atualização de veículos com a ajuda de fabricantes de equipamentos automotivos para reduzir custos com \textit{recalls} e assim aumentar a qualidade de seus produtos, facilitar as atualizações e controlar melhor a frota de veículos no mercado. Essa solução consiste em atualizar a unidade de controle do motor por meio de métodos OTA, sem a necessidade de uma conexão física com o veículo \cite{Odat2014}.
 
     \item \textbf{Firmware over the air for home cybersecurity in the Internet of Things}: Esse trabalho descreve a utilização de um método de atualização de \firmware\ para roteadores caseiros, utilizando sistemas de gerenciamento de rede e de suporte de operações de fornecedores de acesso à \textit{internet} \cite{Teng2017}.
     
