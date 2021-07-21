@@ -48,7 +48,7 @@ Agora o \loader\ está pronto para transferir a imagem da aplicação para o sis
 %Conhecer o processo de inicialização dos sistemas embarcados, também chamado de \boot, é muito importante para nos dar noção sobre quando e como entrará em execução tanto a aplicação final, quanto o bootloader.
 %Dependendo do fabricante do \textit{chip} o \boot pode ser diferente, porém geralmente ele segue a mesma linha de execução, podendo ou não ter interfaces físicas para mudar a origem do \boot. Algumas placas da ST \cite{ST2019}, contém um mecanismo chamado de \textit{physic remap}, para que o \boot ocorra a partir de outras memórias e não da Flash, que é a padrão \cite{Noviello2018}.
 
-%Como dito por \citeonline{Beningo2015}, o fluxo padrão de \boot do sistema consiste em, após a tensão de referência de um microcontrolador se estabilizar, o processador procura pelo vetor de \textit{reset}, para a obter a localização da instrução de iniciação na Flash. O vetor de reset esta localizado em um endereço especial da memória FLASH, geralmente no início. Como pode ser visto na imagem \ref{MAP_PIC24F16KLXXX} que contém o mapa de memória do MCU (\textit{microcontroller unit}) PIC24F16KLXXX, o vetor de \textit{reset} se encontra no endereço 0x0002.
+%Como dito por \citeonline{Beningo2015}, o fluxo padrão de \boot do sistema consiste em, após a tensão de referência de um microcontrolador se estabilizar, o processador procura pelo vetor de \textit{reset}, para a obter a localização da instrução de iniciação na Flash. O vetor de reset esta localizado em um endereço especial da memória flash, geralmente no início. Como pode ser visto na imagem \ref{MAP_PIC24F16KLXXX} que contém o mapa de memória do MCU (\textit{microcontroller unit}) PIC24F16KLXXX, o vetor de \textit{reset} se encontra no endereço 0x0002.
 
 %\begin{figure}[H]
  %   \scriptsize
@@ -58,9 +58,9 @@ Agora o \loader\ está pronto para transferir a imagem da aplicação para o sis
      %\label{MAP_PIC24F16KLXXX}
 %\end{figure}
 
-%Então o endereço contido no vetor de \textit{reset} é carregado pelo microcontrolador, e a instrução contida neste endereço é carregada e executada pelo processador. Essa instrução ainda não é a \textit{main} que foi desenvolvida pelo projetista, ela é somente uma instrução de como o MCU irá iniciar. Esta instrução geralmente tem como função copiar o \textit{Vector Table} que esta na memória FLASH para a RAM, copiando e escrevendo em um endereço determinado pelo arquivo de \linker.
+%Então o endereço contido no vetor de \textit{reset} é carregado pelo microcontrolador, e a instrução contida neste endereço é carregada e executada pelo processador. Essa instrução ainda não é a \textit{main} que foi desenvolvida pelo projetista, ela é somente uma instrução de como o MCU irá iniciar. Esta instrução geralmente tem como função copiar o \textit{Vector Table} que esta na memória flash para a RAM, copiando e escrevendo em um endereço determinado pelo arquivo de \linker.
 
-%As variáveis que são inicializadas durante o tempo de compilação que estão armazenadas na seção \textit{.data} do arquivo de \linker são então gravadas na memória RAM, e as variáveis não inicializadas explicitamente ou iniciadas com zero que estão na seção \textit{.bss} do arquivo de \linker, são guardadas na memória RAM. O MCU então copia funções que estão na FLASH para a RAM, essa etapa é opcional, o projetista tem que determinar se alguma função deve necessariamente ser executada a partir da memória RAM. 
+%As variáveis que são inicializadas durante o tempo de compilação que estão armazenadas na seção \textit{.data} do arquivo de \linker são então gravadas na memória RAM, e as variáveis não inicializadas explicitamente ou iniciadas com zero que estão na seção \textit{.bss} do arquivo de \linker, são guardadas na memória RAM. O MCU então copia funções que estão na flash para a RAM, essa etapa é opcional, o projetista tem que determinar se alguma função deve necessariamente ser executada a partir da memória RAM. 
 
 %Todo esse processo é chamado de \textit{"C Copy Down"}, que faz a preparação do ambiente para iniciar uma aplicação, após essa etapa ser concluída o MCU pode então chamar a função \textit{main}, que é a \firmware principal do sistema desenvolvido pelo projetista. Toda a sequência padrão de \textit{boot} pode ser observada na \autoref{Seq_Boot}.
 
@@ -137,14 +137,14 @@ O \bootloader\ é um \textit{software} que tem como responsabilidade a atualiza�
     \scriptsize
      \centering
      \includegraphics[scale=0.7]{dados/figuras/DiagBootloaderOriginal.png}
-     \caption{Alocação do \bootloader\ e \firmware\ nas memórias FLASH e RAM.\newline Fonte: Adaptado de \cite{DavesDurlin2013}}
+     \caption{Alocação do \bootloader\ e \firmware\ nas memórias flash e RAM.\newline Fonte: Adaptado de \cite{DavesDurlin2013}}
      \label{Diag_Bootloader}
 \end{figure}
 
 A função do \bootloader\ se resume geralmente a: comunicar-se com outro servidor, ou por comunicação serial, USB, cartão SD, entre outros meios, e ler os arquivos enviados pelo \textit{host}, atualizar o \firmware\ de seu microcontrolador, e iniciar esse novo programa. 
 Pode conter instruções e comandos definidos pelo projetista para somente o circuito integrado em uso, impossibilitando a utilização do mesmo código em outras plataformas.
 %Sendo desenvolvidos exatamente para o \textit{hardware} que serão empregados,
-Portanto, é uma programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um \bootloader\ padrão. 
+Portanto, é um programa que não é portável para vários modelos de sistemas embarcados. A \autoref{FluxoBootloader} mostra o funcionamento de um \bootloader\ padrão. 
 
 \begin{figure}[H]
     \scriptsize
@@ -250,9 +250,9 @@ Segundo \citeonline{Mozila}, alguns exemplos de requisições são:
 
 \subsubsection{Transmission Control Protocol (TCP)}
 
-Segundo \citeonline{tanenbaumRedes}, O TCP foi projetado especificamente para oferecer um fluxo de bytes fim a fim confiável em uma inter-rede não-confiável. Uma inter-rede é diferente de uma única rede porque suas diversas partes podem ter topologias, larguras de banda, retardos, tamanhos de pacotes e outros parâmetros totalmente diferentes. O TCP foi projetado para se adaptar dinamicamente às propriedades da inter-rede e ser robusto diante de muitos categorias de falhas que podem ocorrer.
+Segundo \citeonline{tanenbaumRedes}, O TCP foi projetado especificamente para oferecer um fluxo de bytes fim a fim confiável em uma inter-rede não-confiável. Uma inter-rede é diferente de uma única rede porque suas diversas partes podem ter topologias, larguras de banda, retardos, tamanhos de pacotes e outros parâmetros totalmente diferentes. O TCP foi projetado para se adaptar dinamicamente às propriedades da inter-rede e ser robusto diante de muitas categorias de falhas que podem ocorrer.
 
-Cada máquina compatível com TCP tem uma entidade de transporte TCP, que pode ser um procedimento de biblioteca, um processo do usuário ou parte do núcleo. Em todos os casos, ele gerencia fluxos e interfaces TCP para a camada IP. Uma entidade TCP aceita fluxos de dados de usuários provenientes de processos locais, divide-os em partes de no máximo 64 kB e envia cada parte em um datagrama IP distinto. Quando os datagramas IP que contem dados TCP chegam a uma máquina, eles são enviados à entidade TCP, que restaura o fluxo de bytes originais.
+Cada máquina compatível com TCP tem uma entidade de transporte TCP, que pode ser um procedimento de biblioteca, um processo do usuário ou parte do núcleo. Em todos os casos, ele gerencia fluxos e interfaces TCP para a camada IP. Uma entidade TCP aceita fluxos de dados de usuários provenientes de processos locais, divide-os em partes de no máximo 64 kB e envia cada parte em um datagrama IP distinto. Quando os datagramas IP que contém dados TCP chegam a uma máquina, eles são enviados à entidade TCP, que restaura o fluxo de bytes originais.
 
 A camada IP não oferece garantia que os datagramas serão entregues de forma apropriada, portanto, cabe ao TCP administrar os \textit{timers} e retransmiti-los sempre que necessário. Os datagramas também podem chegar fora de ordem, o TCP também terá que os reorganizar em mensagens na sequência correta.
 
@@ -392,7 +392,7 @@ Assim pela aplicação é possível gerenciar os arquivos e diretórios, como é
 
 
 \section{HARDWARE ABSTRACTION LAYER (HAL)}
-A camada de abstração de hardware (\textit{Hardware Abstraction Layer}) é uma divisão logica de código que serve como camada de abstração entre o hardware e o software de um sistema computacional. Ele prove uma interface de drivers dos periférico do microcontrolador com o programa, permitindo assim uma comunicação mais fácil entre hardware e software.
+A camada de abstração de hardware (\textit{Hardware Abstraction Layer}) é uma divisão logica de código que serve como camada de abstração entre o hardware e o software de um sistema computacional. Ele prove uma interface de drivers dos periféricos do microcontrolador com o programa, permitindo assim uma comunicação mais fácil entre hardware e software.
 
 O principal objetivo de um HAL é permitir que diferentes arquiteturas de hardwares funcionem com o mesmo software, para isso fazem uso de uma interface uniforme dos periféricos do sistema, mantendo sempre as mesmas chamadas de funções e de periférico desde a sua inicialização até sua utilização.
 
@@ -419,7 +419,7 @@ Segundo a \citeonline{STM32F7HAL}, o STM32Cube é uma iniciativa da STMicroelect
      \label{STM32Cube}
 \end{figure}
 
-Segundo a \citeonline{STM32F7HAL}, as APIs do driver HAL são divididas em duas categorias: APIs genéricas, que fornecem funções comuns e genéricas para todas as séries STM32 e APIs estendidas, que incluem funções específicas e personalizadas para uma determinada familia ou microcontrolador especifico. Os drivers HAL incluem um conjunto completo de APIs prontas para uso que simplificam a implementação do aplicativo do usuário. Por exemplo, os periféricos de comunicação contêm APIs para inicializar e configurar-los, gerenciar transferências de dados, lidar com interrupções ou acesso direto a memória e gerenciar erros de comunicação.
+Segundo a \citeonline{STM32F7HAL}, as APIs do driver HAL são divididas em duas categorias: APIs genéricas, que fornecem funções comuns e genéricas para todas as séries STM32 e APIs estendidas, que incluem funções específicas e personalizadas para uma determinada familia ou microcontrolador especifico. Os drivers HAL incluem um conjunto completo de APIs prontas para uso que simplificam a implementação do aplicativo do usuário. Por exemplo, os periféricos de comunicação contêm APIs para inicialização e configuração, gerenciar transferências de dados, lidar com interrupções ou acesso direto a memória e gerenciar erros de comunicação.
 
 \section{TRABALHOS CORRELATOS}
 

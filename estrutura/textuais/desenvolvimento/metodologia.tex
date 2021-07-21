@@ -23,7 +23,7 @@ A API será uma peça de \software\ que poderá ser substituída e atualizada em
 O sistema de atualização OTA utiliza-se de bibliotecas já conhecidas e vastamente utilizadas por desenvolvedores de sistemas embarcados. Assim projetos que necessitem fazer comunicação segura via rede, leitura e escrita de cartões SD, possam utilizar esse sistema de modo a poupar espaço na memória, visando a reutilização dessas bibliotecas. Portanto, o sistema pode ser amplamente utilizado por sistema de IoT. 
 %Será utilizada o \textit{kit} de desenvolvimento STM32F746G \textit{Discovery}, onde será inicialmente desenvolvida a API, suas tarefas e o \textit{bootloader} que serão os principais componentes desse sistema.
 
-Em caso de uma falha durante o processo de atualização OTA, o sistema tem a habilidade de se recuperar de forma autónoma. Como não haverá sobrescrita na área em que o \textit{firmware} está posicionado no cartão SD, uma simples reinicialização do sistema pode fazer com que o \bootloader\ seja ativado novamente e refaça o processo de cópia da memória.
+Em caso de uma falha durante o processo de atualização OTA, o sistema tem a habilidade de se recuperar de forma autônoma. Como não haverá sobrescrita na área em que o \textit{firmware} está posicionado no cartão SD, uma simples reinicialização do sistema pode fazer com que o \bootloader\ seja ativado novamente e refaça o processo de cópia da memória.
 
 É importante lembrar que o armazenamento do \firmware\ e demais arquivos com informações para o processo de atualização poderia ser feito em qualquer mídia de armazenamento presente no sistema embarcado que se deseja utilizar. Seria possível por exemplo, utilizar a o espaço restante da memória flash para armazenar esses dados, uma memória EEPROM, ou mesmo os 128 Mbits de memória Quad-SPI flash presentes no kit de desenvolvimento utilizado para teste neste projeto, Por definição de projeto desse trabalho foi selecionado o cartão SD para esse armazenamento.
 %O sistema de atualização irá funcionar da seguinte forma, após a inicialização do sistema o \bootloader\ é executado e verifica a existência de um novo \firmware, no caso negativo ele inicia normalmente o \software\ principal da aplicação. No caso positivo, o \bootloader\ inicia o processo de substituição de \textit{firmware}, após a troca, o novo \software\ é iniciado. Durante a execução da aplicação principal do sistema e em um tempo determinado pelo projetista, a API entra em contato com o servidor para verificar a disponibilidade de um \software\ novo, em caso positivo ela agenda um período para a atualização do \firmware, no caso negativo ele continua a execução da aplicação. 
@@ -46,7 +46,7 @@ Em caso de uma falha durante o processo de atualização OTA, o sistema tem a ha
 
 A partir de um arquivo de \textit{linker}, a memória da plataforma será customizada com o intuito de abrigar os arquivos necessários para o \bootloader\ e protegê-lo de eventuais sobrescritas que podem vir a ocorrer. Esse arquivo de \textit{linker}, assim como o próprio \textit{bootloader}, será escrito somente para os microcontroladores da familia STM32, visto que cada plataforma tem suas próprias características como, tamanho de memória e endereços diferentes para cada fabricante e/ou arquitetura.
 
-No arquivo de \linker\ será especificada uma área especial na memória flash do sistema em que será abrigado o \bootloader. Também será responsável por fazer com que o \bootloader\ seja chamado após a inicialização do sistema. Assim será garantido que o \bootloader\ sempre entre seja executado após a reinicialização do sistema embarcado.
+No arquivo de \linker\ será especificada uma área especial na memória flash do sistema em que será abrigado o \bootloader. Também será responsável por fazer com que o \bootloader\ seja chamado após a inicialização do sistema. Assim será garantido que o \bootloader\ sempre seja executado após a reinicialização do sistema embarcado.
 
 %irá verificar o \textit{hash} da nova versão, verificando a integridade e origem do \textit{software},
 
@@ -130,7 +130,7 @@ Os arquivos auxiliares para a atualização, arquivos esses, que determina a nov
      \label{arquivoversao}
 \end{figure}
 
-O arquivo contendo a hash do firmware deve ser obtido a partir da função de hash criptográfico SHA-256. Em sistemas linux essa função pode ser obtida pelo comando "sha256sum" como demonstrado na \autoref{gerandohash}. Este dado deve ser salvo em modo texto também, como também é possível ser observado na \autoref{gerandohash}.
+O arquivo contendo a hash do \firmware\ deve ser obtido a partir da função de hash criptográfico SHA-256. Em sistemas linux essa função pode ser obtida pelo comando "sha256sum" como demonstrado na \autoref{gerandohash}. Este dado deve ser salvo em modo texto também, como também é possível ser observado na \autoref{gerandohash}.
 
 \begin{figure}[H]
     \scriptsize
@@ -140,7 +140,7 @@ O arquivo contendo a hash do firmware deve ser obtido a partir da função de ha
      \label{gerandohash}
 \end{figure}
 \subsection{CRIAÇÃO DE FIRMWARE PARA ATUALIZAÇÃO}
-O arquivo contendo o \firmware\ deve ser um binário (.bin) gerado pelo compilador. Geralmente os compiladores geram arquivos .elf que possuem símbolos de depuração que sempre devem ser gerados quando o intuito é depurar o programa que se esta desenvolvendo. São gerados também arquivos .hex que consistem de um arquivo em \textit{ascii}, contendo as instruções em hexadecimal com os endereços de memória de cada instrução. Os arquivos .bin são arquivos binários contendo as instruções sem nenhuma padronização, contendo o firmware de forma integra e contínua.
+O arquivo contendo o \firmware\ deve ser um binário (.bin) gerado pelo compilador. Geralmente os compiladores geram arquivos .elf que possuem símbolos de depuração que sempre devem ser gerados quando o intuito é depurar o programa que se esta desenvolvendo. São gerados também arquivos .hex que consistem de um arquivo em \textit{ascii}, contendo as instruções em hexadecimal com os endereços de memória de cada instrução. Os arquivos .bin são arquivos binários contendo as instruções sem nenhuma padronização, contendo o \firmware\ de forma integra e contínua.
 
 Para gerar um arquivo .bin a partir da compilação do \firmware\ é necessário a modificação de algumas configurações da IDE que utilizamos, neste caso o Eclipse \cite{Eclipse}, onde é necessário modificar as configurações do projeto adicionando o comando apresentado no \autoref{comando} da forma ilustrada na \autoref{eclipse}.
 
@@ -185,7 +185,7 @@ Esses \textit{firmwares} contém além de inicializações necessárias de drive
      \label{mensagemteste2}
 \end{figure}
 
-A função padrão desses \textit{firmwares} é um laço infinito que a cada 1 segundos inicializa a função OTA que realiza o processo de atualização, assim temos uma garantia que o \firmware\ irá sempre executar a função OTA.
+A função padrão desses \textit{firmwares} é um laço infinito que a cada um segundo inicializa a função OTA que realiza o processo de atualização, assim temos uma garantia que o \firmware\ irá sempre executar a função OTA.
 
 
 \section{MATERIAIS UTILIZADOS}
@@ -220,7 +220,7 @@ Algumas de suas principais características são \cite{STM32F7}:
 Com o intuito de fazer a ferramenta criada neste projeto ser facilmente utilizada por diversos desenvolvedores essa sessão foi criada para facilitar o entendimento de como utilizar o sistema de atualização OTA proposto. Destacando como portar e utilizar o \bootloader\ e toda a API de atualização OTA. Para a utilização de ambos os programas desenvolvidos neste trabalho é sempre necessário que as bibliotecas que são utilizadas por eles já estejam incluídas no projeto. Para o \bootloader, é necessário somente a biblioteca FATFS, enquanto para o OTA são necessárias as bibliotecas FATFS, LWIP e MBED TLS.
 
 \subsection{PORTANDO O BOOTLOADER}
-Para se utilizar o \bootloader proposto em outros sistemas embarcados da familia STM32 deve-se primeiramente observar a organização da memória FLASH do sistema microcontrolado que se deseja portar o \bootloader. Como podemos observar na \autoref{STM32F7_FLASH} a memória FLASH do microcontrolador STM32F746NGH6 possui oito setores de memória com tamanhos distintos, com isso foi selecionado o primeiro setor de memória para abrigar o \bootloader.
+Para se utilizar o \bootloader proposto em outros sistemas embarcados da familia STM32 deve-se primeiramente observar a organização da memória flash do sistema microcontrolado que se deseja portar o \bootloader. Como podemos observar na \autoref{STM32F7_FLASH} a memória flash do microcontrolador STM32F746NGH6 possui oito setores de memória com tamanhos distintos, com isso foi selecionado o primeiro setor de memória para abrigar o \bootloader.
 
 \begin{table}[H]
     \scriptsize
@@ -238,7 +238,7 @@ Para se utilizar o \bootloader proposto em outros sistemas embarcados da familia
     Setor 6 & 0x0808 0000 - 0x080B FFFF & 256 Kbytes       \\ \hline
     Setor 7 & 0x080C 0000 - 0x080F FFFF & 256 Kbytes       \\ \hline
     \end{tabular}
-    \caption{Organização do bloco de memória FLASH do microcontrolador STM32F746NGH6. \newline Adaptado de:\cite{STM32F7}.}
+    \caption{Organização do bloco de memória flash do microcontrolador STM32F746NGH6. \newline Adaptado de:\cite{STM32F7}.}
     \label{STM32F7_FLASH}
     \end{table}
 
@@ -264,10 +264,10 @@ Como cada microcontrolador tem sua configuração de memória, o desenvolvedor d
 
 Feita a modificação no arquivo de linker, o desenvolvedor iniciará a alteração do arquivo \textbf{bootloader.h} que contém algumas definições dependentes do seu microcontrolador. Neste arquivo as definições que precisam ser alteradas são:
 \begin{itemize}
-    \item FIRMWARE\_VERSION\_ADDRESS: Esta definição mostra ao \bootloader\ a posição na memória FLASH em que se deve armazenar a versão atual da aplicação presente na placa, deve ser sempre os quatro últimos bytes da memória, e necessita sempre ser a mesma posição configurada na API de atualização OTA. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x080FFFFC.
+    \item FIRMWARE\_VERSION\_ADDRESS: Esta definição mostra ao \bootloader\ a posição na memória flash em que se deve armazenar a versão atual da aplicação presente na placa, deve ser sempre os quatro últimos bytes da memória, e necessita sempre ser a mesma posição configurada na API de atualização OTA. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x080FFFFC.
     \item FIRMWARE\_PATH: Esta definição mostra qual o caminho do arquivo em que se encontra o novo \firmware\ que foi baixado pela API OTA, deve ser sempre igual ao que será definido na API.
     \item FIRMWARE\_NEW\_VERSION\_PATH: Esta definição mostra qual o caminho do arquivo em que se encontra a versão do novo \firmware\ que foi baixado pela API OTA, deve ser sempre igual ao que será definido na API.
-    \item APP\_START\_ADDRESS: Esta definição mostra ao \bootloader\ a posição na memória FLASH em que se deve armazenar o inicio da aplicação que será trocada sendo sempre o inicio do setor 1. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x08008000.
+    \item APP\_START\_ADDRESS: Esta definição mostra ao \bootloader\ a posição na memória flash em que se deve armazenar o inicio da aplicação que será trocada sendo sempre o inicio do setor 1. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x08008000.
    
 \end{itemize}
 
@@ -282,7 +282,7 @@ Assim como no \bootloader, a aplicação também precisa ter seu arquivo de \lin
 \end{equation}
 
 
-Utilizando a fórmula para o microcontrolador STM32F746NGH6 temos que o inicio do setor 1 de memória é 0x08008000 e o fim do ultimo setor de memória é 0x080FFFFF, assim podemos obter os valores de de inicio e tamanho da aplicação e assim configurar o arquivo de linker da aplicação da seguinte forma:
+Utilizando a fórmula para o microcontrolador STM32F746NGH6 temos que o inicio do setor 1 de memória é 0x08008000 e o fim do ultimo setor de memória é 0x080FFFFF, assim podemos obter os valores de inicio e tamanho da aplicação e assim configurar o arquivo de linker da aplicação da seguinte forma:
 
 
 \begin{algorithm}[H]
@@ -298,7 +298,7 @@ FLASH (rx)      : ORIGIN = 0x08008000, LENGTH = 0xF7FFB
 \newline Fonte: Autoria própria.}
 \end{algorithm}
 
-Feitas as alterações necessárias no arquivo de \linker, o desenvolvedor tem que alterar algumas definições no arquivo \textbf{ota\_server.h} com o intuito de adequar a API de atualização OTA para a sua aplicação. Neste arquivo as definições que precisam ser alteradas são:
+Concluídas as alterações necessárias no arquivo de \linker, o desenvolvedor tem que alterar algumas definições no arquivo \textbf{ota\_server.h} com o intuito de adequar a API de atualização OTA para a sua aplicação. Neste arquivo as definições que precisam ser alteradas são:
 
 \begin{itemize}
     \item FIRMWARE\_VERSION\_ADDRESS: Esta definição mostra a aplicação a posição na memória flash em que se deve armazenar a versão atual da aplicação presente na placa e deve ser sempre os quatro últimos bytes da memória, e deve sempre ser o mesmo configurado no \bootloader. No caso do microcontrolador deste trabalho foi utilizada a posição: 0x080FFFFC.
